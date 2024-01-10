@@ -14,6 +14,7 @@ public class Robot {
     MapInfo myLocInfo;
     MapLocation targetLoc; // where we want to be going
     final Random rng = new Random(6147);
+    String indicatorString = "";
 
     /** Array containing all the possible movement directions. */
     Direction[] directions = {
@@ -72,35 +73,43 @@ public class Robot {
         else{
             myLoc = rc.getLocation();
 
-            if (rc.canPickupFlag(rc.getLocation())){
-                rc.pickupFlag(rc.getLocation());
-                rc.setIndicatorString("Holding a flag!");
-            }
+//            if (rc.canPickupFlag(rc.getLocation())){
+//                rc.pickupFlag(rc.getLocation());
+//                rc.setIndicatorString("Holding a flag!");
+//            }
 
             runMovement();
             runAttack();
     }
+
+        rc.setIndicatorString(indicatorString);
 }
 
 
     public void runMovement() throws GameActionException {
         // if you have a flag, head back home
+        indicatorString = "";
         if (rc.hasFlag() && rc.getRoundNum() >= GameConstants.SETUP_ROUNDS){
             MapLocation[] spawnLocs = rc.getAllySpawnLocations();
             targetLoc= spawnLocs[0];
         }
-
 
         else {
             targetLoc = comms.readSharedTargetLoc();
             nav.goTo(targetLoc, 3);
             myLoc = rc.getLocation();
 
+            if(myLoc == null || targetLoc == null) {
+                Util.log("myLoc: " + myLoc);
+                Util.log("targetLoc: " + targetLoc);
+            }
+
             // generate a new targetLoc (for everyone) if we've reached the destination
             if(myLoc.distanceSquaredTo(targetLoc) < 3) {
                 targetLoc = generateSharedTarget();
             }
         }
+        indicatorString += "targetLoc: " + targetLoc + ";";
     }
 
 

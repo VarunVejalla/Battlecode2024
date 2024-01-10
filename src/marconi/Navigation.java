@@ -14,33 +14,39 @@ public class Navigation {
 
     public Direction fuzzyNav(MapLocation target) throws GameActionException{
         Direction toTarget = robot.myLoc.directionTo(target);
-        Direction bestDir = toTarget;
-
         Direction[] moveOptions = {
                 toTarget,
                 toTarget.rotateLeft(),
                 toTarget.rotateRight(),
                 toTarget.rotateLeft().rotateLeft(),
-                toTarget.rotateRight().rotateRight(),
+                toTarget.rotateRight().rotateRight()
         };
 
-        double bestCost = Double.MAX_VALUE;
+        Direction bestDir = null;
+        int leastNumMoves = Integer.MAX_VALUE;
+        int leastDistanceSquared = Integer.MAX_VALUE;
 
-        for(int i = moveOptions.length; i--> 0;){
+        MapLocation bestNewLoc = robot.myLoc;
+
+        for(int i= moveOptions.length; i--> 0;){
             Direction dir = moveOptions[i];
             MapLocation newLoc = robot.myLoc.add(dir);
 
-            if(!rc.canSenseLocation(newLoc) || !rc.canMove(dir)){   // skip checking this cell if we can't see / move to it
+            if(!rc.canSenseLocation(newLoc) || !rc.canMove(dir)){
                 continue;
             }
 
-            if(!rc.sensePassability(newLoc)) continue;  // don't consider if the new location is not passable
+            if(!rc.sensePassability(newLoc)) continue;
 
-            int cost = Util.minMovesToReach(newLoc, target) * 10;
+            int numMoves = Util.minMovesToReach(newLoc, target);
+            int distanceSquared = newLoc.distanceSquaredTo(target);
 
-            if(cost < bestCost){
-                bestCost = cost;
+            if(numMoves < leastNumMoves ||
+                    (numMoves == leastNumMoves && distanceSquared < leastDistanceSquared)){
+                leastNumMoves = numMoves;
+                leastDistanceSquared = distanceSquared;
                 bestDir = dir;
+                bestNewLoc = newLoc;
             }
         }
         return bestDir;
@@ -49,23 +55,26 @@ public class Navigation {
 
 
     public boolean goTo(MapLocation target, int minDistToSatisfy) throws GameActionException {
-        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy){
+        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy) {
             return true;
         }
 
-        if(!rc.isMovementReady()){
+        if (!rc.isMovementReady()) {
             return false;
         }
 
-        while(rc.isMovementReady()){
-            Direction toGo = fuzzyNav(target);
-            Util.tryMove(toGo); // Should always return true since fuzzyNav checks if rc.canMove(dir)
-            if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy){
-                return true;
-            }
+        while (rc.isMovementReady()) {
+            Direction toGo = null;
+            toGo = fuzzyNav(target);
+
+            if (toGo == null) return false;
+            Util.tryMove(toGo);
+
+        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy) {
+            return true;
         }
+    }
         return true;
     }
-
 
 }

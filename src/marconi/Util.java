@@ -23,6 +23,10 @@ public class Util {
         return false;
     }
 
+    public static void log(String str){
+        System.out.println(str);
+    }
+
 
     public static Direction[] closeDirections(Direction dir){
         return new Direction[]{
