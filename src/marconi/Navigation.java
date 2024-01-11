@@ -53,6 +53,16 @@ public class Navigation {
     }
 
 
+    public void moveRandom() throws GameActionException {
+        int randomIdx = robot.rng.nextInt(8);
+        for(int i = 0; i < Robot.movementDirections.length; i++){
+            if(Util.tryMove(Robot.movementDirections[(randomIdx + i) % Robot.movementDirections.length])){
+                return;
+            }
+        }
+    }
+
+
 
     public boolean goTo(MapLocation target, int minDistToSatisfy) throws GameActionException {
         if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy) {
