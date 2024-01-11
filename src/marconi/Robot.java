@@ -232,7 +232,7 @@ public class Robot {
         if(rc.hasFlag()){
             MapLocation nearestHomeSpawnLoc = Util.getNearestHomeSpawnLoc(myLoc);
             indicatorString += "have flag, going to " + nearestHomeSpawnLoc.toString() + ";";
-            nav.goTo(nearestHomeSpawnLoc, 0);
+            nav.goToBug(nearestHomeSpawnLoc, 0);
             return;
         }
 
@@ -246,7 +246,7 @@ public class Robot {
         if(opponentFlagLocs[0] != null){
             targetLoc = opponentFlagLocs[0];
             indicatorString += "going to opponent flag at " + targetLoc.toString() + ";";
-            nav.goTo(targetLoc, 4);
+            nav.goToBug(targetLoc, 4);
 
         }
 
@@ -254,7 +254,7 @@ public class Robot {
         else{
             targetLoc = getTargetLoc();
             indicatorString += "going to shared target loc at " + targetLoc.toString() + ";";
-            nav.goTo(targetLoc, 4);
+            nav.goToBug(targetLoc, 4);
         }
     }
 
