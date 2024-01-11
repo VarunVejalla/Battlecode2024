@@ -79,10 +79,14 @@ public class Robot {
         Util.robot = this;
         
         // if the round number is less than 50, set the flags in the shared array to null
-        opponentFlagLocs = comms.readOpponentFlagLocs();
+        opponentFlagLocs = comms.getAllKnownOppFlagLocs();
         if(rc.getRoundNum() < 50 && opponentFlagLocs[0] != null){
-            comms.setOppFlagsToNull();
+            comms.setKnownOppFlagsToNull();
+            comms.setApproxOppFlags(new MapLocation[]{null, null, null});
         }
+
+
+
         baseLoc = rc.getAllySpawnLocations()[0];
     }
 
@@ -112,7 +116,6 @@ public class Robot {
     public MapLocation getTargetLoc() throws GameActionException{
         // read shared array
         // go to that targetLoc
-        // return allTargetLocs[targetLocIdx];
         return comms.getApproxOppFlag(0);
 //        return allTargetLocs[comms.readSharedTargetLocIdx()];
     }
@@ -135,7 +138,7 @@ public class Robot {
 
 
     public void readComms() throws GameActionException{
-        opponentFlagLocs = comms.readOpponentFlagLocs(); // read the opponent flag locs from comms
+        opponentFlagLocs = comms.getAllKnownOppFlagLocs(); // read the opponent flag locs from comms
     }
 
 
@@ -168,10 +171,9 @@ public class Robot {
                         break;
                     }
                 }
-
                 // if the flag is not still there, set it to null
                 if(!flagIsStillThere){
-                    comms.removeOppFlagLoc(flagLoc);
+                    comms.removeKnownOppFlagLoc(flagLoc);
                 }
             }
         }
@@ -199,7 +201,7 @@ public class Robot {
                 }
 
                 // if the flag is an opponent flag and it isn't known, comm it and add it to the list of opponent flags
-                comms.writeOppFlagLoc(flagLoc);
+                comms.writeKnownOppFlagLoc(flagLoc, false);
             }
         }
     }
@@ -210,7 +212,7 @@ public class Robot {
         // dropped opponent flags broadcast their location every 100 rounds
         // this method listens to the broadcast and adds the sets those broadcast locations as approximate locations
         if(rc.getRoundNum() >= 200 
-            && comms.getLastUpdatd_ApproxOppFlags() + 100 < rc.getRoundNum()){
+            && comms.getApproxOppFlag_LastUpdated() + 100 < rc.getRoundNum()){
 
             MapLocation[] approximateOppFlagLocs = rc.senseBroadcastFlagLocations();
             comms.setApproxOppFlags(approximateOppFlagLocs);
@@ -228,7 +230,7 @@ public class Robot {
         listenToOppFlagBroadcast();
         verifyOppFlagLocs();
         checkForNewOppFlags();
-        opponentFlagLocs = comms.readOpponentFlagLocs();
+        opponentFlagLocs = comms.getAllKnownOppFlagLocs();
     }
 
 
@@ -241,7 +243,7 @@ public class Robot {
         for(MapLocation oppFlagLoc: opponentFlagLocs){
             if(oppFlagLoc != null && rc.canPickupFlag(oppFlagLoc)){
                 rc.pickupFlag(oppFlagLoc);
-                comms.removeOppFlagLoc(oppFlagLoc); // remove it from comms because you've picked it up
+                comms.writeKnownOppFlagLoc(oppFlagLoc, true);
             }
         }
     }
@@ -274,11 +276,9 @@ public class Robot {
             for(FlagInfo flagInfo: nearbyFlags){
                 if(flagInfo.getTeam() == rc.getTeam()
                     && flagInfo.getLocation().distanceSquaredTo(rc.getLocation()) < 36){
-
                     validDropSpot = false;
                     // move away from the flag
                     Direction dir = flagInfo.getLocation().directionTo(rc.getLocation());
-
                     nav.goTo(rc.getLocation().add(dir.opposite()), 0);
                 }
             }
@@ -305,9 +305,12 @@ public class Robot {
 
         // if you hold a flag, go to the nearest home base
         if(rc.hasFlag()){
+            comms.removeKnownOppFlagLoc(myLoc);
             MapLocation nearestHomeSpawnLoc = Util.getNearestHomeSpawnLoc(myLoc);
             indicatorString += "have flag, going to " + nearestHomeSpawnLoc.toString() + ";";
             nav.goToBug(nearestHomeSpawnLoc, 0);
+            myLoc = rc.getLocation();
+            comms.writeKnownOppFlagLoc(myLoc, true);
             return;
         }
 
@@ -343,7 +346,6 @@ public class Robot {
 
         if(rc.getRoundNum() < 200){
             runSetupMovement();
-            return;
         }
 
         else{
