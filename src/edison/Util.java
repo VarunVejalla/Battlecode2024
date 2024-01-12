@@ -2,6 +2,8 @@ package edison;
 
 import battlecode.common.*;
 
+import java.lang.reflect.Array;
+
 public class Util {
 
     static RobotController rc;
@@ -22,6 +24,47 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+
+    public static int countBotsOfTeam(Team team, RobotInfo[] bots){
+        int count = 0;
+        for(RobotInfo bot : bots){
+            if(bot.getTeam() == team){
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    public static <T> boolean checkIfItemInArray(T item, T[] array){
+        // helper method to check if an item is in an array
+        for(T arrayItem : array){
+            if(arrayItem != null && arrayItem.equals(item)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static <T> void logArray(String name, T[] array){
+        // helper method to display array of any type to the logs
+        String out = "";
+        out += name + ": ";
+        for(int i=0; i<array.length; i++){
+            if(i == 0){ // first element
+                out += "["+array[i] + ", ";
+            }
+            else if(i==array.length-1){ // last element
+                out += array[i] + "]";
+            }
+            else{   // other elements
+                out += array[i] + ", ";
+            }
+        }
+        System.out.println(out);
     }
 
 

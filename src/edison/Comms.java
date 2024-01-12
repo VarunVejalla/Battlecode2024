@@ -2,9 +2,6 @@ package edison;
 
 import battlecode.common.*;
 
-
-//TODO: need to completely refactor this class to use bit shifting to use less space
-// also need to move all constants to a separate class (Constants.java)
 public class Comms {
 
     RobotController rc;
@@ -61,6 +58,15 @@ public class Comms {
             lastUpdated);
     }
 
+    public MapLocation[] getAllApproxOppFlags() throws GameActionException{
+        // this method returns an array of all approximate opponent flag locations
+        MapLocation[] approxFlags = new MapLocation[3];
+        for(int i=0; i< constants.APPROX_OPP_FLAG_INDICES.length; i++){
+            approxFlags[i] = getApproxOppFlag(i);
+        }
+        return approxFlags;
+    }
+
 
     private void setApproxOppFlag(int idx, MapLocation flagLoc) throws GameActionException{
         // this method sets the approximate location of an opponent flag
@@ -91,8 +97,13 @@ public class Comms {
         setApproxOppFlag_LastUpdated(lastUpdated);
 
         // set the flag locations
-        for(int i=0; i<oppFlagsLocs.length; i++){
-            setApproxOppFlag(i, oppFlagsLocs[i]);
+        for(int i=0; i<3; i++){
+            if (i < oppFlagsLocs.length) {
+                setApproxOppFlag(i, oppFlagsLocs[i]);
+            }
+            else{
+                setApproxOppFlag(i, null);
+            }
         }
     }
 
@@ -120,7 +131,7 @@ public class Comms {
     /////////////////////////////////////////////////////////////////////////////
     // methods for reading and writing the known opponent flag locations
 
-    private MapLocation readKnownOppFlag(int idx) throws GameActionException{
+    public MapLocation getKnownOppFlag(int idx) throws GameActionException{
         // this method returns the location of a single known opponent flag (specified by idx)
         int trueIndex = constants.KNOWN_OPP_FLAG_INDICES[idx];
         int x = extractVal(trueIndex, constants.KNOWN_OPP_FLAG_X_MASK, constants.KNOWN_OPP_FLAG_X_SHIFT);
@@ -131,7 +142,7 @@ public class Comms {
         return new MapLocation(x, y);
     }
 
-    private boolean readCarriedStatus_KnownOppFlag(int idx) throws GameActionException{
+    public boolean getCarriedStatus_KnownOppFlag(int idx) throws GameActionException{
         // this method returns whether a single known opponent flag (specified by idx) is being carried or not
         int trueIndex = constants.KNOWN_OPP_FLAG_INDICES[idx];
         int carried = extractVal(trueIndex, constants.KNOWN_OPP_FLAG_CARRIED_MASK, constants.KNOWN_OPP_FLAG_CARRIED_SHIFT);
@@ -178,12 +189,9 @@ public class Comms {
         insertVal(trueIndex, constants.KNOWN_OPP_FLAG_CARRIED_MASK, constants.KNOWN_OPP_FLAG_CARRIED_SHIFT, carriedVal);
     }
 
-
-
-
     public void writeKnownOppFlagLoc(MapLocation newFlagLoc, boolean carried) throws GameActionException{
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = readKnownOppFlag(i);
+            MapLocation knownFlagLoc = getKnownOppFlag(i);
             if(knownFlagLoc != null && knownFlagLoc.equals(newFlagLoc)){
                 writeCarriedStatus_KnownOppFlag(i, carried);
                 return;
@@ -193,7 +201,7 @@ public class Comms {
         // if we get here, then we didn't find the flag in the broadcast
         // so we need to add it
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = readKnownOppFlag(i);
+            MapLocation knownFlagLoc = getKnownOppFlag(i);
             if(knownFlagLoc == null){
                 writeKnownOppFlagLoc(newFlagLoc, carried, i);
                 return;
@@ -206,7 +214,7 @@ public class Comms {
         // this method returns an array of all known opponent flag locations
         MapLocation[] knownFlags = new MapLocation[3];
         for(int i=0; i< constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            knownFlags[i] = readKnownOppFlag(i);
+            knownFlags[i] = getKnownOppFlag(i);
         }
         return knownFlags;
     }
@@ -217,9 +225,9 @@ public class Comms {
         MapLocation[] knownFlags = new MapLocation[3];
         
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation flagLoc = readKnownOppFlag(i);
+            MapLocation flagLoc = getKnownOppFlag(i);
             if(flagLoc != null){
-                if(readCarriedStatus_KnownOppFlag(i) == carried){
+                if(getCarriedStatus_KnownOppFlag(i) == carried){
                     knownFlags[i] = flagLoc;
                 }
             }
@@ -245,7 +253,7 @@ public class Comms {
         // this method removes a known opponent flag location from the broadcast
         // used if we notice a flag is no longer there
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = readKnownOppFlag(i);
+            MapLocation knownFlagLoc = getKnownOppFlag(i);
             if(knownFlagLoc != null && knownFlagLoc.equals(flagLoc)){
                     writeKnownOppFlagLoc(null, false, i);
             }
@@ -260,5 +268,52 @@ public class Comms {
         }
     }
     /////////////////////////////////////////////////////////////////////////////
+    // methods for reading and writing shared offensive target
+    public MapLocation getSharedOffensiveTarget() throws GameActionException{
+        // this method returns the location of the shared offensive target
+            int x = extractVal(
+                constants.SHARED_OFFENSIVE_TARGET_IDX, 
+                constants.SHARED_OFFENSIVE_TARGET_X_MASK, 
+                constants.SHARED_OFFENSIVE_TARGET_X_SHIFT);
+
+            int y = extractVal(
+                constants.SHARED_OFFENSIVE_TARGET_IDX, 
+                constants.SHARED_OFFENSIVE_TARGET_Y_MASK, 
+                constants.SHARED_OFFENSIVE_TARGET_Y_SHIFT);
+
+            if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+                return null;
+            } 
+            
+            else {
+                return new MapLocation(x, y);
+            }        
+    }
+
+
+    public void writeSharedOffensiveTarget(MapLocation loc) throws GameActionException {
+        // this method writes the location of the shared offensive target
+        int x, y;
+        if(loc == null){
+            x = constants.LOCATION_NULL_VAL;
+            y = constants.LOCATION_NULL_VAL;
+        } 
+        else {
+            x = loc.x;
+            y = loc.y;
+        }
+
+        insertVal(
+            constants.SHARED_OFFENSIVE_TARGET_IDX, 
+            constants.SHARED_OFFENSIVE_TARGET_X_MASK, 
+            constants.SHARED_OFFENSIVE_TARGET_X_SHIFT, 
+            x);
+        
+        insertVal(
+            constants.SHARED_OFFENSIVE_TARGET_IDX, 
+            constants.SHARED_OFFENSIVE_TARGET_Y_MASK, 
+            constants.SHARED_OFFENSIVE_TARGET_Y_SHIFT, 
+            y);
+    }
 
 }

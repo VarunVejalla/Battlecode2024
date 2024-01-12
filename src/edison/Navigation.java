@@ -239,7 +239,6 @@ public class Navigation {
         Direction targetDir = myLoc.directionTo(target);
         Direction[] options = {targetDir, targetDir.rotateRight(), targetDir.rotateLeft(), targetDir.rotateRight().rotateRight(), targetDir.rotateLeft().rotateLeft()};
         Direction bestDirection = null;
-        double lowestCooldown = Double.MAX_VALUE;
         for(int i = 0; i < options.length; i++){
             if(!rc.canMove(options[i])){
                 continue;

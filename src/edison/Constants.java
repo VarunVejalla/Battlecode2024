@@ -5,6 +5,9 @@ public class Constants {
 
     }
 
+    public static final int BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE = 7;
+
+
     public static final int FULL_MASK = 65535; // 11111111111111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
 
@@ -44,7 +47,11 @@ public class Constants {
     public static final int KNOWN_OPP_FLAG_CARRIED_MASK = 4096; // 1 000000 000000
     public static final int KNOWN_OPP_FLAG_CARRIED_SHIFT = 12;
     // ------------------------------------------------------------------
-
-
-
+    // variables for shared target
+    public static final int SHARED_OFFENSIVE_TARGET_IDX = 7;
+    public static final int SHARED_OFFENSIVE_TARGET_X_MASK = 4032; // 111111000000
+    public static final int SHARED_OFFENSIVE_TARGET_Y_MASK = 31; // 00000011111
+    public static final int SHARED_OFFENSIVE_TARGET_X_SHIFT = 6;
+    public static final int SHARED_OFFENSIVE_TARGET_Y_SHIFT = 0;
+    
 }
