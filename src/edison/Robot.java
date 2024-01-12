@@ -120,6 +120,7 @@ public void testLog(){
     Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
     Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
     Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
+    Util.logArray("flagBroadcasts: " , rc.senseBroadcastFlagLocations());
     Util.log("--------------------------------");
 }
 
@@ -237,14 +238,12 @@ public void testLog(){
                 return loc;
             }
         }
-
         // if there is an approximate location of a flag that is not the current target, go to that
         for(MapLocation loc: approximateOppFlagLocations){
             if(loc != null && !loc.equals(sharedOffensiveTarget)){
                 return loc;
             }
         }
-
         return null;
     }
 
@@ -343,6 +342,7 @@ public void testLog(){
         if(rc.hasFlag()){
             myLoc = rc.getLocation();
             comms.removeKnownOppFlagLoc(myLoc);
+            nav.mode = NavigationMode.FUZZYNAV;
             nav.goTo(Util.getNearestHomeSpawnLoc(myLoc), 0);
             myLoc = rc.getLocation();
             comms.writeKnownOppFlagLoc(myLoc, true);
@@ -351,6 +351,7 @@ public void testLog(){
             nav.moveRandom();
         }
         else{
+            nav.mode = NavigationMode.BUGNAV;
             nav.goTo(sharedOffensiveTarget, distToSatisfy);
         }
     }

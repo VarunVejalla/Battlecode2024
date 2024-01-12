@@ -11,7 +11,7 @@ public class Navigation {
     RobotController rc;
     Robot robot;
 
-    NavigationMode mode = NavigationMode.FUZZYNAV;
+    NavigationMode mode = NavigationMode.BUGNAV;
 
     // Bugnav variables
     int closestDistToTarget = Integer.MAX_VALUE;
@@ -52,7 +52,7 @@ public class Navigation {
     }
 
     public Direction bugNav(MapLocation target) throws GameActionException {
-        Util.log("Running bugnav");
+//        Util.log("Running bugnav");
         // Every 20 turns reset the closest distance to target
         if(roundsSinceClosestDistReset >= ROUNDS_TO_RESET_BUG_CLOSEST){
             closestDistToTarget = Integer.MAX_VALUE;
