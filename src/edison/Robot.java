@@ -129,11 +129,15 @@ public void testLog(){
         // read approximate flag locations
         approximateOppFlagLocations = comms.getAllApproxOppFlags();
 
+
+
         // read carried flag locations
         knownCarriedOppFlags = comms.getCarriedOppFlags();
 
         // read dropped flag locations
         knownDroppedOppFlags = comms.getDroppedOppFlags();
+
+
 
         // read shared offensive target
         sharedOffensiveTarget = comms.getSharedOffensiveTarget();
@@ -179,18 +183,21 @@ public void testLog(){
         for(int i=0; i<knownCarriedOppFlags.length; i++){
             if(knownCarriedOppFlags[i] != null){
                 if(rc.canSenseLocation(knownCarriedOppFlags[i])){
+                    boolean flagIsStillValid = false;
                     // check to see if we sensed the flag at the location in sensedNearbyFlags
                     // if we did, and it's being carried, it's valid
                     for(FlagInfo flagInfo: sensedNearbyFlags){
                         if(flagInfo.getLocation().equals(knownCarriedOppFlags[i])){
                             if(flagInfo.isPickedUp()){
-                                return;
+                                flagIsStillValid = true;
                             }
                         }
                     }
-                    // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
-                    // remove it from the shared array
-                    comms.removeKnownOppFlagLoc(knownCarriedOppFlags[i]);
+                    if(!flagIsStillValid) {
+                        // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
+                        // remove it from the shared array
+                        comms.removeKnownOppFlagLoc(knownCarriedOppFlags[i]);
+                    }
                 }
             }
         }
@@ -199,18 +206,21 @@ public void testLog(){
         for(int i=0; i<knownDroppedOppFlags.length; i++){
             if(knownDroppedOppFlags[i] != null){
                 if(rc.canSenseLocation(knownDroppedOppFlags[i])){
+                    boolean flagIsStillValid = false;
                     // check to see if we sensed the flag at the location in sensedNearbyFlags
                     // if we did, and it's not being carried, it's valid
                     for(FlagInfo flagInfo: sensedNearbyFlags){
                         if(flagInfo.getLocation().equals(knownDroppedOppFlags[i])){
                             if(!flagInfo.isPickedUp()){
-                                return;
+                                flagIsStillValid = true;
                             }
                         }
                     }
-                    // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
-                    // remove it from the shared array
-                    comms.removeKnownOppFlagLoc(knownDroppedOppFlags[i]);
+                    if(!flagIsStillValid) {
+                        // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
+                        // remove it from the shared array
+                        comms.removeKnownOppFlagLoc(knownDroppedOppFlags[i]);
+                    }
                 }
             }
         }
@@ -319,7 +329,6 @@ public void testLog(){
         // this method scans the surroundings of the bot and updates comms if needed
         sensedNearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
         sensedNearbyRobots = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED);
-
     }
 
 
