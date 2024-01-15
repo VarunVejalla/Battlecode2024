@@ -42,9 +42,9 @@ public class Comms {
     public int getApproxOppFlag_LastUpdated() throws GameActionException{
         // this method returns the last round that the approximate opponent flag locations were updated from the broadcast
         return extractVal(
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX, 
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_MASK, 
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT) * 10;
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX,
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_MASK,
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT) * 10;
     }
 
 
@@ -52,10 +52,10 @@ public class Comms {
         // this method sets the last round that the approximate opponent flag locations were updated from the broadcast
         lastUpdated /= 10; // we divide the round number by 10, since the trailing zero is always present
         insertVal(
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX, 
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_MASK, 
-            constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT, 
-            lastUpdated);
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX,
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_MASK,
+                constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT,
+                lastUpdated);
     }
 
     public MapLocation[] getAllApproxOppFlags() throws GameActionException{
@@ -72,7 +72,7 @@ public class Comms {
         // this method sets the approximate location of an opponent flag
         int x;
         int y;
-        
+
         if(flagLoc == null){
             x = constants.LOCATION_NULL_VAL;
             y = constants.LOCATION_NULL_VAL;
@@ -111,14 +111,14 @@ public class Comms {
         int trueIndex = constants.APPROX_OPP_FLAG_INDICES[idx];
         // this method returns the approximate location of a single opponent flag (specified by idx)
         int x = extractVal(
-            trueIndex, 
-            constants.APPROX_OPP_FLAG_X_MASK, 
-            constants.APPROX_OPP_FLAG_X_SHIFT);
+                trueIndex,
+                constants.APPROX_OPP_FLAG_X_MASK,
+                constants.APPROX_OPP_FLAG_X_SHIFT);
 
         int y = extractVal(
-            trueIndex, 
-            constants.APPROX_OPP_FLAG_Y_MASK, 
-            constants.APPROX_OPP_FLAG_Y_SHIFT);
+                trueIndex,
+                constants.APPROX_OPP_FLAG_Y_MASK,
+                constants.APPROX_OPP_FLAG_Y_SHIFT);
 
         if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
             return null;
@@ -138,7 +138,7 @@ public class Comms {
         int y = extractVal(trueIndex, constants.KNOWN_OPP_FLAG_Y_MASK, constants.KNOWN_OPP_FLAG_Y_SHIFT);
         if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
             return null;
-        } 
+        }
         return new MapLocation(x, y);
     }
 
@@ -218,12 +218,12 @@ public class Comms {
         }
         return knownFlags;
     }
-    
+
 
     private MapLocation[] getKnownOppFlags(boolean carried) throws GameActionException {
         // this method returns an array of locations of opponent flags that are being carried by friendly robots
         MapLocation[] knownFlags = new MapLocation[3];
-        
+
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
             MapLocation flagLoc = getKnownOppFlag(i);
             if(flagLoc != null){
@@ -255,7 +255,7 @@ public class Comms {
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
             MapLocation knownFlagLoc = getKnownOppFlag(i);
             if(knownFlagLoc != null && knownFlagLoc.equals(flagLoc)){
-                    writeKnownOppFlagLoc(null, false, i);
+                writeKnownOppFlagLoc(null, false, i);
             }
         }
     }
@@ -271,23 +271,23 @@ public class Comms {
     // methods for reading and writing shared offensive target
     public MapLocation getSharedOffensiveTarget() throws GameActionException{
         // this method returns the location of the shared offensive target
-            int x = extractVal(
-                constants.SHARED_OFFENSIVE_TARGET_IDX, 
-                constants.SHARED_OFFENSIVE_TARGET_X_MASK, 
+        int x = extractVal(
+                constants.SHARED_OFFENSIVE_TARGET_IDX,
+                constants.SHARED_OFFENSIVE_TARGET_X_MASK,
                 constants.SHARED_OFFENSIVE_TARGET_X_SHIFT);
 
-            int y = extractVal(
-                constants.SHARED_OFFENSIVE_TARGET_IDX, 
-                constants.SHARED_OFFENSIVE_TARGET_Y_MASK, 
+        int y = extractVal(
+                constants.SHARED_OFFENSIVE_TARGET_IDX,
+                constants.SHARED_OFFENSIVE_TARGET_Y_MASK,
                 constants.SHARED_OFFENSIVE_TARGET_Y_SHIFT);
 
-            if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
-                return null;
-            } 
-            
-            else {
-                return new MapLocation(x, y);
-            }        
+        if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+            return null;
+        }
+
+        else {
+            return new MapLocation(x, y);
+        }
     }
 
 
@@ -297,23 +297,31 @@ public class Comms {
         if(loc == null){
             x = constants.LOCATION_NULL_VAL;
             y = constants.LOCATION_NULL_VAL;
-        } 
+        }
         else {
             x = loc.x;
             y = loc.y;
         }
 
         insertVal(
-            constants.SHARED_OFFENSIVE_TARGET_IDX, 
-            constants.SHARED_OFFENSIVE_TARGET_X_MASK, 
-            constants.SHARED_OFFENSIVE_TARGET_X_SHIFT, 
-            x);
-        
+                constants.SHARED_OFFENSIVE_TARGET_IDX,
+                constants.SHARED_OFFENSIVE_TARGET_X_MASK,
+                constants.SHARED_OFFENSIVE_TARGET_X_SHIFT,
+                x);
+
         insertVal(
-            constants.SHARED_OFFENSIVE_TARGET_IDX, 
-            constants.SHARED_OFFENSIVE_TARGET_Y_MASK, 
-            constants.SHARED_OFFENSIVE_TARGET_Y_SHIFT, 
-            y);
+                constants.SHARED_OFFENSIVE_TARGET_IDX,
+                constants.SHARED_OFFENSIVE_TARGET_Y_MASK,
+                constants.SHARED_OFFENSIVE_TARGET_Y_SHIFT,
+                y);
+    }
+
+    public void writeTrapper(int flagIndex, int spawned) throws GameActionException {
+        insertVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex, spawned);
+    }
+
+    public int readTrapper(int flagIndex) throws GameActionException {
+        return extractVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex);
     }
 
 }
