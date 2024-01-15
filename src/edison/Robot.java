@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 enum SymmetryType { HORIZONTAL, VERTICAL, ROTATIONAL, DIAGONAL_RIGHT, DIAGONAL_LEFT};
-enum Mode {DEFENSE, OFFENSE};
+enum Mode {DEFENSE, OFFENSE, TRAPPING};
 
 public class Robot {
 
@@ -23,6 +23,8 @@ public class Robot {
 
     MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
+
+    int flagProtectingIdx = -1;
 
 
     /** Array containing all the possible movement directions. */
@@ -69,13 +71,6 @@ public class Robot {
         this.comms = new Comms(rc, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
 
-        if(rng.nextDouble() < 0){
-            mode = Mode.DEFENSE;
-        }
-        else{
-            mode = Mode.OFFENSE;
-        }
-
         Util.rc = rc;
         Util.robot = this;
         
@@ -86,10 +81,54 @@ public class Robot {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
         }
+
+        boolean isTrapping = false;
+        for(int flagIndex = 0; flagIndex < 3; flagIndex += 1) {
+            if(comms.readTrapper(flagIndex) != 0) {
+                isTrapping = true;
+                mode = Mode.TRAPPING;
+                flagProtectingIdx = flagIndex;
+                break;
+            }
+        }
+        if(!isTrapping) {
+            if(rng.nextDouble() < 0){
+                mode = Mode.DEFENSE;
+            }
+            else{
+                mode = Mode.OFFENSE;
+            }
+        }
+
+        if(!comms.defaultFlagLocationsWritten()) {
+            comms.writeDefaultFlagLocs();
+        }
     }
 
 
     public void spawn() throws GameActionException{
+        if(mode == Mode.TRAPPING) {
+
+            // TODO: what we want to do eventually (if we end up moving flags) is find the spawn location that is closest to the flag, but we're not even properly comming friendly flags yet
+            MapLocation myFlagSpawn = comms.getDefaultFlagLoc(flagProtectingIdx);
+            if(rc.canSpawn(myFlagSpawn)) {
+                spawnLoc = myFlagSpawn;
+                rc.spawn(spawnLoc);
+                return;
+            }
+            for(int deltaX = -1; deltaX <= 1; deltaX += 1) {
+                for(int deltaY = -1; deltaY <= 1; deltaY += 1) {
+                    MapLocation translated = myFlagSpawn.translate(deltaX, deltaY);
+                    if(rc.canSpawn(translated)) {
+                        spawnLoc = translated;
+                        rc.spawn(translated);
+                        return;
+                    }
+                }
+            }
+            return;
+        }
+
         sharedOffensiveTarget = null;
         prevTargetLoc = null;
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();

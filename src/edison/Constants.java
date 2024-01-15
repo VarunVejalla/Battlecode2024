@@ -24,7 +24,7 @@ public class Constants {
     // flag should be 111111000000
     public static final int APPROX_OPP_FLAG_X_MASK = 4032; // 111111000000
     public static final int APPROX_OPP_FLAG_X_SHIFT = 6;
-    public static final int APPROX_OPP_FLAG_Y_MASK = 31; // 00000011111
+    public static final int APPROX_OPP_FLAG_Y_MASK = 31; // 000000111111
     public static final int APPROX_OPP_FLAG_Y_SHIFT = 0;
 
     public static final int APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX = 3;
@@ -60,6 +60,11 @@ public class Constants {
     public static final int SPAWN_0_IDX = 16;
     public static final int SPAWN_1_IDX = 17;
     public static final int SPAWN_2_IDX = 18;
+
+    public static final int[] SPAWN_INDICES = {SPAWN_0_IDX, SPAWN_1_IDX, SPAWN_2_IDX};
+
+    public static final int SPAWN_X_MASK = 4032; // 111111000000
+    public static final int SPAWN_Y_MASK = 31; // 000000111111
 
 
 
