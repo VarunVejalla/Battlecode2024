@@ -144,12 +144,14 @@ public class Comms {
         return new MapLocation(x, y);
     }
 
+
     public boolean getCarriedStatus_KnownOppFlag(int idx) throws GameActionException{
         // this method returns whether a single known opponent flag (specified by idx) is being carried or not
         int trueIndex = constants.KNOWN_OPP_FLAG_INDICES[idx];
         int carried = extractVal(trueIndex, constants.KNOWN_OPP_FLAG_CARRIED_MASK, constants.KNOWN_OPP_FLAG_CARRIED_SHIFT);
         return carried == 1;
     }
+
 
     private void writeCarriedStatus_KnownOppFlag(int idx, boolean carried) throws GameActionException{
         // this method writes the carried status of a single known opponent flag (specified by idx)
@@ -190,6 +192,7 @@ public class Comms {
         }
         insertVal(trueIndex, constants.KNOWN_OPP_FLAG_CARRIED_MASK, constants.KNOWN_OPP_FLAG_CARRIED_SHIFT, carriedVal);
     }
+
 
     public void writeKnownOppFlagLoc(MapLocation newFlagLoc, boolean carried) throws GameActionException{
         for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
@@ -269,6 +272,8 @@ public class Comms {
             writeKnownOppFlagLoc(null, false, i);
         }
     }
+
+
     /////////////////////////////////////////////////////////////////////////////
     // methods for reading and writing shared offensive target
     public MapLocation getSharedOffensiveTarget() throws GameActionException{
@@ -318,6 +323,7 @@ public class Comms {
             y);
     }
 
+
     public boolean defaultFlagLocationsWritten() throws GameActionException {
         // this method checks if we have written defaultFlagLocations
         // these are the default locations of the home team flags after round 200
@@ -344,7 +350,8 @@ public class Comms {
         }
     }
 
-    public void writeDefaultFlagLocs() throws GameActionException {
+
+    public void writeDefaultHomeFlagLocs() throws GameActionException {
         // this method determines the center of each spawn zone and sets that as a defaultFlagLocation
         // Note: a defaultFlagLocation is a location where our flags will be by default after round 200 (if they are not taken)
 
@@ -381,25 +388,63 @@ public class Comms {
         }
 
         for(int i = 0; i < 3; i += 1) {
-            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_X_MASK, 6, flags[i].x);
-            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_Y_MASK, 0, flags[i].y);
+            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT, flags[i].x);
+            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT, flags[i].y);
         }
     }
 
-    public MapLocation getDefaultFlagLoc(int flagIdx) throws GameActionException {
+
+    public MapLocation getDefaultHomeFlagLoc(int flagIdx) throws GameActionException {
 //        if(flagIdx < 0 || flagIdx >= 3)
-        int x = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_X_MASK, 6);
-        int y = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_Y_MASK, 0);
+        int x = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT);
+        int y = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT);
         return new MapLocation(x, y);
     }
 
+    public MapLocation[] getDefaultHomeFlagLocs() throws GameActionException {
+        // returns an array of map locations representing the default locations of home flags after round 200
+        return new MapLocation[]{
+                getDefaultHomeFlagLoc(0),
+                getDefaultHomeFlagLoc(1),
+                getDefaultHomeFlagLoc(2)};
+    }
+
+
     public void writeTrapper(int flagIndex, int spawned) throws GameActionException {
+        // this method writes a bit signifying that we have spawned a trapper bot at the specified flag
         insertVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex, spawned);
     }
 
+
     public int readTrapper(int flagIndex) throws GameActionException {
+        // this method reads a bit signifying, if true, that we have spawned a trapper bot at the specified flag
         return extractVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex);
     }
 
 
+    public boolean getHomeFlagTakenStatus(int flagIndex) throws GameActionException{
+        // this method returns a boolean
+        return extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
+                Constants.DEFAULT_FLAG_TAKEN_MASK,
+                Constants.DEFAULT_FLAG_TAKEN_SHIFT) == 1;
+    }
+
+
+//    private void insertVal(int commsIdx, int mask, int shift, int value) throws GameActionException {
+        public void writeHomeFlagTakenStatus(int flagIndex, boolean taken) throws GameActionException {
+        int valToWrite = 0;
+        if(taken) valToWrite = 1;
+        insertVal(
+                Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
+                Constants.DEFAULT_FLAG_TAKEN_MASK,
+                Constants.DEFAULT_FLAG_TAKEN_SHIFT,
+                valToWrite);
+    }
+
+
+    public void setAllHomeFlags_NotTaken() throws GameActionException{
+        for(int i=0; i < 3; i++){
+            writeHomeFlagTakenStatus(i, false);
+        }
+    }
 }

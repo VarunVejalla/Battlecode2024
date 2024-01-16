@@ -53,16 +53,19 @@ public class Constants {
     public static final int SHARED_OFFENSIVE_TARGET_Y_SHIFT = 0;
 
     // ----------------------------------------------------------
+    // constants for home flags
     public static final int TRAPPERS_SPAWNED_IDX = 14;
 
     public static final int DEFAULT_FLAG_LOC_0_IDX = 8;
     public static final int DEFAULT_FLAG_LOC_1_IDX = 9;
     public static final int DEFAULT_FLAG_LOC_2_IDX = 10;
-
     public static final int[] DEFAULT_FLAG_LOCS_INDICES = {DEFAULT_FLAG_LOC_0_IDX, DEFAULT_FLAG_LOC_1_IDX, DEFAULT_FLAG_LOC_2_IDX};
 
-    public static final int DEFAULT_FLAG_LOC_X_MASK = 4032; // 111111 000000
-    public static final int DEFAULT_FLAG_LOC_Y_MASK = 31; // 000000 111111
-
+    public static final int DEFAULT_FLAG_LOC_X_SHIFT = 0;
+    public static final int DEFAULT_FLAG_LOC_Y_SHIFT = 6;
+    public static final int DEFAULT_FLAG_LOC_X_MASK = 31; // 000000 111111
+    public static final int DEFAULT_FLAG_LOC_Y_MASK = 4032; // 111111 000000
+    public static final int DEFAULT_FLAG_TAKEN_MASK = 4096; // 1 000000 000000
+    public static final int DEFAULT_FLAG_TAKEN_SHIFT = 12;
     
 }

@@ -26,6 +26,7 @@ public class Robot {
     int distToSatisfy = 6;
 
 
+
     /**
      * Array containing all the possible movement directions.
      */
@@ -62,6 +63,7 @@ public class Robot {
     RobotInfo[] nearbyFriendlies; // friendly bots within vision radius of bot
     RobotInfo[] nearbyActionEnemies; // enemy bots within action radius of bot
     RobotInfo[] nearbyVisionEnemies; // enemy bots within vision radius of bot
+    MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
 
     int flagProtectingIdx = -1;
 
@@ -111,7 +113,8 @@ public class Robot {
         }
 
         if(!comms.defaultFlagLocationsWritten()) {
-            comms.writeDefaultFlagLocs();
+            comms.writeDefaultHomeFlagLocs();
+            comms.setAllHomeFlags_NotTaken();
         }
     }
 
@@ -120,7 +123,7 @@ public class Robot {
         if(mode == Mode.TRAPPING) {
 
             // TODO: what we want to do eventually (if we end up moving flags) is find the spawn location that is closest to the flag, but we're not even properly comming friendly flags yet
-            MapLocation myFlagSpawn = comms.getDefaultFlagLoc(flagProtectingIdx);
+            MapLocation myFlagSpawn = comms.getDefaultHomeFlagLoc(flagProtectingIdx);
             if(rc.canSpawn(myFlagSpawn)) {
                 spawnLoc = myFlagSpawn;
                 rc.spawn(spawnLoc);
@@ -151,7 +154,7 @@ public class Robot {
 
     public void run() throws GameActionException {
         indicatorString = "";
-        if (rc.getRoundNum() > 300 && rc.getRoundNum() % 50 == 0) testLog();
+        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 10 == 0) testLog();
 
         // this is the main run method that is called every turn
         if (!rc.isSpawned()) spawn();
@@ -179,10 +182,18 @@ public class Robot {
         Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
         Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
         Util.logArray("flagBroadcasts: ", rc.senseBroadcastFlagLocations());
-        Util.log("ourFlags: [" +
-                comms.getDefaultFlagLoc(0) + ", "
-                + comms.getDefaultFlagLoc(1) + ", "
-                + comms.getDefaultFlagLoc(2) + "];");
+        Util.logArray("defaultHomeFlagLocs: ", defaultHomeFlagLocs);
+        Util.logArray("homeFlagsTaken: ",
+                new Boolean[] {
+                        comms.getHomeFlagTakenStatus(0),
+                        comms.getHomeFlagTakenStatus(1),
+                        comms.getHomeFlagTakenStatus(2)});
+
+        Util.log(""+rc.readSharedArray(8));
+        Util.log(""+rc.readSharedArray(9));
+        Util.log(""+rc.readSharedArray(10));
+
+
         Util.log("--------------------------------");
     }
 
@@ -199,6 +210,10 @@ public class Robot {
 
         // read shared offensive target
         sharedOffensiveTarget = comms.getSharedOffensiveTarget();
+
+        if(rc.getRoundNum() > 200 && defaultHomeFlagLocs == null){
+            defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
+        }
     }
 
 
@@ -294,6 +309,46 @@ public class Robot {
         }
     }
 
+    public void tryUpdatingHomeFlagTakenInfo() throws GameActionException {
+        // this method tries to update the "taken" status of home flags if the current robot can see
+        // the default locations of any of the flags
+
+        // can't do anything if we don't know the default locations of the home flags
+        if(defaultHomeFlagLocs == null){
+            return;
+        }
+
+        for(int i=0;i < 3; i++){
+            MapLocation defaultHomeFlagLoc = defaultHomeFlagLocs[i];
+            if(rc.canSenseLocation(defaultHomeFlagLoc)){
+                boolean flagAtLocation = false;
+
+                for(FlagInfo flagInfo: sensedNearbyFlags){
+                    if(flagInfo.getTeam() == myTeam && flagInfo.getLocation().equals(defaultHomeFlagLoc)){
+                        flagAtLocation = true;
+                    }
+                }
+
+
+//                if(flagAtLocation && comms.getHomeFlagTakenStatus(i)){
+//                    comms.writeHomeFlagTakenStatus(i, false);
+//                }
+//
+//                else if(!flagAtLocation && !comms.getHomeFlagTakenStatus(i)){
+//                    comms.writeHomeFlagTakenStatus(i, true);
+//                }
+
+                // note: this code is a simplification of the previous two conditionals
+                // with this simplication, only one read to comms is needed
+                boolean valsEqual = flagAtLocation == comms.getHomeFlagTakenStatus(i);
+                if(valsEqual){
+                    comms.writeHomeFlagTakenStatus(i, !flagAtLocation);
+                }
+
+            }
+        }
+    }
+
 
     public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
         // if there is a known dropped flag that is not the current target, go to that
@@ -359,6 +414,7 @@ public class Robot {
         listenToOppFlagBroadcast(); // if it's been 100 rounds since last update, fetch new approximate flag locations
         tryCleaningKnownOppFlags(); // try removing records of opponent flag locations if we know they're not valid anymore
         tryAddingKnownOppFlags(); // try adding new records of opponent flag locations based on what we sensed
+        tryUpdatingHomeFlagTakenInfo();
         tryUpdateSharedOffensiveTarget();
     }
 
@@ -463,8 +519,5 @@ public class Robot {
         indicatorString +="hasFlag: "+rc.hasFlag()+";";
         indicatorString +="shareTarg: "+sharedOffensiveTarget +";";
     }
+
 }
-
-
-
-
