@@ -158,14 +158,15 @@ public class Robot {
         if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
 
         // this is the main run method that is called every turn
-        if (!rc.isSpawned()) spawn();
+        if (!rc.isSpawned()){
+            spawn();
+        }
 
         else {
             myLoc = rc.getLocation();
-            readComms(); //update  opp flags and the shared target loc index
+            readComms(); // update opp flags and the shared target loc index
             scanSurroundings();
             updateComms();
-            readComms();
 
             if (rc.getRoundNum() > 200) {
                 if(rc.hasFlag()){
@@ -288,6 +289,7 @@ public class Robot {
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
                         comms.removeKnownOppFlagLoc(knownCarriedOppFlags[i]);
+                        knownCarriedOppFlags[i] = null;
                     }
                 }
             }
@@ -311,6 +313,7 @@ public class Robot {
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
                         comms.removeKnownOppFlagLoc(knownDroppedOppFlags[i]);
+                        knownCarriedOppFlags[i] = null;
                     }
                 }
             }
@@ -323,9 +326,27 @@ public class Robot {
             if (flagInfo.getTeam() == myTeam) continue;
             if (isOppFlagKnown(flagInfo)) continue;
             if (flagInfo.isPickedUp()) {
+                // Update comms.
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), true);
+
+                // Update self.
+                for(int i=0; i<Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
+                    if(knownCarriedOppFlags[i] == null){
+                        knownCarriedOppFlags[i] = flagInfo.getLocation();
+                        break;
+                    }
+                }
             } else {
+                // Update comms.
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), false);
+
+                // Update self.
+                for(int i=0; i<Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
+                    if(knownDroppedOppFlags[i] == null){
+                        knownDroppedOppFlags[i] = flagInfo.getLocation();
+                        break;
+                    }
+                }
             }
         }
     }
@@ -339,7 +360,7 @@ public class Robot {
             return;
         }
 
-        for(int i=0;i < 3; i++){
+        for(int i=0;i<3; i++){
             MapLocation defaultHomeFlagLoc = defaultHomeFlagLocs[i];
             if(rc.canSenseLocation(defaultHomeFlagLoc)){
                 boolean flagAtLocation = false;

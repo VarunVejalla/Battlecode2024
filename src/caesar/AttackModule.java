@@ -319,23 +319,50 @@ public class AttackModule {
         }
     }
 
+    public MapLocation findBestHealPatient() throws GameActionException{
+        // this method finds the best patient to heal
+        int worstHealth = 1000;
+        MapLocation weakestFriendlyLoc = null;
+        for(RobotInfo robot: robot.nearbyFriendlies){
+            boolean canHeal = rc.canHeal(robot.getLocation());
 
-    public void runHealing() throws GameActionException{
-        // TODO: try healing the weakest friendly soldier if we didn't attack
+            // if the bot carrying the flag is not at 100%, priortize that one
+            if(canHeal && robot.getHealth() < worstHealth && robot.hasFlag()){
+                return robot.getLocation();
+            }
+
+            if(rc.canHeal(robot.location) & robot.getHealth() < worstHealth){
+                worstHealth = rc.getHealth();
+                weakestFriendlyLoc = robot.getLocation();
+            }
+        }
+        return weakestFriendlyLoc;
+    }
+
+    public boolean runHealing() throws GameActionException{
         // note: if we got to this method, it means we didn't attack
+        // this method returns true if it heals a bot, and false if it doesn't heal a bot
 
         // check to see if there are no opp in vision radius
+        if(robot.nearbyVisionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
+        {
+            // find the weakest friendly to heal
+            MapLocation weakestPatientLoc = findBestHealPatient();
+            if(weakestPatientLoc != null){
 
-        // find the weakest friendly to heal
-
-        // heal the boi that needs help
+                // heal the boi that needs most help
+                rc.heal(weakestPatientLoc);
+                return true;
+            }
+        }
+        return false;
     }
+
 
     public void runSetup() throws GameActionException {
         // main entry point to this module, which will determine if we're safe or not and will try attacking.
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
-        if(!successfullyAttacked) runHealing(); // try healing
 
         updateAllNearbyAttackInfo();
 
@@ -350,6 +377,8 @@ public class AttackModule {
         else{
             runUnsafeStrategy();
         }
+
+        runHealing(); // try healing
     }
 
 

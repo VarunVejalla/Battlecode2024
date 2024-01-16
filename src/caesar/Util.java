@@ -28,6 +28,9 @@ public class Util {
         robot.indicatorString += str + ";";
     }
 
+    public static void printBytecode(String prefix){
+        Util.log(prefix + ": " + Clock.getBytecodesLeft());
+    }
 
     public static int countBotsOfTeam(Team team, RobotInfo[] bots){
         int count = 0;

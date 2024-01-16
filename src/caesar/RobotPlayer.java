@@ -46,16 +46,16 @@ public strictfp class RobotPlayer {
 //            }
             try{
                 robot.run();
+                if(rc.getRoundNum() != startTurn){
+                    Util.log("BYTECODE EXCEEDED");
+//                rc.resign();
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
             finally {
                 Clock.yield();
-            }
-            if(rc.getRoundNum() != startTurn){
-                Util.log("BYTECODE EXCEEDED");
-//                rc.resign();
             }
         }
     }
