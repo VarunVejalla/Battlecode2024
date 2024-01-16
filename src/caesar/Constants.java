@@ -52,17 +52,17 @@ public class Constants {
     public static final int SHARED_OFFENSIVE_TARGET_X_SHIFT = 6;
     public static final int SHARED_OFFENSIVE_TARGET_Y_SHIFT = 0;
 
+    // ----------------------------------------------------------
     public static final int TRAPPERS_SPAWNED_IDX = 14;
-    public static final int FLAGS_NEED_HELP_IDX = 15;
 
-    public static final int SPAWN_0_IDX = 16;
-    public static final int SPAWN_1_IDX = 17;
-    public static final int SPAWN_2_IDX = 18;
+    public static final int DEFAULT_FLAG_LOC_0_IDX = 8;
+    public static final int DEFAULT_FLAG_LOC_1_IDX = 9;
+    public static final int DEFAULT_FLAG_LOC_2_IDX = 10;
 
-    public static final int[] SPAWN_INDICES = {SPAWN_0_IDX, SPAWN_1_IDX, SPAWN_2_IDX};
+    public static final int[] DEFAULT_FLAG_LOCS_INDICES = {DEFAULT_FLAG_LOC_0_IDX, DEFAULT_FLAG_LOC_1_IDX, DEFAULT_FLAG_LOC_2_IDX};
 
-    public static final int SPAWN_X_MASK = 4032; // 111111000000
-    public static final int SPAWN_Y_MASK = 31; // 000000111111
+    public static final int DEFAULT_FLAG_LOC_X_MASK = 4032; // 111111 000000
+    public static final int DEFAULT_FLAG_LOC_Y_MASK = 31; // 000000 111111
 
     
 }

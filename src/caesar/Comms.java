@@ -319,16 +319,23 @@ public class Comms {
     }
 
     public boolean defaultFlagLocationsWritten() throws GameActionException {
+        // this method checks if we have written defaultFlagLocations
+        // these are the default locations of the home team flags after round 200
+
+        // TODO: make this method generalizable if we move flags to different locations
+        // Note, this method may fail if we move flags to a different location, since that location will be (0,0),
+        // in which case this method returns False
+
         // the assumption for this is that all default flag locations are written at the same time to valid locations
         // so you only need to check the first flag
 
-        int x0 = extractVal(Constants.SPAWN_0_IDX, Constants.SPAWN_X_MASK, 0);
-        int y0 = extractVal(Constants.SPAWN_0_IDX, Constants.SPAWN_Y_MASK, 6);
+        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, 0);
+        int y0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_Y_MASK, 6);
 
         if(x0 >= 61 || y0 >= 61) {
             return false;
         }
-        else if(x0 > 0 || y0 > 0) {
+        else if (x0 > 0 && y0 > 0) {
             return true;
         }
         else {
@@ -338,6 +345,10 @@ public class Comms {
     }
 
     public void writeDefaultFlagLocs() throws GameActionException {
+        // this method determines the center of each spawn zone and sets that as a defaultFlagLocation
+        // Note: a defaultFlagLocation is a location where our flags will be by default after round 200 (if they are not taken)
+
+        // TODO: need to make this method more general in case we move flags before rounds
         // TODO: the bytecode for this can probably be reduced, but it's only executed one time
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
         MapLocation[] flags = new MapLocation[3];
@@ -370,15 +381,15 @@ public class Comms {
         }
 
         for(int i = 0; i < 3; i += 1) {
-            insertVal(Constants.SPAWN_INDICES[i], Constants.SPAWN_X_MASK, 6, flags[i].x);
-            insertVal(Constants.SPAWN_INDICES[i], Constants.SPAWN_Y_MASK, 0, flags[i].y);
+            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_X_MASK, 6, flags[i].x);
+            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_Y_MASK, 0, flags[i].y);
         }
     }
 
     public MapLocation getDefaultFlagLoc(int flagIdx) throws GameActionException {
 //        if(flagIdx < 0 || flagIdx >= 3)
-        int x = extractVal(Constants.SPAWN_INDICES[flagIdx], Constants.SPAWN_X_MASK, 6);
-        int y = extractVal(Constants.SPAWN_INDICES[flagIdx], Constants.SPAWN_Y_MASK, 0);
+        int x = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_X_MASK, 6);
+        int y = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_Y_MASK, 0);
         return new MapLocation(x, y);
     }
 

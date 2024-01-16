@@ -174,11 +174,15 @@ public class Robot {
     }
 
 
-    public void testLog() {
+    public void testLog() throws GameActionException {
         Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
         Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
         Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
         Util.logArray("flagBroadcasts: ", rc.senseBroadcastFlagLocations());
+        Util.log("ourFlags: [" +
+                comms.getDefaultFlagLoc(0) + ", "
+                + comms.getDefaultFlagLoc(1) + ", "
+                + comms.getDefaultFlagLoc(2) + "];");
         Util.log("--------------------------------");
     }
 
@@ -432,6 +436,8 @@ public class Robot {
 
 
     public void runTrapperMovement() throws GameActionException{
+        // TODO: place bombs around the flag you're defending
+        //  TODO: go out and level up your specialization in the beginning of the game
         return;
     }
 
@@ -456,15 +462,6 @@ public class Robot {
 
         indicatorString +="hasFlag: "+rc.hasFlag()+";";
         indicatorString +="shareTarg: "+sharedOffensiveTarget +";";
-    }
-
-
-    public void runAttack() throws GameActionException {
-        for (MapLocation loc : rc.getAllLocationsWithinRadiusSquared(myLoc, GameConstants.ATTACK_RADIUS_SQUARED)) {
-            if (rc.canAttack(loc)) {
-                rc.attack(loc);
-            }
-        }
     }
 }
 
