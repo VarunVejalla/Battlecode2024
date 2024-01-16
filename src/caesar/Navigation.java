@@ -1,9 +1,6 @@
 package caesar;
 
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 
 enum NavigationMode{
     FUZZYNAV, BUGNAV;
@@ -107,7 +104,11 @@ public class Navigation {
             }
             else{
                 if(wallDir == null){
-                    lastWallFollowed = newLoc;
+                    if(!rc.onTheMap(newLoc)){ // Hard check for if wall is outer boundary (don't count that as a wall).
+                        if(rc.canSenseLocation(newLoc) && rc.senseRobotAtLocation(newLoc) == null) { // Hard check for if wall is another robot (don't count that as a wall).
+                            lastWallFollowed = newLoc;
+                        }
+                    }
                 }
             }
             dir = dir.rotateRight();
@@ -118,7 +119,6 @@ public class Navigation {
         }
         return wallDir;
     }
-
 
     public Direction fuzzyNav(MapLocation target) throws GameActionException{
         Direction toTarget = robot.myLoc.directionTo(target);
@@ -214,11 +214,11 @@ public class Navigation {
         }
         MapLocation myLoc = robot.myLoc;
         if(myLoc.distanceSquaredTo(center) > maxDist){
-            Util.log("Moving closer!");
+//            Util.log("Moving closer!");
             return goTo(center, minDist);
         }
         if(myLoc.distanceSquaredTo(center) < minDist){
-            Util.log("Moving away!");
+//            Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
             boolean moved = goToBug(target, minDist);

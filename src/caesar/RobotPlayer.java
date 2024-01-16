@@ -39,6 +39,7 @@ public strictfp class RobotPlayer {
         Robot robot = new Robot(rc);
         while (true) {
             turnCount += 1;
+            int startTurn = rc.getRoundNum();
 
 //            if (rc.getRoundNum() > 315){
 //                rc.resign();
@@ -51,6 +52,10 @@ public strictfp class RobotPlayer {
             }
             finally {
                 Clock.yield();
+            }
+            if(rc.getRoundNum() != startTurn){
+                Util.log("BYTECODE EXCEEDED");
+//                rc.resign();
             }
         }
     }

@@ -4,17 +4,28 @@ import battlecode.common.*;
 
 
 class AttackHeuristic {
-    double friendlyDamage;
-    double enemyDamage;
+    double friendlyVisionDamage;
+    double enemyVisionDamage;
+    double friendlyAttackDamage;
+    double enemyAttackDamage;
+    boolean hasFlag;
 
-    public AttackHeuristic(double FD, double ED){
-        friendlyDamage = FD;
-        enemyDamage = ED;
+    public AttackHeuristic(double FVD, double EVD, double FVA, double EVA, boolean HF){
+        friendlyVisionDamage = FVD;
+        enemyVisionDamage = EVD;
+        friendlyAttackDamage = FVA;
+        enemyAttackDamage = EVA;
+        hasFlag = HF;
     }
 
     public boolean getSafe(){
 //        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
-        return friendlyDamage >= enemyDamage;
+        if(hasFlag){
+            return friendlyAttackDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
+//            return friendlyVisionDamage >= enemyVisionDamage * 2.0; // TODO: Tune this multiplier.
+//            return friendlyVisionDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
+        }
+        return friendlyVisionDamage >= enemyVisionDamage;
     }
 }
 
@@ -26,8 +37,6 @@ public class AttackModule {
     AttackHeuristic heuristic;
     RobotInfo bestAttackVictim = null;
     MapLocation enemyCOM;
-    boolean enemyInActionRadius;
-    boolean enemyInVisionRadius;
 
 //    MapLocation enemyChaseLoc = null;
 //    int turnsSinceChaseLocSet = 0;
@@ -261,16 +270,27 @@ public class AttackModule {
         robot.nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.myTeam);
         robot.nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.oppTeam);
 //        Util.addToIndicatorString(String.valueOf(nearbyVisionEnemies.length)+";");
-        heuristic = getHeuristic(robot.nearbyFriendlies, robot.nearbyVisionEnemies);
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
+//        MapLocation enemyActionCOM = getCenterOfMass(robot.nearbyActionEnemies);
+//        if(enemyActionCOM == null){
+//            enemyActionCOM = enemyCOM;
+//        }
+//        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyActionCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
+        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = new RobotInfo[0];
+        if(enemyCOM != null && rc.canSenseLocation(enemyCOM)){
+            friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
+        }
+        heuristic = getHeuristic(robot.nearbyFriendlies, robot.nearbyVisionEnemies, friendliesThatCanAttackEnemyActionCOM, robot.nearbyActionEnemies, rc.hasFlag());
     }
 
 
     public void moveBackFromEnemy() throws GameActionException{
-        int xDisplacement = enemyCOM.x - robot.myLoc.x;
-        int yDisplacement = enemyCOM.y - robot.myLoc.y;
-        MapLocation target = new MapLocation(robot.myLoc.x - xDisplacement*3, robot.myLoc.y-yDisplacement*3);
-        robot.nav.goToFuzzy(target, 0);
+        if(enemyCOM != null){
+            int xDisplacement = enemyCOM.x - robot.myLoc.x;
+            int yDisplacement = enemyCOM.y - robot.myLoc.y;
+            MapLocation target = new MapLocation(robot.myLoc.x - xDisplacement*3, robot.myLoc.y-yDisplacement*3);
+            robot.nav.goToFuzzy(target, 0);
+        }
     }
 
 
@@ -284,12 +304,12 @@ public class AttackModule {
         // maybe it's not worth since they just respawn
         // maybe something like chase enemies with the flag, but not otherwise?
 
-        if(enemyInActionRadius){
+        if(robot.nearbyActionEnemies.length != 0 ){
             if(rc.isMovementReady()){
                 moveToSafestSpot();
             }
         }
-        else if(enemyInVisionRadius){
+        else if(robot.nearbyVisionEnemies.length != 0){
             if(rc.isActionReady() && rc.isMovementReady()){
                 moveToBestPushLocation();
             }
@@ -302,18 +322,28 @@ public class AttackModule {
 
     public void runHealing() throws GameActionException{
         // TODO: try healing the weakest friendly soldier if we didn't attack
+        // note: if we got to this method, it means we didn't attack
+
+        // check to see if there are no opp in vision radius
+
+        // find the weakest friendly to heal
+
+        // heal the boi that needs help
     }
 
-
-
-    public void run() throws GameActionException {
-        // main entry point to this module, which will run attacking code
+    public void runSetup() throws GameActionException {
+        // main entry point to this module, which will determine if we're safe or not and will try attacking.
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
         if(!successfullyAttacked) runHealing(); // try healing
 
         updateAllNearbyAttackInfo();
 
+        Util.addToIndicatorString("SF:" + heuristic.getSafe());
+    }
+
+    public void runStrategy() throws GameActionException {
+        // main entry point to this module, which will run any attacking strategy (attacking micro).
         if(heuristic.getSafe()){
             runSafeStrategy();
         }
@@ -323,10 +353,10 @@ public class AttackModule {
     }
 
 
-    public AttackHeuristic getHeuristic(RobotInfo[] nearbyFriendlies, RobotInfo[] nearbyEnemies) throws GameActionException{
+    public AttackHeuristic getHeuristic(RobotInfo[] visionFriendlies, RobotInfo[] visionEnemies, RobotInfo[] attackFriendlies, RobotInfo[] attackEnemies, boolean hasFlag) throws GameActionException{
         // TODO: we should calculate the legit damage values here according to bot specializations.
         //  Not sure if there's a way to that without hardcoding in values at the moment.
-        return new AttackHeuristic(nearbyFriendlies.length, nearbyEnemies.length);
+        return new AttackHeuristic(visionFriendlies.length, visionEnemies.length, attackFriendlies.length, attackEnemies.length, hasFlag);
     }
 
 }

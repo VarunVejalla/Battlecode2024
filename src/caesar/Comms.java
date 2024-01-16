@@ -18,7 +18,6 @@ public class Comms {
         this.constants = new Constants();
     }
 
-
     // general methods for extracting and inserting values into the comms array
 
     private int extractVal(int commsIdx, int mask, int shift) throws GameActionException {
@@ -35,9 +34,6 @@ public class Comms {
         rc.writeSharedArray(commsIdx, newCommsVal);
     }
 
-
-
-
     /////////////////////////////////////////////////////////////////////////////
     // methods for reading and writing the approximate opponent flag locations
 
@@ -48,7 +44,6 @@ public class Comms {
             constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_MASK, 
             constants.APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT) * 10;
     }
-
 
     public void setApproxOppFlag_LastUpdated(int lastUpdated) throws GameActionException{
         // this method sets the last round that the approximate opponent flag locations were updated from the broadcast
@@ -68,7 +63,6 @@ public class Comms {
         }
         return approxFlags;
     }
-
 
     private void setApproxOppFlag(int idx, MapLocation flagLoc) throws GameActionException{
         // this method sets the approximate location of an opponent flag
