@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 enum SymmetryType { HORIZONTAL, VERTICAL, ROTATIONAL, DIAGONAL_RIGHT, DIAGONAL_LEFT};
-enum Mode {DEFENSE, OFFENSE};
+enum Mode {DEFENSE, OFFENSE, TRAPPING};
 
 public class Robot {
 
@@ -22,8 +22,6 @@ public class Robot {
     AttackModule attackModule;
     Team myTeam;
     Team oppTeam;
-
-
     MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
 
@@ -65,6 +63,9 @@ public class Robot {
     RobotInfo[] nearbyActionEnemies; // enemy bots within action radius of bot
     RobotInfo[] nearbyVisionEnemies; // enemy bots within vision radius of bot
 
+    int flagProtectingIdx = -1;
+
+
     Mode mode;
 
     MapLocation spawnLoc;
@@ -79,12 +80,6 @@ public class Robot {
         myTeam = rc.getTeam();
         oppTeam = rc.getTeam().opponent();
 
-        if (rng.nextDouble() < 0) {
-            mode = Mode.DEFENSE;
-        } else {
-            mode = Mode.OFFENSE;
-        }
-
         Util.rc = rc;
         Util.robot = this;
 
@@ -95,10 +90,55 @@ public class Robot {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
         }
+
+        boolean isTrapping = false;
+        for(int flagIndex = 0; flagIndex < 3; flagIndex += 1) {
+            if(comms.readTrapper(flagIndex) == 0) {
+                isTrapping = true;
+                mode = Mode.TRAPPING;
+                flagProtectingIdx = flagIndex;
+                comms.writeTrapper(flagIndex, 1);
+                break;
+            }
+        }
+        if(!isTrapping) {
+            if(rng.nextDouble() < 0){
+                mode = Mode.DEFENSE;
+            }
+            else{
+                mode = Mode.OFFENSE;
+            }
+        }
+
+        if(!comms.defaultFlagLocationsWritten()) {
+            comms.writeDefaultFlagLocs();
+        }
     }
 
 
     public void spawn() throws GameActionException {
+        if(mode == Mode.TRAPPING) {
+
+            // TODO: what we want to do eventually (if we end up moving flags) is find the spawn location that is closest to the flag, but we're not even properly comming friendly flags yet
+            MapLocation myFlagSpawn = comms.getDefaultFlagLoc(flagProtectingIdx);
+            if(rc.canSpawn(myFlagSpawn)) {
+                spawnLoc = myFlagSpawn;
+                rc.spawn(spawnLoc);
+                return;
+            }
+            for(int deltaX = -1; deltaX <= 1; deltaX += 1) {
+                for(int deltaY = -1; deltaY <= 1; deltaY += 1) {
+                    MapLocation translated = myFlagSpawn.translate(deltaX, deltaY);
+                    if(rc.canSpawn(translated)) {
+                        spawnLoc = translated;
+                        rc.spawn(translated);
+                        return;
+                    }
+                }
+            }
+            return;
+        }
+
         sharedOffensiveTarget = null;
         prevTargetLoc = null;
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
@@ -391,8 +431,19 @@ public class Robot {
     }
 
 
+    public void runTrapperMovement() throws GameActionException{
+        return;
+    }
+
+
     public void runMovement() throws GameActionException {
         // if the round number is less than 200, walk around randomly
+
+        if(mode == Mode.TRAPPING){
+            runTrapperMovement();
+            return;
+        }
+
         if (rc.getRoundNum() < 200) {
             runSetupMovement();
         }

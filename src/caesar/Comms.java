@@ -318,4 +318,77 @@ public class Comms {
             y);
     }
 
+    public boolean defaultFlagLocationsWritten() throws GameActionException {
+        // the assumption for this is that all default flag locations are written at the same time to valid locations
+        // so you only need to check the first flag
+
+        int x0 = extractVal(Constants.SPAWN_0_IDX, Constants.SPAWN_X_MASK, 0);
+        int y0 = extractVal(Constants.SPAWN_0_IDX, Constants.SPAWN_Y_MASK, 6);
+
+        if(x0 >= 61 || y0 >= 61) {
+            return false;
+        }
+        else if(x0 > 0 || y0 > 0) {
+            return true;
+        }
+        else {
+            //x0 == 0 and y0 == 0
+            return false;
+        }
+    }
+
+    public void writeDefaultFlagLocs() throws GameActionException {
+        // TODO: the bytecode for this can probably be reduced, but it's only executed one time
+        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
+        MapLocation[] flags = new MapLocation[3];
+        int count;
+        for(MapLocation potentialFlag : spawnLocs) {
+            count = 0;
+            for(MapLocation loc : spawnLocs) {
+                if(potentialFlag.distanceSquaredTo(loc) <= 2) {
+                    count += 1;
+                }
+            }
+//            if(count > 9) {
+//                //TODO: something went wrong
+//            }
+            if(count == 9) {
+                if(flags[0] == null) {
+                    flags[0] = potentialFlag;
+                    continue;
+                }
+                if(flags[1] == null) {
+                    flags[1] = potentialFlag;
+                    continue;
+                }
+                if(flags[2] == null) {
+                    flags[2] = potentialFlag;
+                    continue;
+                }
+                // TODO: if it got here, something went wrong
+            }
+        }
+
+        for(int i = 0; i < 3; i += 1) {
+            insertVal(Constants.SPAWN_INDICES[i], Constants.SPAWN_X_MASK, 6, flags[i].x);
+            insertVal(Constants.SPAWN_INDICES[i], Constants.SPAWN_Y_MASK, 0, flags[i].y);
+        }
+    }
+
+    public MapLocation getDefaultFlagLoc(int flagIdx) throws GameActionException {
+//        if(flagIdx < 0 || flagIdx >= 3)
+        int x = extractVal(Constants.SPAWN_INDICES[flagIdx], Constants.SPAWN_X_MASK, 6);
+        int y = extractVal(Constants.SPAWN_INDICES[flagIdx], Constants.SPAWN_Y_MASK, 0);
+        return new MapLocation(x, y);
+    }
+
+    public void writeTrapper(int flagIndex, int spawned) throws GameActionException {
+        insertVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex, spawned);
+    }
+
+    public int readTrapper(int flagIndex) throws GameActionException {
+        return extractVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex);
+    }
+
+
 }

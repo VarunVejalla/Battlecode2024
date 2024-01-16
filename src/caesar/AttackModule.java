@@ -265,13 +265,6 @@ public class AttackModule {
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
     }
 
-    public void updateNearbyActionInfo() throws GameActionException{
-        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
-        enemyInActionRadius = robot.nearbyActionEnemies.length > 0;
-//        bestAttackVictim = getBestAttackVictim();
-    }
-
-
 
     public void moveBackFromEnemy() throws GameActionException{
         int xDisplacement = enemyCOM.x - robot.myLoc.x;
@@ -335,6 +328,5 @@ public class AttackModule {
         //  Not sure if there's a way to that without hardcoding in values at the moment.
         return new AttackHeuristic(nearbyFriendlies.length, nearbyEnemies.length);
     }
-
 
 }
