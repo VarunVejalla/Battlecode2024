@@ -111,6 +111,38 @@ public class Util {
         return null;
     }
 
+    // TODO: Maybe improve bytecode of this??
+    public static MapLocation[] getSpawnLocCenters(){
+        int spawnCenterIdx = 0;
+        MapLocation[] spawnCenters = new MapLocation[3];
+
+        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
+        int count;
+        for(MapLocation potentialFlag : spawnLocs) {
+            count = 0;
+            for(MapLocation loc : spawnLocs) {
+                if(potentialFlag.distanceSquaredTo(loc) <= 2) {
+                    count += 1;
+                }
+            }
+            if(count > 9) {
+                Util.log("Count > 9 in getSpawnLocCenters");
+                rc.resign();
+            }
+            if(count == 9) {
+                spawnCenters[spawnCenterIdx] = potentialFlag;
+                spawnCenterIdx++;
+            }
+        }
+
+        if(spawnCenterIdx < 3){
+            Util.log("Not all spawn centers found in getSpawnLocCenters");
+            rc.resign();
+        }
+
+        return spawnCenters;
+    }
+
 
     public static void log(String str){
         System.out.println(str);

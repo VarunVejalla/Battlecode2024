@@ -67,5 +67,13 @@ public class Constants {
     public static final int DEFAULT_FLAG_LOC_Y_MASK = 4032; // 111111 000000
     public static final int DEFAULT_FLAG_TAKEN_MASK = 4096; // 1 000000 000000
     public static final int DEFAULT_FLAG_TAKEN_SHIFT = 12;
-    
+
+
+    // ----------------------------------------------------------
+    // constants for scouting.
+    public static final int DIST_TO_SPAWN_CENTERS_IDX = 15;
+    public static final int DIST_TO_SPAWN_CENTER_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
+    public static final int DIST_TO_SPAWN_CENTER_SHIFTS[] = {0, 5, 10};
+    public static final int SCOUT_EVEN_MASK = 0b1000000000000000;
+    public static final int SCOUT_EVEN_SHIFT = 15;
 }

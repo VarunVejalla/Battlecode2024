@@ -10,8 +10,6 @@ public class Comms {
     Robot robot;
     Constants constants;
 
-
-
     public Comms(RobotController rc, Robot robot){
         this.rc = rc;
         this.robot = robot;
@@ -350,36 +348,7 @@ public class Comms {
         // Note: a defaultFlagLocation is a location where our flags will be by default after round 200 (if they are not taken)
 
         // TODO: need to make this method more general in case we move flags before rounds
-        // TODO: the bytecode for this can probably be reduced, but it's only executed one time
-        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
-        MapLocation[] flags = new MapLocation[3];
-        int count;
-        for(MapLocation potentialFlag : spawnLocs) {
-            count = 0;
-            for(MapLocation loc : spawnLocs) {
-                if(potentialFlag.distanceSquaredTo(loc) <= 2) {
-                    count += 1;
-                }
-            }
-//            if(count > 9) {
-//                //TODO: something went wrong
-//            }
-            if(count == 9) {
-                if(flags[0] == null) {
-                    flags[0] = potentialFlag;
-                    continue;
-                }
-                if(flags[1] == null) {
-                    flags[1] = potentialFlag;
-                    continue;
-                }
-                if(flags[2] == null) {
-                    flags[2] = potentialFlag;
-                    continue;
-                }
-                // TODO: if it got here, something went wrong
-            }
-        }
+        MapLocation[] flags = Util.getSpawnLocCenters();
 
         for(int i = 0; i < 3; i += 1) {
             insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT, flags[i].x);
@@ -441,4 +410,42 @@ public class Comms {
             writeHomeFlagTakenStatus(i, false);
         }
     }
+
+
+    public int[] readDistsToSpawnCenters() throws GameActionException{
+        int[] dists = new int[3];
+        for(int i = 0; i < 3; i++){
+            dists[i] = extractVal(Constants.DIST_TO_SPAWN_CENTERS_IDX, Constants.DIST_TO_SPAWN_CENTER_MASKS[i], Constants.DIST_TO_SPAWN_CENTER_SHIFTS[i]);
+            if(dists[i] == 0){
+                dists[i] = Integer.MAX_VALUE;
+            }
+            else{
+                dists[i] *= 2;
+            }
+        }
+
+        return dists;
+    }
+
+    public void writeDistsToSpawnCenters(int[] dists) throws GameActionException{
+        for(int i = 0; i < 3; i++){
+            int val = 0;
+            if(dists[i] != Integer.MAX_VALUE){
+                val = dists[i] / 2;
+            }
+            insertVal(Constants.DIST_TO_SPAWN_CENTERS_IDX, Constants.DIST_TO_SPAWN_CENTER_MASKS[i], Constants.DIST_TO_SPAWN_CENTER_SHIFTS[i], val);
+        }
+    }
+
+    public boolean readScoutCountEven() throws GameActionException{
+        return extractVal(Constants.DIST_TO_SPAWN_CENTERS_IDX, Constants.SCOUT_EVEN_MASK, Constants.SCOUT_EVEN_SHIFT) == 0;
+    }
+
+    public void addToScoutCountEven() throws GameActionException{
+        int countEven = readScoutCountEven() ? 0 : 1;
+        insertVal(Constants.DIST_TO_SPAWN_CENTERS_IDX, Constants.SCOUT_EVEN_MASK, Constants.SCOUT_EVEN_SHIFT, 1 - countEven);
+    }
+
+
+
 }

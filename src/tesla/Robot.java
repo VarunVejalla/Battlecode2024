@@ -13,6 +13,7 @@ public class Robot {
     RobotController rc;
     Comms comms;
     Navigation nav;
+    DamScout scout;
     MapLocation myLoc; //current loc of robot
     MapInfo myLocInfo;
     int mapWidth, mapHeight;
@@ -73,17 +74,17 @@ public class Robot {
 
     public Robot(RobotController rc) throws GameActionException {
         this.rc = rc;
+        Util.rc = rc;
+        Util.robot = this;
         this.mapWidth = rc.getMapWidth();
         this.mapHeight = rc.getMapHeight();
         this.nav = new Navigation(rc, this);
         this.comms = new Comms(rc, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
+        this.scout = new DamScout(rc, this, this.comms, this.nav);
         myTeam = rc.getTeam();
         oppTeam = rc.getTeam().opponent();
-
-        Util.rc = rc;
-        Util.robot = this;
 
         // if the round number is less than 50, set all opponent flags in the shared array to null
         // since we don't know anything about them yet
@@ -121,7 +122,6 @@ public class Robot {
 
     public void spawn() throws GameActionException {
         if(mode == Mode.TRAPPING) {
-
             // TODO: what we want to do eventually (if we end up moving flags) is find the spawn location that is closest to the flag, but we're not even properly comming friendly flags yet
             MapLocation myFlagSpawn = comms.getDefaultHomeFlagLoc(flagProtectingIdx);
             if(rc.canSpawn(myFlagSpawn)) {
@@ -161,14 +161,23 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
-
         else {
             myLoc = rc.getLocation();
             readComms(); // update opp flags and the shared target loc index
             scanSurroundings();
             updateComms();
 
-            if (rc.getRoundNum() > 200) {
+            if (rc.getRoundNum() <= 100) {
+                // Scout the dam.
+                if(!rc.hasFlag()){
+                    scout.runScout();
+                }
+            }
+            else if (rc.getRoundNum() <= 200) {
+                // Move the flags.
+            }
+            else if (rc.getRoundNum() > 200) {
+                rc.resign();
                 if(rc.hasFlag()){
                     attackModule.runSetup();
                     if(attackModule.heuristic.getSafe()){
