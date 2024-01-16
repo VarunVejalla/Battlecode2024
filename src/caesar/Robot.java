@@ -154,7 +154,7 @@ public class Robot {
 
     public void run() throws GameActionException {
         indicatorString = "";
-        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 10 == 0) testLog();
+        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
 
         // this is the main run method that is called every turn
         if (!rc.isSpawned()) spawn();
