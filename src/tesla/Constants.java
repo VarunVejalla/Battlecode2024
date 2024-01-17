@@ -128,4 +128,7 @@ public class Constants {
     public static final int SHARED_DEFENSIVE_TARGET_X_SHIFT = 6;
     public static final int SHARED_DEFENSIVE_TARGET_Y_MASK = 0b000000111111;
     public static final int SHARED_DEFENSIVE_TARGET_Y_SHIFT = 0;
+    // -------------------------------------------------------------------------------------
+    // the maximum number of rounds you should spend trying to get a crumb, before giving up
+    public static final int MAX_ROUNDS_TO_CHASE_CRUMB = 15;
 }
