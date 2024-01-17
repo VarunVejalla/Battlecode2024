@@ -5,7 +5,7 @@ import battlecode.common.*;
 import java.util.Random;
 
 enum SymmetryType { HORIZONTAL, VERTICAL, ROTATIONAL, DIAGONAL_RIGHT, DIAGONAL_LEFT};
-enum Mode {DEFENSE, OFFENSE, TRAPPING};
+enum Mode {MOBILE_DEFENSE, STATIONARY_DEFENSE, OFFENSE, TRAPPING};
 enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
 
 public class Robot {
@@ -106,7 +106,7 @@ public class Robot {
         }
         if(!isTrapping) {
             if(rng.nextDouble() < 0.0){ // TODO: Fix this once we figure out a good defense strat.
-                mode = Mode.DEFENSE;
+                mode = Mode.MOBILE_DEFENSE;
             }
             else{
                 mode = Mode.OFFENSE;
@@ -587,7 +587,7 @@ public class Robot {
             runSetupMovement();
         }
 
-        if (mode == Mode.DEFENSE) {
+        if (mode == Mode.MOBILE_DEFENSE) {
             runDefensiveMovement();
         } else {
             runOffensiveMovement();

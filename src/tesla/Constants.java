@@ -76,4 +76,54 @@ public class Constants {
     public static final int DIST_TO_SPAWN_CENTER_SHIFTS[] = {0, 5, 10};
     public static final int SCOUT_EVEN_MASK = 0b1000000000000000;
     public static final int SCOUT_EVEN_SHIFT = 15;
+
+    // -------------------------------
+    ////////////////////////////////
+    // ratio-related constants
+    public static final int BOT_RATIO_INDEX = 11;
+
+    // offensive ratio
+    public static final int OFFENSIVE_RATIO_MASK = 15; // 1111
+    public static final int OFFENSIVE_RATIO_SHIFT = 0;
+
+    // mobile defender ratio
+    public static final int MOBILE_DEFENDER_RATIO_MASK =  240;// 1111 0000
+    public static final int MOBILE_DEFENDER_RATIO_SHIFT = 4;
+
+    // stationary defender ratio
+    public static final int STATIONARY_DEFENDER_RATIO_MASK = 3840; //1111 0000 0000
+    public static final int STATIONARY_DEFENDER_RATIO_SHIFT = 8;
+
+    // trapper ratio
+    public static final int TRAPPER_RATIO_MASK = 61440; // 1111 0000 0000 0000
+    public static final int TRAPPER_RATIO_SHIFT = 12;
+
+
+
+    // BOT count-related constants
+    // offensive soldier counts
+    public static final int OFFENSIVE_COUNT_INDEX = 12;
+    public static final int OFFENSIVE_COUNT_MASK = 0b111111; // 111111
+    public static final int OFFENSIVE_COUNT_SHIFT = 0;
+
+
+    // mobile defender counts
+    public static final int MOBILE_DEFENDER_COUNT_INDEX = 12;
+    public static final int MOBILE_DEFENDER_COUNT_MASK = 0b111111000000; // 111111 000000
+    public static final int MOBILE_DEFENDER_COUNT_SHIFT = 6;
+
+
+    // stationary defender counts
+    public static final int STATIONARY_DEFENDER_COUNT_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_COUNT_SHIFT = 0;
+
+
+
+    public static final int TRAPPER_COUNT_INDEX = 13;
+    public static final int TRAPPER_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_COUNT_SHIFT = 6;
+
+
+
 }
