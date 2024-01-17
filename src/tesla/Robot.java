@@ -6,6 +6,24 @@ import java.util.Random;
 
 enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
 
+enum SymmetryType {
+    HORIZONTAL,
+    VERTICAL,
+    ROTATIONAL,
+    DIAGONAL_RIGHT,
+    DIAGONAL_LEFT
+}
+
+
+enum Mode {
+    MOBILE_DEFENSE,
+    STATIONARY_DEFENSE,
+    OFFENSE,
+    TRAPPING
+}
+
+
+
 public class Robot {
 
     RobotController rc;
