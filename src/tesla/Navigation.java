@@ -27,6 +27,7 @@ public class Navigation {
     boolean[][] locsToIgnore;
     MapLocation[] recentlyVisited = new MapLocation[10];
     int recentlyVisitedIdx = 0;
+    boolean bugFollowRight = true; // TODO: Figure out how to make this a smart decision.
 
     final int ROUNDS_TO_RESET_BUG_CLOSEST = 15;
 
@@ -120,7 +121,12 @@ public class Navigation {
                     }
                 }
             }
-            dir = dir.rotateRight();
+            if(bugFollowRight){
+                dir = dir.rotateRight();
+            }
+            else{
+                dir = dir.rotateLeft();
+            }
         }
 
         if(closestDir != null){

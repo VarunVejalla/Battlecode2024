@@ -21,7 +21,8 @@ class AttackHeuristic {
     public boolean getSafe(){
 //        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
         if(hasFlag){
-            return friendlyAttackDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
+            return friendlyAttackDamage >= enemyAttackDamage;
+//            return friendlyAttackDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
 //            return friendlyVisionDamage >= enemyVisionDamage * 2.0; // TODO: Tune this multiplier.
 //            return friendlyVisionDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
         }

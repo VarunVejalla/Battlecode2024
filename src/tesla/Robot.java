@@ -632,7 +632,7 @@ public class Robot {
 
     public void runDefensiveMovement() throws GameActionException {
         // circle the spawning location you came from?
-        nav.circle(spawnLoc, 15, 25);
+        nav.circle(spawnLoc, 5, 10);
     }
 
     public void moveToTarget() throws GameActionException {
@@ -657,7 +657,7 @@ public class Robot {
         } else {
             nav.mode = NavigationMode.BUGNAV;
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
-                nav.circle(sharedOffensiveTarget, 5, 15);
+                nav.circle(sharedOffensiveTarget, 3, 8);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
