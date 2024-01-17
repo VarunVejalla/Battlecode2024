@@ -657,6 +657,7 @@ public class Robot {
         } else {
             nav.mode = NavigationMode.BUGNAV;
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
+                // TODO: Don't circle the sharedOffensiveTarget, circle a few blocks in front.
                 nav.circle(sharedOffensiveTarget, 3, 8);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
