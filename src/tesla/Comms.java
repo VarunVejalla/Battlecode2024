@@ -595,5 +595,52 @@ public class Comms {
         return -1;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // comms for shared defensive target
+    public MapLocation getSharedDefensiveTarget() throws GameActionException {
+        // this method returns the location of the shared offensive target
+        int x = extractVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+
+        int y = extractVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+
+        if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+            return null;
+        }
+
+        else {
+            return new MapLocation(x, y);
+        }
+    }
+
+
+    public void writeSharedDefensiveTarget(MapLocation loc) throws GameActionException {
+        int x, y;
+        if(loc == null){
+            x = constants.LOCATION_NULL_VAL;
+            y = constants.LOCATION_NULL_VAL;
+        }
+        else {
+            x = loc.x;
+            y = loc.y;
+        }
+
+        insertVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_X_SHIFT,
+                x);
+
+        insertVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_SHIFT,
+                y);
+    }
 
 }

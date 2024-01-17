@@ -98,32 +98,30 @@ public class Constants {
     public static final int TRAPPER_RATIO_MASK = 61440; // 1111 0000 0000 0000
     public static final int TRAPPER_RATIO_SHIFT = 12;
 
-
-
     // BOT count-related constants
     // offensive soldier counts
     public static final int OFFENSIVE_COUNT_INDEX = 12;
     public static final int OFFENSIVE_COUNT_MASK = 0b111111; // 111111
     public static final int OFFENSIVE_COUNT_SHIFT = 0;
 
-
     // mobile defender counts
     public static final int MOBILE_DEFENDER_COUNT_INDEX = 12;
     public static final int MOBILE_DEFENDER_COUNT_MASK = 0b111111000000; // 111111 000000
     public static final int MOBILE_DEFENDER_COUNT_SHIFT = 6;
-
 
     // stationary defender counts
     public static final int STATIONARY_DEFENDER_COUNT_INDEX = 13;
     public static final int STATIONARY_DEFENDER_COUNT_MASK = 0b111111;
     public static final int STATIONARY_DEFENDER_COUNT_SHIFT = 0;
 
-
-
     public static final int TRAPPER_COUNT_INDEX = 13;
     public static final int TRAPPER_COUNT_MASK = 0b111111000000;
     public static final int TRAPPER_COUNT_SHIFT = 6;
 
-
-
+    //--------------------------------------------------------------------------------------------
+    public static final int SHARED_DEFENSIVE_TARGET_IDX = 17;
+    public static final int SHARED_DEFENSIVE_TARGET_X_MASK = 0b111111000000;
+    public static final int SHARED_DEFENSIVE_TARGET_X_SHIFT = 6;
+    public static final int SHARED_DEFENSIVE_TARGET_Y_MASK = 0b000000111111;
+    public static final int SHARED_DEFENSIVE_TARGET_Y_SHIFT = 0;
 }
