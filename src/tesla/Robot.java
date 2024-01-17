@@ -119,6 +119,19 @@ public class Robot {
         }
     }
 
+    public void tryGlobalUpgrade() throws GameActionException {
+        // TODO: make the upgrades dynamic based on how the game is going?
+        // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
+        // we run the canBuyGlobal() method so we don't waste bytecode
+        if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
+            rc.buyGlobal(GlobalUpgrade.CAPTURING);
+        }
+
+        else if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
+            rc.buyGlobal(GlobalUpgrade.ACTION);
+        }
+    }
+
 
     public void spawn() throws GameActionException {
         if(mode == Mode.TRAPPING) {
@@ -161,7 +174,10 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
+
         else {
+            tryGlobalUpgrade();
+
             myLoc = rc.getLocation();
             readComms(); // update opp flags and the shared target loc index
             scanSurroundings();
