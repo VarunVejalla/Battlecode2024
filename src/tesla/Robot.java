@@ -28,6 +28,11 @@ public class Robot {
     MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
 
+
+    MapLocation crumbTarget = null;
+    MapLocation prevCrumbTarget = null;
+    int roundsChasingCrumb = 0;
+
     /**
      * Array containing all the possible movement directions.
      */
@@ -281,15 +286,27 @@ public class Robot {
                     scout.runScout();
                 }
             }
+
             else {
                 indicatorString +="hasFlag: "+rc.hasFlag()+";";
+
                 if(rc.hasFlag()){
                     attackModule.runSetup();
                     if(attackModule.heuristic.getSafe()){
                         runMovement();
                     }
                     else{
+                        myLoc = rc.getLocation();
+
+                        // update shared array
                         attackModule.runUnsafeStrategy();
+                        comms.removeKnownOppFlagLoc(myLoc);
+
+                        if(sharedOffensiveTarget.equals(myLoc)){
+                            sharedOffensiveTarget = rc.getLocation();
+                            comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
+                        }
+                        comms.writeKnownOppFlagLoc(sharedOffensiveTarget, true);
                     }
                 }
                 else{
@@ -510,7 +527,7 @@ public class Robot {
     public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
         // if there is a known carried flag that is not the current target, go to that
         for (MapLocation loc : knownCarriedOppFlags) {
-            if (loc != null && !loc.equals(sharedOffensiveTarget)) {
+            if (loc != null) {
                 return loc;
             }
         }
@@ -539,19 +556,16 @@ public class Robot {
             needToGetNewTarget = true;
         }
 
-        // check if the current target is a picked Up flag. if so, not valid, get a new one
-        else if (Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)) {
-//            needToGetNewTarget = true;
-        }
-
         // if the current target is not in approximate areas or dropped flags, get a new one
         else if (!Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations) &&
-                !Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags)) {
+                !Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags) &&
+                !Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)) {
             needToGetNewTarget = true;
         }
 
         // If you are at the current target and there a good number of fellow bots are present, get a new one
-        else if (myLoc.distanceSquaredTo(sharedOffensiveTarget) <= distToSatisfy) {
+        else if (sharedOffensiveTargetType != OffensiveTargetType.CARRIED
+                && myLoc.distanceSquaredTo(sharedOffensiveTarget) <= distToSatisfy) {
             if (nearbyFriendlies.length >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE) {
 //            if(Util.countBotsOfTeam(rc.getTeam(), sensedNearbyRobots) >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE){
                 needToGetNewTarget = true;
@@ -675,6 +689,13 @@ public class Robot {
 //            testLog();
         }
 
+//        if(rc.getRoundNum() > 380 && rc.getRoundNum() < 400){
+//            testLog();
+//        }
+//        if(rc.getRoundNum() > 400){
+//            rc.resign();
+//        }
+
         if (rc.isMovementReady()) {
             moveToTarget();
         }
@@ -688,6 +709,18 @@ public class Robot {
     }
 
 
+//    public boolean tryPickingCrumbs() throws GameActionException{
+//
+////
+////
+////        if(crumbTarget != null && roundsChasingCrumb < Constants.MAX_ROUNDS_TO_CHASE_CRUMB){
+////            nav.goToBug(crumbTarget);
+////        }
+////
+////        return false;
+//    }
+
+
     public void runMovement() throws GameActionException {
         // if the round number is less than 200, walk around randomly
 
@@ -695,6 +728,8 @@ public class Robot {
             runTrapperMovement();
             return;
         }
+
+//        tryPickingCrumbs();
 
         if (rc.getRoundNum() < 200) {
             runSetupMovement();
