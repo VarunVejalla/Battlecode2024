@@ -9,6 +9,7 @@ public class Comms {
     RobotController rc;
     Robot robot;
     Constants constants;
+    private int trapperCountShift;
 
     public Comms(RobotController rc, Robot robot){
         this.rc = rc;
@@ -469,5 +470,200 @@ public class Comms {
         insertVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_Y_MASK, Constants.NEW_HOME_FLAG_CENTER_Y_SHIFT, loc.y);
     }
 
-}
+    //---------------------------------------------------------
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // methods for reading and writing soldier type ratios and
 
+    public int getBotCount(Mode mode) throws GameActionException {
+        if(mode == Mode.OFFENSE){
+            return extractVal(
+                    Constants.OFFENSIVE_COUNT_INDEX,
+                    Constants.OFFENSIVE_COUNT_MASK,
+                    Constants.OFFENSIVE_COUNT_SHIFT);
+        }
+
+        if(mode == Mode.MOBILE_DEFENSE){
+            return extractVal(
+                    Constants.MOBILE_DEFENDER_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            return extractVal(
+                    Constants.STATIONARY_DEFENDER_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            return extractVal(
+                    Constants.TRAPPER_COUNT_INDEX,
+                    Constants.TRAPPER_COUNT_MASK,
+                    Constants.TRAPPER_COUNT_SHIFT);
+        }
+
+        return -1;
+    }
+
+
+    public void writeBotCount(Mode mode, int count) throws GameActionException {
+        if(mode == Mode.OFFENSE){
+            insertVal(
+                    Constants.OFFENSIVE_COUNT_INDEX,
+                    Constants.OFFENSIVE_COUNT_MASK,
+                    Constants.OFFENSIVE_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            insertVal(
+                    Constants.MOBILE_DEFENDER_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            insertVal(
+                    Constants.STATIONARY_DEFENDER_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            insertVal(
+                    Constants.TRAPPER_COUNT_INDEX,
+                    Constants.TRAPPER_COUNT_MASK,
+                    Constants.TRAPPER_COUNT_SHIFT,
+                    count);
+        }
+    }
+
+    public void incrementBotCount(Mode mode) throws GameActionException{
+        int count = getBotCount(mode);
+        writeBotCount(mode, count+1);
+    }
+
+    public void decrementBotCount(Mode mode) throws GameActionException {
+        int count = getBotCount(mode);
+        writeBotCount(mode, count-1);
+    }
+
+
+    public void writeRatioVal(Mode mode, int ratioVal) throws GameActionException{
+        // Note: ratioVal argument should be between 0 - 15
+        if(mode == Mode.OFFENSE){
+            insertVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.OFFENSIVE_RATIO_MASK,
+                    Constants.OFFENSIVE_RATIO_SHIFT,
+                    ratioVal);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            insertVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.MOBILE_DEFENDER_RATIO_MASK,
+                    Constants.MOBILE_DEFENDER_RATIO_SHIFT,
+                    ratioVal);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            insertVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.STATIONARY_DEFENDER_RATIO_MASK,
+                    Constants.STATIONARY_DEFENDER_RATIO_SHIFT,
+                    ratioVal);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            insertVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.TRAPPER_RATIO_MASK,
+                    Constants.TRAPPER_RATIO_SHIFT,
+                    ratioVal);
+        }
+    }
+
+    public int readRatioVal(Mode mode) throws GameActionException {
+        if(mode == Mode.OFFENSE){
+            return extractVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.OFFENSIVE_RATIO_MASK,
+                    Constants.OFFENSIVE_RATIO_SHIFT);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            return extractVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.MOBILE_DEFENDER_RATIO_MASK,
+                    Constants.MOBILE_DEFENDER_RATIO_SHIFT);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            return extractVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.STATIONARY_DEFENDER_RATIO_MASK,
+                    Constants.STATIONARY_DEFENDER_RATIO_SHIFT);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            return extractVal(
+                    Constants.BOT_RATIO_INDEX,
+                    Constants.TRAPPER_RATIO_MASK,
+                    Constants.TRAPPER_RATIO_SHIFT);
+        }
+        return -1;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // comms for shared defensive target
+    public MapLocation getSharedDefensiveTarget() throws GameActionException {
+        // this method returns the location of the shared offensive target
+        int x = extractVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+
+        int y = extractVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+
+        if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+            return null;
+        }
+
+        else {
+            return new MapLocation(x, y);
+        }
+    }
+
+
+    public void writeSharedDefensiveTarget(MapLocation loc) throws GameActionException {
+        int x, y;
+        if(loc == null){
+            x = constants.LOCATION_NULL_VAL;
+            y = constants.LOCATION_NULL_VAL;
+        }
+        else {
+            x = loc.x;
+            y = loc.y;
+        }
+
+        insertVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_X_SHIFT,
+                x);
+
+        insertVal(
+                constants.SHARED_DEFENSIVE_TARGET_IDX,
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_SHIFT,
+                y);
+    }
+
+}

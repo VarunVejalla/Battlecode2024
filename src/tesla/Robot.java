@@ -5,7 +5,7 @@ import battlecode.common.*;
 import java.util.Random;
 
 enum SymmetryType { HORIZONTAL, VERTICAL, ROTATIONAL, DIAGONAL_RIGHT, DIAGONAL_LEFT};
-enum Mode {DEFENSE, OFFENSE, TRAPPING};
+enum Mode {MOBILE_DEFENSE, STATIONARY_DEFENSE, OFFENSE, TRAPPING};
 enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
 
 public class Robot {
@@ -110,7 +110,7 @@ public class Robot {
         }
         if(!isTrapping) {
             if(rng.nextDouble() < 0.0){ // TODO: Fix this once we figure out a good defense strat.
-                mode = Mode.DEFENSE;
+                mode = Mode.MOBILE_DEFENSE;
             }
             else{
                 mode = Mode.OFFENSE;
@@ -124,6 +124,74 @@ public class Robot {
             comms.writeDefaultHomeFlagLocs(2, spawnCenters[2]);
             comms.setAllHomeFlags_NotTaken();
         }
+    }
+
+    public void tryGlobalUpgrade() throws GameActionException {
+        // TODO: make the upgrades dynamic based on how the game is going?
+        // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
+        // we run the canBuyGlobal() method so we don't waste bytecode
+        if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
+            rc.buyGlobal(GlobalUpgrade.CAPTURING);
+        }
+
+        else if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
+            rc.buyGlobal(GlobalUpgrade.ACTION);
+        }
+    }
+
+
+    public Mode determineRobotTypeToSpawn() throws GameActionException{
+        // this method determines what type a newly spawned robot should assume
+        // considering the desiredRatios and currentTroop counts in comms
+
+        // get the counts
+        int numTrappers = comms.getBotCount(Mode.TRAPPING);
+        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
+        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
+        int numOffensive = comms.getBotCount(Mode.OFFENSE);
+        int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
+
+        double currTrapperFrac = (double) numTrappers / totalNumOfTroops;
+        double currStationaryDefenseFrac = (double) numStationaryDefenders / totalNumOfTroops;
+        double currMobileDefendersFrac = (double) numMobileDefenders / totalNumOfTroops;
+        double currOffenseFrac = (double) numOffensive / totalNumOfTroops;
+
+        // get the numbers representing the ratios
+        int trapperRatio = comms.readRatioVal(Mode.TRAPPING);
+        int stationaryDefenderRatio = comms.readRatioVal(Mode.STATIONARY_DEFENSE);
+        int mobileDefenderRatio = comms.readRatioVal(Mode.MOBILE_DEFENSE);
+        int offensiveRatio = comms.readRatioVal(Mode.OFFENSE);
+        int ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+
+        double desiredTrapperFrac = (double) trapperRatio / ratioDenom;
+        double desiredStationaryDefenderFrac = (double) stationaryDefenderRatio / ratioDenom;
+        double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
+        double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
+
+        int trapperDiff = (int) Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
+        int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
+        int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
+        int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
+
+        if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
+                && offenseDiff >= mobileDefenderDiff){
+            return Mode.OFFENSE;
+        }
+
+        else if(mobileDefenderDiff >= offenseDiff && mobileDefenderDiff >= trapperDiff
+                && mobileDefenderDiff >= stationaryDefenderDiff){
+            return Mode.MOBILE_DEFENSE;
+        }
+
+        else if (trapperDiff >= stationaryDefenderDiff && trapperDiff >= mobileDefenderDiff
+                && trapperDiff >= offenseDiff) {
+            return Mode.TRAPPING;
+        }
+        else if(stationaryDefenderDiff >= trapperDiff && stationaryDefenderDiff >= mobileDefenderDiff
+                && stationaryDefenderDiff >= offenseDiff){
+            return Mode.STATIONARY_DEFENSE;
+        }
+        return Mode.OFFENSE;
     }
 
 
@@ -195,7 +263,10 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
+
         else {
+            tryGlobalUpgrade();
+
             myLoc = rc.getLocation();
             readComms(); // update opp flags and the shared target loc index
             scanSurroundings();
@@ -629,7 +700,7 @@ public class Robot {
             runSetupMovement();
         }
 
-        if (mode == Mode.DEFENSE) {
+        if (mode == Mode.MOBILE_DEFENSE) {
             runDefensiveMovement();
         } else {
             runOffensiveMovement();
