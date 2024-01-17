@@ -4,8 +4,6 @@ import battlecode.common.*;
 
 import java.util.Random;
 
-enum SymmetryType { HORIZONTAL, VERTICAL, ROTATIONAL, DIAGONAL_RIGHT, DIAGONAL_LEFT};
-enum Mode {MOBILE_DEFENSE, STATIONARY_DEFENSE, OFFENSE, TRAPPING};
 enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
 
 public class Robot {
@@ -23,6 +21,7 @@ public class Robot {
     String indicatorString = "";
     String targetLocType = "";
     AttackModule attackModule;
+    MovementModule movementModule;
     Team myTeam;
     Team oppTeam;
     MapLocation prevTargetLoc = null; // previous target I travelled to
@@ -90,6 +89,7 @@ public class Robot {
         this.comms = new Comms(rc, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
+        this.movementModule = new MovementModule(this.rc, this, this.comms, this.nav);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
         this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
         myTeam = rc.getTeam();
@@ -293,7 +293,7 @@ public class Robot {
                 if(rc.hasFlag()){
                     attackModule.runSetup();
                     if(attackModule.heuristic.getSafe()){
-                        runMovement();
+                        movementModule.runMovement();
                     }
                     else{
                         myLoc = rc.getLocation();
@@ -313,7 +313,7 @@ public class Robot {
                     homeLocWhenCarryingFlag = null;
                     attackModule.runSetup();
                     attackModule.runStrategy();
-                    runMovement();
+                    movementModule.runMovement();
                 }
             }
         }
@@ -636,80 +636,9 @@ public class Robot {
     }
 
 
-    // TOD: improve initial flag placement
-    public void runSetupMovement() throws GameActionException {
-        // this method contains movement logic during the setup period
-        // it is only called during the first 200 rounds
-        nav.moveRandom();
-    }
+    // TODO: improve initial flag placement
 
-
-    public void runDefensiveMovement() throws GameActionException {
-        // circle the spawning location you came from?
-        nav.circle(spawnLoc, 5, 10);
-    }
-
-    public void moveToTarget() throws GameActionException {
-        if (rc.hasFlag()) {
-            if(homeLocWhenCarryingFlag == null){
-                homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(myLoc);
-            }
-            myLoc = rc.getLocation();
-            comms.removeKnownOppFlagLoc(myLoc);
-            nav.mode = NavigationMode.BUGNAV;
-            nav.goTo(homeLocWhenCarryingFlag, 0);
-            Util.addToIndicatorString("HL: " + homeLocWhenCarryingFlag);
-            if(sharedOffensiveTarget.equals(myLoc)){
-                sharedOffensiveTarget = rc.getLocation();
-                comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
-            }
-            myLoc = rc.getLocation();
-            comms.writeKnownOppFlagLoc(myLoc, true);
-        } else if (sharedOffensiveTarget == null) {
-            nav.moveRandom();
-            Util.addToIndicatorString("RND");
-        } else {
-            nav.mode = NavigationMode.BUGNAV;
-            if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
-                nav.circle(sharedOffensiveTarget, 3, 8);
-                Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
-            }
-            else{
-                Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
-                nav.goTo(sharedOffensiveTarget, distToSatisfy);
-            }
-        }
-    }
-
-
-    public void runOffensiveMovement() throws GameActionException {
-        // if you can pick up a flag, pick it up (and update comms)
-        tryPickingUpOppFlag();
-        if (rc.getRoundNum() % 50 == 0) {
-//            testLog();
-        }
-
-//        if(rc.getRoundNum() > 380 && rc.getRoundNum() < 400){
-//            testLog();
-//        }
-//        if(rc.getRoundNum() > 400){
-//            rc.resign();
-//        }
-
-        if (rc.isMovementReady()) {
-            moveToTarget();
-        }
-    }
-
-
-    public void runTrapperMovement() throws GameActionException{
-        // TODO: place bombs around the flag you're defending
-        //  TODO: go out and level up your specialization in the beginning of the game
-        return;
-    }
-
-
-//    public boolean tryPickingCrumbs() throws GameActionException{
+    //    public boolean tryPickingCrumbs() throws GameActionException{
 //
 ////
 ////
@@ -719,27 +648,5 @@ public class Robot {
 ////
 ////        return false;
 //    }
-
-
-    public void runMovement() throws GameActionException {
-        // if the round number is less than 200, walk around randomly
-
-        if(mode == Mode.TRAPPING){
-            runTrapperMovement();
-            return;
-        }
-
-//        tryPickingCrumbs();
-
-        if (rc.getRoundNum() < 200) {
-            runSetupMovement();
-        }
-
-        if (mode == Mode.MOBILE_DEFENSE) {
-            runDefensiveMovement();
-        } else {
-            runOffensiveMovement();
-        }
-    }
 
 }
