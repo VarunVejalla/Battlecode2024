@@ -133,6 +133,61 @@ public class Robot {
     }
 
 
+    public Mode determineRobotTypeToSpawn() throws GameActionException{
+        // this method determines what type a newly spawned robot should assume
+        // considering the desiredRatios and currentTroop counts in comms
+
+        // get the counts
+        int numTrappers = comms.getBotCount(Mode.TRAPPING);
+        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
+        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
+        int numOffensive = comms.getBotCount(Mode.OFFENSE);
+        int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
+
+        double currTrapperFrac = (double) numTrappers / totalNumOfTroops;
+        double currStationaryDefenseFrac = (double) numStationaryDefenders / totalNumOfTroops;
+        double currMobileDefendersFrac = (double) numMobileDefenders / totalNumOfTroops;
+        double currOffenseFrac = (double) numOffensive / totalNumOfTroops;
+
+        // get the numbers representing the ratios
+        int trapperRatio = comms.readRatioVal(Mode.TRAPPING);
+        int stationaryDefenderRatio = comms.readRatioVal(Mode.STATIONARY_DEFENSE);
+        int mobileDefenderRatio = comms.readRatioVal(Mode.MOBILE_DEFENSE);
+        int offensiveRatio = comms.readRatioVal(Mode.OFFENSE);
+        int ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+
+        double desiredTrapperFrac = (double) trapperRatio / ratioDenom;
+        double desiredStationaryDefenderFrac = (double) stationaryDefenderRatio / ratioDenom;
+        double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
+        double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
+
+        int trapperDiff = (int) Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
+        int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
+        int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
+        int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
+
+        if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
+                && offenseDiff >= mobileDefenderDiff){
+            return Mode.OFFENSE;
+        }
+
+        else if(mobileDefenderDiff >= offenseDiff && mobileDefenderDiff >= trapperDiff
+                && mobileDefenderDiff >= stationaryDefenderDiff){
+            return Mode.MOBILE_DEFENSE;
+        }
+
+        else if (trapperDiff >= stationaryDefenderDiff && trapperDiff >= mobileDefenderDiff
+                && trapperDiff >= offenseDiff) {
+            return Mode.TRAPPING;
+        }
+        else if(stationaryDefenderDiff >= trapperDiff && stationaryDefenderDiff >= mobileDefenderDiff
+                && stationaryDefenderDiff >= offenseDiff){
+            return Mode.STATIONARY_DEFENSE;
+        }
+        return Mode.OFFENSE;
+    }
+
+
     public void spawn() throws GameActionException {
         if(mode == Mode.TRAPPING) {
             // TODO: what we want to do eventually (if we end up moving flags) is find the spawn location that is closest to the flag, but we're not even properly comming friendly flags yet
