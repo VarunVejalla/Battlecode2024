@@ -639,6 +639,9 @@ public class Robot {
     // TODO: improve initial flag placement
 
     //    public boolean tryPickingCrumbs() throws GameActionException{
+
+
+//    public boolean tryPickingCrumbs() throws GameActionException{
 //
 ////
 ////
