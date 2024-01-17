@@ -68,14 +68,20 @@ public class FlagMover {
 
     public void chooseTargetLoc() throws GameActionException {
         MapLocation[] spawnCenters = Util.getSpawnLocCenters();
-        int[] distsToSpawnCenters = comms.readDistsToSpawnCenters();
-        int bestIdx = 0;
-        for(int i = 1; i < spawnCenters.length; i++){
-            if(distsToSpawnCenters[i] > distsToSpawnCenters[bestIdx]){
+        MapLocation[] corners = {new MapLocation(0, 0), new MapLocation(0, rc.getMapHeight() - 1), new MapLocation(rc.getMapWidth() - 1, 0), new MapLocation(rc.getMapWidth() - 1, rc.getMapHeight() - 1)};
+        int bestDist = Integer.MAX_VALUE;
+        int bestIdx = -1;
+        for(int i = 0; i < corners.length; i++){
+            int dist = Integer.MAX_VALUE;
+            for(MapLocation spawnCenter : spawnCenters){
+                dist = Math.min(dist, Util.minMovesToReach(spawnCenter, corners[i]));
+            }
+            if(dist < bestDist){
+                bestDist = dist;
                 bestIdx = i;
             }
         }
-        targetLoc = spawnCenters[bestIdx];
+        targetLoc = corners[bestIdx];
     }
 
     public boolean runFlagMover() throws GameActionException {
@@ -88,11 +94,11 @@ public class FlagMover {
                 }
                 Util.addToIndicatorString("CT: " + targetLoc.toString());
                 Util.addToIndicatorString("CW: " + circleCCW);
-                boolean circled = nav.circle(targetLoc, 4, 8, circleCCW);
+                boolean circled = nav.circle(targetLoc, 0, 8, circleCCW);
                 if(rc.isMovementReady() && !circled){
                     circleCCW = !circleCCW;
                     nav.recentlyVisited = new MapLocation[10];
-                    circled = nav.circle(targetLoc, 4, 8, circleCCW);
+                    circled = nav.circle(targetLoc, 0, 8, circleCCW);
                     if(!circled){
                         circleCCW = !circleCCW;
                         nav.recentlyVisited = new MapLocation[10];
