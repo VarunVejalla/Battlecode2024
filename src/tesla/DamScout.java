@@ -9,7 +9,7 @@ public class DamScout {
     Navigation nav;
     MapLocation centerLoc;
     boolean followRight;
-    int[] distsToSpawnLocs;
+    int[] distsToSpawnCenters;
     MapLocation[] spawnLocs;
     MapLocation targetLoc = null;
     Direction adjDir = null;
@@ -31,9 +31,9 @@ public class DamScout {
             if(!info.isDam()){
                 continue;
             }
-            distsToSpawnLocs[0] = Math.min(distsToSpawnLocs[0], Util.minMovesToReach(spawnLocs[0], info.getMapLocation()));
-            distsToSpawnLocs[1] = Math.min(distsToSpawnLocs[1], Util.minMovesToReach(spawnLocs[1], info.getMapLocation()));
-            distsToSpawnLocs[2] = Math.min(distsToSpawnLocs[2], Util.minMovesToReach(spawnLocs[2], info.getMapLocation()));
+            distsToSpawnCenters[0] = Math.min(distsToSpawnCenters[0], Util.minMovesToReach(spawnLocs[0], info.getMapLocation()));
+            distsToSpawnCenters[1] = Math.min(distsToSpawnCenters[1], Util.minMovesToReach(spawnLocs[1], info.getMapLocation()));
+            distsToSpawnCenters[2] = Math.min(distsToSpawnCenters[2], Util.minMovesToReach(spawnLocs[2], info.getMapLocation()));
         }
     }
 
@@ -48,7 +48,7 @@ public class DamScout {
     }
 
     public void runScout() throws GameActionException {
-        distsToSpawnLocs = comms.readDistsToSpawnCenters(); // TODO: Make sure to default to Integer.MAX_VALUE.
+        distsToSpawnCenters = comms.readDistsToSpawnCenters();
 
         // If you haven't visited the damn yet, go towards it.
         if(adjDir == null){
@@ -83,7 +83,7 @@ public class DamScout {
         }
 
         scanForNearbyDamnLocation();
-        comms.writeDistsToSpawnCenters(distsToSpawnLocs);
+        comms.writeDistsToSpawnCenters(distsToSpawnCenters);
     }
 
 }

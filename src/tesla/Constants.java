@@ -7,11 +7,8 @@ public class Constants {
 
     public static final int BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE = 7;
 
-
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
-
-
 
     // ------------ approximate flag indices from broadcast -------------------
     public static final int APPROX_OPP_FLAG_1_IDX = 0;
@@ -22,7 +19,7 @@ public class Constants {
     // flag should be 111111000000
     public static final int APPROX_OPP_FLAG_X_MASK = 4032; // 111111000000
     public static final int APPROX_OPP_FLAG_X_SHIFT = 6;
-    public static final int APPROX_OPP_FLAG_Y_MASK = 31; // 000000111111
+    public static final int APPROX_OPP_FLAG_Y_MASK = 63; // 000000111111
     public static final int APPROX_OPP_FLAG_Y_SHIFT = 0;
 
     public static final int APPROX_OPP_FLAG_INFO_LAST_UPDATED_IDX = 3;
@@ -30,8 +27,6 @@ public class Constants {
     public static final int APPROX_OPP_FLAG_INFO_LAST_UPDATED_SHIFT = 0;
 
     // ------------ known flag indices from broadcast -------------------
-
-
     public static final int KNOWN_OPP_FLAG_1_IDX = 4;
     public static final int KNOWN_OPP_FLAG_2_IDX = 5;
     public static final int KNOWN_OPP_FLAG_3_IDX = 6;
@@ -39,7 +34,7 @@ public class Constants {
 
     public static final int KNOWN_OPP_FLAG_X_MASK = 4032; // 111111000000
     public static final int KNOWN_OPP_FLAG_X_SHIFT = 6;
-    public static final int KNOWN_OPP_FLAG_Y_MASK = 31; // 00000011111
+    public static final int KNOWN_OPP_FLAG_Y_MASK = 63; // 00000011111
     public static final int KNOWN_OPP_FLAG_Y_SHIFT = 0;
 
     public static final int KNOWN_OPP_FLAG_CARRIED_MASK = 4096; // 1 000000 000000
@@ -48,7 +43,7 @@ public class Constants {
     // variables for shared target
     public static final int SHARED_OFFENSIVE_TARGET_IDX = 7;
     public static final int SHARED_OFFENSIVE_TARGET_X_MASK = 4032; // 111111000000
-    public static final int SHARED_OFFENSIVE_TARGET_Y_MASK = 31; // 00000011111
+    public static final int SHARED_OFFENSIVE_TARGET_Y_MASK = 63; // 00000011111
     public static final int SHARED_OFFENSIVE_TARGET_X_SHIFT = 6;
     public static final int SHARED_OFFENSIVE_TARGET_Y_SHIFT = 0;
 
@@ -63,11 +58,20 @@ public class Constants {
 
     public static final int DEFAULT_FLAG_LOC_X_SHIFT = 0;
     public static final int DEFAULT_FLAG_LOC_Y_SHIFT = 6;
-    public static final int DEFAULT_FLAG_LOC_X_MASK = 31; // 000000 111111
+    public static final int DEFAULT_FLAG_LOC_X_MASK = 63; // 000000 111111
     public static final int DEFAULT_FLAG_LOC_Y_MASK = 4032; // 111111 000000
     public static final int DEFAULT_FLAG_TAKEN_MASK = 4096; // 1 000000 000000
     public static final int DEFAULT_FLAG_TAKEN_SHIFT = 12;
+    public static final int FLAG_PLACED_NEW_HOME_MASK = 8192; // 10 000000 000000
+    public static final int FLAG_PLACED_NEW_HOME_SHIFT = 13;
 
+    public static final int NEW_HOME_FLAG_CENTER_IDX = 16;
+    public static final int NEW_HOME_FLAG_CENTER_X_SHIFT = 0;
+    public static final int NEW_HOME_FLAG_CENTER_Y_SHIFT = 6;
+    public static final int NEW_HOME_FLAG_CENTER_X_MASK = 63; // 000000 111111
+    public static final int NEW_HOME_FLAG_CENTER_Y_MASK = 4032; // 111111 000000
+    public static final int NEW_HOME_FLAG_CENTER_SET_BIT_SHIFT = 12;
+    public static final int NEW_HOME_FLAG_CENTER_SET_BIT_MASK = 0b0001000000000000; // 000000 111111
 
     // ----------------------------------------------------------
     // constants for scouting.

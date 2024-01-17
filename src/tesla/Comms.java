@@ -343,22 +343,14 @@ public class Comms {
     }
 
 
-    public void writeDefaultHomeFlagLocs() throws GameActionException {
-        // this method determines the center of each spawn zone and sets that as a defaultFlagLocation
+    public void writeDefaultHomeFlagLocs(int flagIdx, MapLocation flagLoc) throws GameActionException {
         // Note: a defaultFlagLocation is a location where our flags will be by default after round 200 (if they are not taken)
-
-        // TODO: need to make this method more general in case we move flags before rounds
-        MapLocation[] flags = Util.getSpawnLocCenters();
-
-        for(int i = 0; i < 3; i += 1) {
-            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT, flags[i].x);
-            insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[i], Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT, flags[i].y);
-        }
+        insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT, flagLoc.x);
+        insertVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT, flagLoc.y);
     }
 
 
     public MapLocation getDefaultHomeFlagLoc(int flagIdx) throws GameActionException {
-//        if(flagIdx < 0 || flagIdx >= 3)
         int x = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT);
         int y = extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIdx], Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT);
         return new MapLocation(x, y);
@@ -392,15 +384,30 @@ public class Comms {
                 Constants.DEFAULT_FLAG_TAKEN_SHIFT) == 1;
     }
 
-
-//    private void insertVal(int commsIdx, int mask, int shift, int value) throws GameActionException {
-        public void writeHomeFlagTakenStatus(int flagIndex, boolean taken) throws GameActionException {
+    public void writeHomeFlagTakenStatus(int flagIndex, boolean taken) throws GameActionException {
         int valToWrite = 0;
         if(taken) valToWrite = 1;
         insertVal(
                 Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
                 Constants.DEFAULT_FLAG_TAKEN_MASK,
                 Constants.DEFAULT_FLAG_TAKEN_SHIFT,
+                valToWrite);
+    }
+
+    public boolean getOurFlagNewHomeStatus(int flagIndex) throws GameActionException{
+        // this method returns a boolean
+        return extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
+                Constants.FLAG_PLACED_NEW_HOME_MASK,
+                Constants.FLAG_PLACED_NEW_HOME_SHIFT) == 1;
+    }
+
+    public void writeOurFlagNewHomeStatus(int flagIndex, boolean taken) throws GameActionException {
+        int valToWrite = 0;
+        if(taken) valToWrite = 1;
+        insertVal(
+                Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
+                Constants.FLAG_PLACED_NEW_HOME_MASK,
+                Constants.FLAG_PLACED_NEW_HOME_SHIFT,
                 valToWrite);
     }
 
@@ -446,6 +453,21 @@ public class Comms {
         insertVal(Constants.DIST_TO_SPAWN_CENTERS_IDX, Constants.SCOUT_EVEN_MASK, Constants.SCOUT_EVEN_SHIFT, 1 - countEven);
     }
 
+    public MapLocation readNewHomeFlagCenter() throws GameActionException {
+        boolean setHomeCenter = extractVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_SET_BIT_MASK, Constants.NEW_HOME_FLAG_CENTER_SET_BIT_SHIFT) == 1;
+        if(!setHomeCenter){
+            return null;
+        }
+        int x = extractVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_X_MASK, Constants.NEW_HOME_FLAG_CENTER_X_SHIFT);
+        int y = extractVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_Y_MASK, Constants.NEW_HOME_FLAG_CENTER_Y_SHIFT);
+        return new MapLocation(x, y);
+    }
 
+    public void writeNewHomeFlagCenter(MapLocation loc) throws GameActionException {
+        insertVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_SET_BIT_MASK, Constants.NEW_HOME_FLAG_CENTER_SET_BIT_SHIFT, 1);
+        insertVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_X_MASK, Constants.NEW_HOME_FLAG_CENTER_X_SHIFT, loc.x);
+        insertVal(Constants.NEW_HOME_FLAG_CENTER_IDX, Constants.NEW_HOME_FLAG_CENTER_Y_MASK, Constants.NEW_HOME_FLAG_CENTER_Y_SHIFT, loc.y);
+    }
 
 }
+

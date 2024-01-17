@@ -1,6 +1,7 @@
 package tesla;
 
 import battlecode.common.*;
+import battlecode.world.GameWorld;
 
 public class Util {
 
@@ -42,15 +43,20 @@ public class Util {
         return count;
     }
 
-
-    public static <T> boolean checkIfItemInArray(T item, T[] array){
-        // helper method to check if an item is in an array
-        for(T arrayItem : array){
+    public static <T> int getItemIndexInArray(T item, T[] array){
+        // helper method to get the index of an item in an array
+        for(int i = 0; i < array.length; i++){
+            T arrayItem = array[i];
             if(arrayItem != null && arrayItem.equals(item)){
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
+    }
+
+
+    public static <T> boolean checkIfItemInArray(T item, T[] array){
+        return getItemIndexInArray(item, array) != -1;
     }
 
 
@@ -72,6 +78,21 @@ public class Util {
         System.out.println(out);
     }
 
+    public static void fillTrue(boolean[][] arr, MapLocation center, int radiusSquared) {
+        int ceiledRadius = (int) Math.ceil(Math.sqrt(radiusSquared)) + 1; // add +1 just to be safe
+        int minX = Math.max(center.x - ceiledRadius, 0);
+        int minY = Math.max(center.y - ceiledRadius, 0);
+        int maxX = Math.min(center.x + ceiledRadius, rc.getMapWidth() - 1);
+        int maxY = Math.min(center.y + ceiledRadius, rc.getMapHeight() - 1);
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                MapLocation newLocation = new MapLocation(x, y);
+                if(center.isWithinDistanceSquared(newLocation, radiusSquared)){
+                    arr[x][y] = true;
+                }
+            }
+        }
+    }
 
     public static MapLocation getNearestHomeSpawnLoc(MapLocation loc) throws GameActionException{
         MapLocation[] homeSpawnLocs = rc.getAllySpawnLocations();

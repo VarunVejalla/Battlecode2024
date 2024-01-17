@@ -5,6 +5,8 @@ import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
+import java.util.HashMap;
+
 enum NavigationMode{
     FUZZYNAV, BUGNAV;
 }
@@ -22,12 +24,16 @@ public class Navigation {
     Direction lastDirectionMoved = null;
     int roundsSinceClosestDistReset = 0;
     MapLocation prevTarget = null;
+    boolean[][] locsToIgnore;
+    MapLocation[] recentlyVisited = new MapLocation[10];
+    int recentlyVisitedIdx = 0;
 
     final int ROUNDS_TO_RESET_BUG_CLOSEST = 15;
 
     public Navigation(RobotController rc, Robot robot){
         this.rc = rc;
         this.robot = robot;
+        locsToIgnore = new boolean[rc.getMapWidth()][rc.getMapHeight()];
     }
 
     public boolean goToBug(MapLocation target, int minDistToSatisfy) throws GameActionException {
@@ -204,9 +210,11 @@ public class Navigation {
     }
 
     public boolean circle(MapLocation center, int minDist, int maxDist) throws GameActionException {
+        Util.log("Tryna circle CCW");
         if(circle(center, minDist, maxDist, true)){
             return true;
         }
+        Util.log("Tryna circle CW");
         return circle(center, minDist, maxDist, false);
     }
 
@@ -216,12 +224,12 @@ public class Navigation {
             return false;
         }
         MapLocation myLoc = robot.myLoc;
-        if(myLoc.distanceSquaredTo(center) > maxDist){
-//            Util.log("Moving closer!");
+        if(Util.minMovesToReach(myLoc, center) > maxDist){
+            Util.log("Moving closer!");
             return goTo(center, minDist);
         }
-        if(myLoc.distanceSquaredTo(center) < minDist){
-//            Util.log("Moving away!");
+        if(Util.minMovesToReach(myLoc, center) < minDist){
+            Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
             boolean moved = goToBug(target, minDist);
@@ -237,29 +245,45 @@ public class Navigation {
 
         int dx = myLoc.x - center.x;
         int dy = myLoc.y - center.y;
-        double cs = Math.cos(ccw ? 0.5 : -0.5);
-        double sn = Math.sin(ccw ? 0.5 : -0.5);
-        int x = (int) (dx * cs - dy * sn);
-        int y = (int) (dx * sn + dy * cs);
+        double theta = Math.atan2(dy, dx);
+        theta += (ccw ? 0.5 : -0.5);
+        int avgDist = (minDist + maxDist) / 2;
+
+        int x = (int)((double)avgDist * Math.cos(theta));
+        int y = (int)((double)avgDist * Math.sin(theta));
         MapLocation target = center.translate(x, y);
         Direction targetDir = myLoc.directionTo(target);
+
         Direction[] options = {targetDir, targetDir.rotateRight(), targetDir.rotateLeft(), targetDir.rotateRight().rotateRight(), targetDir.rotateLeft().rotateLeft()};
         Direction bestDirection = null;
+        int bestHeuristic = Integer.MAX_VALUE;
         for(int i = 0; i < options.length; i++){
             if(!rc.canMove(options[i])){
                 continue;
             }
             MapLocation newLoc = myLoc.add(options[i]);
-            if(center.distanceSquaredTo(newLoc) < minDist){
+            if(Util.checkIfItemInArray(newLoc, recentlyVisited)){
                 continue;
             }
-            if(center.distanceSquaredTo(newLoc) > maxDist){
+            int heuristic = i * 10;
+            heuristic += locsToIgnore[newLoc.x][newLoc.y] ? 1000 : 0;
+            int centerDist = Util.minMovesToReach(center, newLoc);
+            heuristic += Math.abs(centerDist - avgDist) * 15;
+            if(Util.minMovesToReach(center, newLoc) < minDist){
                 continue;
             }
-
+            if(Util.minMovesToReach(center, newLoc) > maxDist){
+                continue;
+            }
+            if(heuristic < bestHeuristic){
+                bestDirection = options[i];
+                bestHeuristic = heuristic;
+            }
         }
         if(bestDirection != null){
             rc.move(bestDirection);
+            recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
+            recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
             return true;
         }
         return false;

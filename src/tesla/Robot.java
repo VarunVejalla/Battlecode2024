@@ -14,6 +14,8 @@ public class Robot {
     Comms comms;
     Navigation nav;
     DamScout scout;
+    FlagMover flagMover;
+    boolean potentialFlagMover = true;
     MapLocation myLoc; //current loc of robot
     MapInfo myLocInfo;
     int mapWidth, mapHeight;
@@ -59,6 +61,7 @@ public class Robot {
 
     MapLocation sharedOffensiveTarget;
     OffensiveTargetType sharedOffensiveTargetType;
+    MapLocation homeLocWhenCarryingFlag = null;
     FlagInfo[] sensedNearbyFlags;
     RobotInfo[] nearbyFriendlies; // friendly bots within vision radius of bot
     RobotInfo[] nearbyActionFriendlies; // friendly bots within action radius of bot
@@ -83,6 +86,7 @@ public class Robot {
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
+        this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
         myTeam = rc.getTeam();
         oppTeam = rc.getTeam().opponent();
 
@@ -114,7 +118,10 @@ public class Robot {
         }
 
         if(!comms.defaultFlagLocationsWritten()) {
-            comms.writeDefaultHomeFlagLocs();
+            MapLocation[] spawnCenters = Util.getSpawnLocCenters();
+            comms.writeDefaultHomeFlagLocs(0, spawnCenters[0]);
+            comms.writeDefaultHomeFlagLocs(1, spawnCenters[1]);
+            comms.writeDefaultHomeFlagLocs(2, spawnCenters[2]);
             comms.setAllHomeFlags_NotTaken();
         }
     }
@@ -147,15 +154,42 @@ public class Robot {
         prevTargetLoc = null;
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
         // Pick a random spawn location to attempt spawning in.
-        MapLocation randomLoc = spawnLocs[rng.nextInt(spawnLocs.length)];
-        if (rc.canSpawn(randomLoc)) rc.spawn(randomLoc);
-        spawnLoc = randomLoc;
+        if(defaultHomeFlagLocs == null){
+            MapLocation randomLoc = spawnLocs[rng.nextInt(spawnLocs.length)];
+            if (rc.canSpawn(randomLoc)) rc.spawn(randomLoc);
+            spawnLoc = randomLoc;
+        }
+        // Spawn closest to friendly flags.
+        // TODO: In the future, we should pick one of the 3 flags, and spawn closest to that flag so that we can circle that flag.
+        else{
+            spawnClosestToFlags();
+        }
+    }
+
+    public void spawnClosestToFlags() throws GameActionException {
+        spawnLoc = null;
+        int bestDist = Integer.MAX_VALUE;
+        for(MapLocation potentialSpawnLoc : rc.getAllySpawnLocations()){
+            if(!rc.canSpawn(potentialSpawnLoc)){
+                continue;
+            }
+            for(MapLocation flagLoc : defaultHomeFlagLocs){
+                int dist = potentialSpawnLoc.distanceSquaredTo(flagLoc);
+                if(dist < bestDist){
+                    spawnLoc = potentialSpawnLoc;
+                    bestDist = dist;
+                }
+            }
+        }
+        if(spawnLoc != null){
+            rc.spawn(spawnLoc);
+        }
     }
 
 
     public void run() throws GameActionException {
         indicatorString = "";
-        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
+//        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
 
         // this is the main run method that is called every turn
         if (!rc.isSpawned()){
@@ -167,17 +201,17 @@ public class Robot {
             scanSurroundings();
             updateComms();
 
-            if (rc.getRoundNum() <= 100) {
+            if (rc.getRoundNum() <= 200) {
                 // Scout the dam.
-                if(!rc.hasFlag()){
+                if(potentialFlagMover){
+                    potentialFlagMover = flagMover.runFlagMover();
+                }
+                else{
                     scout.runScout();
                 }
             }
-            else if (rc.getRoundNum() <= 200) {
-                // Move the flags.
-            }
-            else if (rc.getRoundNum() > 200) {
-                rc.resign();
+            else {
+                indicatorString +="hasFlag: "+rc.hasFlag()+";";
                 if(rc.hasFlag()){
                     attackModule.runSetup();
                     if(attackModule.heuristic.getSafe()){
@@ -188,11 +222,12 @@ public class Robot {
                     }
                 }
                 else{
+                    homeLocWhenCarryingFlag = null;
                     attackModule.runSetup();
                     attackModule.runStrategy();
+                    runMovement();
                 }
             }
-            runMovement();
         }
         rc.setIndicatorString(indicatorString);
     }
@@ -531,10 +566,14 @@ public class Robot {
 
     public void moveToTarget() throws GameActionException {
         if (rc.hasFlag()) {
+            if(homeLocWhenCarryingFlag == null){
+                homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(myLoc);
+            }
             myLoc = rc.getLocation();
             comms.removeKnownOppFlagLoc(myLoc);
             nav.mode = NavigationMode.BUGNAV;
-            nav.goTo(Util.getNearestHomeSpawnLoc(myLoc), 0);
+            nav.goTo(homeLocWhenCarryingFlag, 0);
+            Util.addToIndicatorString("HL: " + homeLocWhenCarryingFlag);
             if(sharedOffensiveTarget.equals(myLoc)){
                 sharedOffensiveTarget = rc.getLocation();
                 comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
@@ -543,12 +582,15 @@ public class Robot {
             comms.writeKnownOppFlagLoc(myLoc, true);
         } else if (sharedOffensiveTarget == null) {
             nav.moveRandom();
+            Util.addToIndicatorString("RND");
         } else {
             nav.mode = NavigationMode.BUGNAV;
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
                 nav.circle(sharedOffensiveTarget, 5, 15);
+                Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
+                Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
                 nav.goTo(sharedOffensiveTarget, distToSatisfy);
             }
         }
@@ -559,7 +601,7 @@ public class Robot {
         // if you can pick up a flag, pick it up (and update comms)
         tryPickingUpOppFlag();
         if (rc.getRoundNum() % 50 == 0) {
-            testLog();
+//            testLog();
         }
 
         if (rc.isMovementReady()) {
@@ -592,9 +634,6 @@ public class Robot {
         } else {
             runOffensiveMovement();
         }
-
-        indicatorString +="hasFlag: "+rc.hasFlag()+";";
-        indicatorString +="shareTarg: "+sharedOffensiveTarget +";";
     }
 
 }
