@@ -321,15 +321,8 @@ public class Comms {
         // this method checks if we have written defaultFlagLocations
         // these are the default locations of the home team flags after round 200
 
-        // TODO: make this method generalizable if we move flags to different locations
-        // Note, this method may fail if we move flags to a different location, since that location will be (0,0),
-        // in which case this method returns False
-
-        // the assumption for this is that all default flag locations are written at the same time to valid locations
-        // so you only need to check the first flag
-
-        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, 0);
-        int y0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_Y_MASK, 6);
+        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT); // TODO: Make these constants.
+        int y0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT);
 
         if(x0 >= 61 || y0 >= 61) {
             return false;
@@ -664,6 +657,24 @@ public class Comms {
                 constants.SHARED_DEFENSIVE_TARGET_Y_MASK,
                 constants.SHARED_DEFENSIVE_TARGET_Y_SHIFT,
                 y);
+    }
+
+    public int readNumDefendersForFlag(int flagIdx) throws GameActionException{
+        // Max value of 31.
+        return extractVal(Constants.NUM_DEFENDERS_FOR_FLAG_IDX, Constants.NUM_DEFENDERS_FOR_FLAG_MASKS[flagIdx], Constants.NUM_DEFENDERS_FOR_FLAG_SHIFTS[flagIdx]);
+    }
+
+    public void writeNumDefendersForFlag(int flagIdx, int count) throws GameActionException{
+        // Max value of 31.
+        insertVal(Constants.NUM_DEFENDERS_FOR_FLAG_IDX, Constants.NUM_DEFENDERS_FOR_FLAG_MASKS[flagIdx], Constants.NUM_DEFENDERS_FOR_FLAG_SHIFTS[flagIdx], count);
+    }
+
+    public void incrementNumDefendersForFlag(int flagIdx) throws GameActionException{
+        writeNumDefendersForFlag(flagIdx, readNumDefendersForFlag(flagIdx) + 1);
+    }
+
+    public void decrementNumDefendersForFlag(int flagIdx) throws GameActionException{
+        writeNumDefendersForFlag(flagIdx, readNumDefendersForFlag(flagIdx) - 1);
     }
 
 }

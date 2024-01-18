@@ -131,4 +131,10 @@ public class Constants {
     // -------------------------------------------------------------------------------------
     // the maximum number of rounds you should spend trying to get a crumb, before giving up
     public static final int MAX_ROUNDS_TO_CHASE_CRUMB = 15;
+
+    // ----------------------------------------------------------
+    // constants for flag defender count.
+    public static final int NUM_DEFENDERS_FOR_FLAG_IDX = 23;
+    public static final int NUM_DEFENDERS_FOR_FLAG_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
+    public static final int NUM_DEFENDERS_FOR_FLAG_SHIFTS[] = {0, 5, 10};
 }

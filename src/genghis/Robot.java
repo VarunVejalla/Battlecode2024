@@ -14,14 +14,27 @@ enum SymmetryType {
     DIAGONAL_LEFT
 }
 
-
 enum Mode {
     MOBILE_DEFENSE,
     STATIONARY_DEFENSE,
     OFFENSE,
-    TRAPPING
-}
+    TRAPPING;
 
+    public String toShortString(){
+        switch(this){
+            case MOBILE_DEFENSE:
+                return "MD";
+            case STATIONARY_DEFENSE:
+                return "SD";
+            case OFFENSE:
+                return "OF";
+            case TRAPPING:
+                return "TP";
+            default:
+                return "NULL";
+        }
+    }
+}
 
 
 public class Robot {
@@ -40,11 +53,12 @@ public class Robot {
     String targetLocType = "";
     AttackModule attackModule;
     MovementModule movementModule;
+    DefenseModule defenseModule;
+    OffenseModule offenseModule;
     Team myTeam;
     Team oppTeam;
     MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
-
 
     MapLocation crumbTarget = null;
     MapLocation prevCrumbTarget = null;
@@ -90,6 +104,8 @@ public class Robot {
     RobotInfo[] nearbyActionEnemies; // enemy bots within action radius of bot
     RobotInfo[] nearbyVisionEnemies; // enemy bots within vision radius of bot
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
+    MapLocation[] spawnCenters;
+    MapLocation[] allSpawnLocs;
 
     int flagProtectingIdx = -1;
 
@@ -101,17 +117,25 @@ public class Robot {
         this.rc = rc;
         Util.rc = rc;
         Util.robot = this;
+        myTeam = rc.getTeam();
+        oppTeam = rc.getTeam().opponent();
         this.mapWidth = rc.getMapWidth();
         this.mapHeight = rc.getMapHeight();
+        allSpawnLocs = rc.getAllySpawnLocations();
+        spawnCenters = Util.getSpawnLocCenters();
+//        Util.logBytecode("After computing all spawn centers");
+
         this.nav = new Navigation(rc, this);
         this.comms = new Comms(rc, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
         this.movementModule = new MovementModule(this.rc, this, this.comms, this.nav);
+        this.defenseModule = new DefenseModule(this.rc, this, this.comms, this.nav);
+        this.offenseModule = new OffenseModule(this.rc, this, this.comms, this.nav);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
         this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
-        myTeam = rc.getTeam();
-        oppTeam = rc.getTeam().opponent();
+
+//        Util.logBytecode("After creating all the modules");
 
         // if the round number is less than 50, set all opponent flags in the shared array to null
         // since we don't know anything about them yet
@@ -119,6 +143,13 @@ public class Robot {
         if (rc.getRoundNum() < 50 && knownCarriedOppFlags[0] != null) {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
+        }
+
+        if(!comms.defaultFlagLocationsWritten()) {
+            comms.writeDefaultHomeFlagLocs(0, spawnCenters[0]);
+            comms.writeDefaultHomeFlagLocs(1, spawnCenters[1]);
+            comms.writeDefaultHomeFlagLocs(2, spawnCenters[2]);
+            comms.setAllHomeFlags_NotTaken();
         }
 
         boolean isTrapping = false;
@@ -132,20 +163,21 @@ public class Robot {
             }
         }
         if(!isTrapping) {
-            if(rng.nextDouble() < 0.0){ // TODO: Fix this once we figure out a good defense strat.
-                mode = Mode.MOBILE_DEFENSE;
+            comms.writeRatioVal(Mode.OFFENSE, 4);
+            comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 1);
+
+            mode = determineRobotTypeToSpawn();
+            comms.incrementBotCount(mode);
+            if(mode == Mode.STATIONARY_DEFENSE){
+                defenseModule.setup();
+            }
+            else if(mode == Mode.OFFENSE){
+                offenseModule.setup();
             }
             else{
-                mode = Mode.OFFENSE;
+                Util.log("UNKNOWN MODE: " + mode);
+                rc.resign();
             }
-        }
-
-        if(!comms.defaultFlagLocationsWritten()) {
-            MapLocation[] spawnCenters = Util.getSpawnLocCenters();
-            comms.writeDefaultHomeFlagLocs(0, spawnCenters[0]);
-            comms.writeDefaultHomeFlagLocs(1, spawnCenters[1]);
-            comms.writeDefaultHomeFlagLocs(2, spawnCenters[2]);
-            comms.setAllHomeFlags_NotTaken();
         }
     }
 
@@ -191,7 +223,7 @@ public class Robot {
         double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
         double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
 
-        int trapperDiff = (int) Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
+        int trapperDiff = (int)Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
         int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
         int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
         int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
@@ -239,54 +271,28 @@ public class Robot {
             }
             return;
         }
-
-        sharedOffensiveTarget = null;
-        sharedOffensiveTargetType = null;
-        prevTargetLoc = null;
-        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
-        // Pick a random spawn location to attempt spawning in.
-        if(defaultHomeFlagLocs == null){
-            MapLocation randomLoc = spawnLocs[rng.nextInt(spawnLocs.length)];
-            if (rc.canSpawn(randomLoc)) rc.spawn(randomLoc);
-            spawnLoc = randomLoc;
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            defenseModule.spawn();
         }
-        // Spawn closest to friendly flags.
-        // TODO: In the future, we should pick one of the 3 flags, and spawn closest to that flag so that we can circle that flag.
+        else if(mode == Mode.OFFENSE){
+            offenseModule.spawn();
+        }
         else{
-            spawnClosestToFlags();
+            Util.log("ROBOT IS UNKNOWN MODE: " + mode);
+            rc.resign();
         }
     }
-
-    public void spawnClosestToFlags() throws GameActionException {
-        spawnLoc = null;
-        int bestDist = Integer.MAX_VALUE;
-        for(MapLocation potentialSpawnLoc : rc.getAllySpawnLocations()){
-            if(!rc.canSpawn(potentialSpawnLoc)){
-                continue;
-            }
-            for(MapLocation flagLoc : defaultHomeFlagLocs){
-                int dist = potentialSpawnLoc.distanceSquaredTo(flagLoc);
-                if(dist < bestDist){
-                    spawnLoc = potentialSpawnLoc;
-                    bestDist = dist;
-                }
-            }
-        }
-        if(spawnLoc != null){
-            rc.spawn(spawnLoc);
-        }
-    }
-
 
     public void run() throws GameActionException {
+        // this is the main run method that is called every turn
+
         indicatorString = "";
+        Util.addToIndicatorString("Mode: " + mode.toShortString());
 //        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
 
-        // this is the main run method that is called every turn
         if (!rc.isSpawned()){
             spawn();
         }
-
         else {
             tryGlobalUpgrade();
 
@@ -304,34 +310,34 @@ public class Robot {
                     scout.runScout();
                 }
             }
-
-            else {
-                indicatorString +="hasFlag: "+rc.hasFlag()+";";
-
-                if(rc.hasFlag()){
-                    attackModule.runSetup();
-                    if(attackModule.heuristic.getSafe()){
-                        movementModule.runMovement();
-                    }
-                    else{
-                        myLoc = rc.getLocation();
-
-                        // update shared array
-                        attackModule.runUnsafeStrategy();
-                        comms.removeKnownOppFlagLoc(myLoc);
-
-                        if(sharedOffensiveTarget.equals(myLoc)){
-                            sharedOffensiveTarget = rc.getLocation();
-                            comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
-                        }
-                        comms.writeKnownOppFlagLoc(sharedOffensiveTarget, true);
-                    }
+            else if(rc.hasFlag()){
+                attackModule.runSetup();
+                if(attackModule.heuristic.getSafe()){
+                    offenseModule.runMovement();
                 }
                 else{
-                    homeLocWhenCarryingFlag = null;
-                    attackModule.runSetup();
-                    attackModule.runStrategy();
-                    movementModule.runMovement();
+                    myLoc = rc.getLocation();
+
+                    // update shared array
+                    attackModule.runUnsafeStrategy();
+                    comms.removeKnownOppFlagLoc(myLoc);
+
+                    if(sharedOffensiveTarget.equals(myLoc)){
+                        sharedOffensiveTarget = rc.getLocation();
+                        comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
+                    }
+                    comms.writeKnownOppFlagLoc(sharedOffensiveTarget, true);
+                }
+            }
+            else{
+                homeLocWhenCarryingFlag = null;
+                attackModule.runSetup();
+                attackModule.runStrategy();
+                if(mode == Mode.OFFENSE){
+                    offenseModule.runMovement();
+                }
+                else if(mode == Mode.STATIONARY_DEFENSE){
+                    defenseModule.runDefense();
                 }
             }
         }

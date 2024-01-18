@@ -60,6 +60,7 @@ public class FlagMover {
                 if(flagIdx == -1){
                     rc.resign();
                 }
+                System.out.println("Setting new default flag loc for " + flagIdx + " to " + loc);
                 comms.writeDefaultHomeFlagLocs(flagIdx, loc);
                 comms.writeOurFlagNewHomeStatus(flagIdx, true);
             }
@@ -67,15 +68,14 @@ public class FlagMover {
     }
 
     public void chooseTargetLoc() throws GameActionException {
-        MapLocation[] spawnCenters = Util.getSpawnLocCenters();
         int[] distsToSpawnCenters = comms.readDistsToSpawnCenters();
         int bestIdx = 0;
-        for(int i = 1; i < spawnCenters.length; i++){
+        for(int i = 1; i < robot.spawnCenters.length; i++){
             if(distsToSpawnCenters[i] > distsToSpawnCenters[bestIdx]){
                 bestIdx = i;
             }
         }
-        targetLoc = spawnCenters[bestIdx];
+        targetLoc = robot.spawnCenters[bestIdx];
     }
 
     public boolean runFlagMover() throws GameActionException {
@@ -105,7 +105,6 @@ public class FlagMover {
         else if(!placedFlag){
             // Search for nearby flags.
             FlagInfo[] nearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
-            MapLocation[] spawnCenters = Util.getSpawnLocCenters();
             for(int i = 0; i < nearbyFlags.length; i++){
                 if(nearbyFlags[i].isPickedUp()){
                     continue;
@@ -117,7 +116,7 @@ public class FlagMover {
                     return true;
                 }
                 // Determine the index of the flag.
-                flagIdx = Util.getItemIndexInArray(flagLoc, spawnCenters);
+                flagIdx = Util.getItemIndexInArray(flagLoc, robot.spawnCenters);
                 if(flagIdx == -1){
                     Util.log("Flag is not at its center???");
                     rc.resign();

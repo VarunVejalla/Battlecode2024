@@ -16,7 +16,6 @@ public strictfp class RobotPlayer {
      * You can use static variables like this to save any information you want. Keep in mind that even though
      * these variables are static, in Battlecode they aren't actually shared between your robots.
      */
-    static int turnCount = 0;
 
     /**
      * A random number generator.
@@ -36,19 +35,23 @@ public strictfp class RobotPlayer {
      **/
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
+        int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);
+        if(rc.getRoundNum() != startTurn){
+            Util.log("BYTECODE EXCEEDED");
+            rc.resign();
+        }
         while (true) {
-            turnCount += 1;
-            int startTurn = rc.getRoundNum();
+            startTurn = rc.getRoundNum();
 
-//            if (rc.getRoundNum() > 315){
+//            if (rc.getRoundNum() > 300){
 //                rc.resign();
 //            }
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
                     Util.log("BYTECODE EXCEEDED");
-//                rc.resign();
+                    rc.resign();
                 }
             }
             catch (Exception e) {

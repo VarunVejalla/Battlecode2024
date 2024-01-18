@@ -1,6 +1,10 @@
 package genghis;
 
 import battlecode.common.*;
+import scala.collection.Map;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class Util {
 
@@ -131,26 +135,38 @@ public class Util {
         return null;
     }
 
-    // TODO: Maybe improve bytecode of this??
+    public static int encodeMapLocation(MapLocation loc){
+        return loc.x * (robot.mapHeight + 1) + loc.y;
+    }
+
+    public static int encodeMapLocation(int x, int y){
+        return x * (robot.mapHeight + 1) + y;
+    }
+
+    public static MapLocation decodeMapLocation(int code){
+        return new MapLocation(code / (robot.mapHeight + 1), code % (robot.mapHeight + 1));
+    }
+
+    // NOTE: Takes a worst-case of 10,000 bytecode to run.
     public static MapLocation[] getSpawnLocCenters(){
         int spawnCenterIdx = 0;
         MapLocation[] spawnCenters = new MapLocation[3];
 
-        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
-        int count;
-        for(MapLocation potentialFlag : spawnLocs) {
-            count = 0;
-            for(MapLocation loc : spawnLocs) {
-                if(potentialFlag.distanceSquaredTo(loc) <= 2) {
-                    count += 1;
-                }
-            }
-            if(count > 9) {
-                Util.log("Count > 9 in getSpawnLocCenters");
-                rc.resign();
-            }
-            if(count == 9) {
-                spawnCenters[spawnCenterIdx] = potentialFlag;
+        boolean[][] spawnLocMap = new boolean[rc.getMapWidth()][rc.getMapHeight()];
+        MapLocation[] spawnLocs = robot.allSpawnLocs;
+
+        for(int i = 0; i < spawnLocs.length; i++){
+            spawnLocMap[spawnLocs[i].x][spawnLocs[i].y] = true;
+        }
+
+        for(int i = 0; i < spawnLocs.length; i++){
+            int x = spawnLocs[i].x;
+            int y = spawnLocs[i].y;
+            if(spawnLocMap[x - 1][y]
+                && spawnLocMap[x + 1][y]
+                && spawnLocMap[x][y - 1]
+                && spawnLocMap[x][y + 1]){
+                spawnCenters[spawnCenterIdx] = spawnLocs[i];
                 spawnCenterIdx++;
             }
         }
@@ -166,6 +182,10 @@ public class Util {
 
     public static void log(String str){
         System.out.println(str);
+    }
+
+    public static void logBytecode(String str){
+        System.out.println(str + ": " + Clock.getBytecodesLeft());
     }
 
 

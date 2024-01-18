@@ -214,11 +214,11 @@ public class Navigation {
     }
 
     public boolean circle(MapLocation center, int minDist, int maxDist) throws GameActionException {
-        Util.log("Tryna circle CCW");
+//        Util.log("Tryna circle CCW");
         if(circle(center, minDist, maxDist, true)){
             return true;
         }
-        Util.log("Tryna circle CW");
+//        Util.log("Tryna circle CW");
         return circle(center, minDist, maxDist, false);
     }
 
@@ -229,11 +229,11 @@ public class Navigation {
         }
         MapLocation myLoc = robot.myLoc;
         if(Util.minMovesToReach(myLoc, center) > maxDist){
-            Util.log("Moving closer!");
+//            Util.log("Moving closer!");
             return goTo(center, minDist);
         }
         if(Util.minMovesToReach(myLoc, center) < minDist){
-            Util.log("Moving away!");
+//            Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
             boolean moved = goToBug(target, minDist);

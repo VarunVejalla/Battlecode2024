@@ -10,7 +10,6 @@ public class DamScout {
     MapLocation centerLoc;
     boolean followRight;
     int[] distsToSpawnCenters;
-    MapLocation[] spawnLocs;
     MapLocation targetLoc = null;
     Direction adjDir = null;
 
@@ -22,7 +21,6 @@ public class DamScout {
         centerLoc = new MapLocation(rc.getMapWidth() / 2, rc.getMapHeight() / 2);
         followRight = comms.readScoutCountEven();
         comms.addToScoutCountEven();
-        spawnLocs = Util.getSpawnLocCenters();
     }
 
     public void scanForNearbyDamnLocation() throws GameActionException{
@@ -31,9 +29,9 @@ public class DamScout {
             if(!info.isDam()){
                 continue;
             }
-            distsToSpawnCenters[0] = Math.min(distsToSpawnCenters[0], Util.minMovesToReach(spawnLocs[0], info.getMapLocation()));
-            distsToSpawnCenters[1] = Math.min(distsToSpawnCenters[1], Util.minMovesToReach(spawnLocs[1], info.getMapLocation()));
-            distsToSpawnCenters[2] = Math.min(distsToSpawnCenters[2], Util.minMovesToReach(spawnLocs[2], info.getMapLocation()));
+            distsToSpawnCenters[0] = Math.min(distsToSpawnCenters[0], Util.minMovesToReach(robot.spawnCenters[0], info.getMapLocation()));
+            distsToSpawnCenters[1] = Math.min(distsToSpawnCenters[1], Util.minMovesToReach(robot.spawnCenters[1], info.getMapLocation()));
+            distsToSpawnCenters[2] = Math.min(distsToSpawnCenters[2], Util.minMovesToReach(robot.spawnCenters[2], info.getMapLocation()));
         }
     }
 

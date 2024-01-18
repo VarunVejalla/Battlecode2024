@@ -1,32 +1,61 @@
 package genghis;
 
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
-public class MovementModule {
+public class OffenseModule {
 
-    Robot robot;
     RobotController rc;
-    Navigation nav;
+    Robot robot;
     Comms comms;
+    Navigation nav;
 
-    public MovementModule(RobotController rc, Robot robot, Comms comms, Navigation nav) {
+    public OffenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
     }
 
-    public void runSetupMovement() throws GameActionException {
-        // this method contains movement logic during the setup period
-        // it is only called during the first 200 rounds
-        nav.moveRandom();
+    public void getBestSpawnLoc(){
+
     }
 
+    public void spawnClosestToAllyFlags() throws GameActionException {
+        MapLocation spawnLoc = null;
+        int bestDist = Integer.MAX_VALUE;
+        for(MapLocation potentialSpawnLoc : rc.getAllySpawnLocations()){
+            if(!rc.canSpawn(potentialSpawnLoc)){
+                continue;
+            }
+            for(MapLocation flagLoc : robot.defaultHomeFlagLocs){
+                int dist = potentialSpawnLoc.distanceSquaredTo(flagLoc);
+                if(dist < bestDist){
+                    spawnLoc = potentialSpawnLoc;
+                    bestDist = dist;
+                }
+            }
+        }
+        if(spawnLoc != null){
+            rc.spawn(spawnLoc);
+        }
+    }
 
-    public void runDefensiveMovement() throws GameActionException {
-        // circle the spawning location you came from?
-        nav.circle(robot.spawnLoc, 5, 10);
+    // TODO: Change this to spawn closest to opponent flags?
+    public void spawn() throws GameActionException {
+        robot.sharedOffensiveTarget = null;
+        robot.sharedOffensiveTargetType = null;
+        robot.prevTargetLoc = null;
+        // Pick a random spawn location to attempt spawning in.
+        if(robot.defaultHomeFlagLocs == null){
+            MapLocation randomLoc = robot.allSpawnLocs[robot.rng.nextInt(robot.allSpawnLocs.length)];
+            if (rc.canSpawn(randomLoc)) rc.spawn(randomLoc);
+            robot.spawnLoc = randomLoc;
+        }
+        else{
+            spawnClosestToAllyFlags();
+        }
     }
 
     public void moveToTarget() throws GameActionException {
@@ -61,45 +90,17 @@ public class MovementModule {
         }
     }
 
-
-    public void runOffensiveMovement() throws GameActionException {
+    public void runMovement() throws GameActionException {
         // if you can pick up a flag, pick it up (and update comms)
         robot.tryPickingUpOppFlag();
-        if (rc.getRoundNum() % 50 == 0) {
-//            testLog();
-        }
 
         if (rc.isMovementReady()) {
             moveToTarget();
         }
     }
 
+    public void setup(){
 
-    public void runTrapperMovement() throws GameActionException{
-        // TODO: place bombs around the flag you're defending
-        //  TODO: go out and level up your specialization in the beginning of the game
-        return;
     }
 
-
-    public void runMovement() throws GameActionException {
-        // if the round number is less than 200, walk around randomly
-
-        if(robot.mode == Mode.TRAPPING){
-            runTrapperMovement();
-            return;
-        }
-
-//        tryPickingCrumbs();
-
-        if (rc.getRoundNum() < 200) {
-            runSetupMovement();
-        }
-
-        if (robot.mode == Mode.MOBILE_DEFENSE) {
-            runDefensiveMovement();
-        } else {
-            runOffensiveMovement();
-        }
-    }
 }
