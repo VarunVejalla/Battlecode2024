@@ -137,4 +137,24 @@ public class Constants {
     public static final int NUM_DEFENDERS_FOR_FLAG_IDX = 23;
     public static final int NUM_DEFENDERS_FOR_FLAG_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
     public static final int NUM_DEFENDERS_FOR_FLAG_SHIFTS[] = {0, 5, 10};
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // constants for reading/writing offensive COM data
+    // not in use yet, but I wanted to have this prepared for when we have legit bot counts - Saahith
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // constants for reading/writing offensive troop COM
+    // constants related to offensive troop COM
+    public static final int PREV_ROUND_IDX = 19;
+    public static final int PREV_ROUND_MASK = 0b111000000000000;
+    public static final int PREV_ROUND_SHIFT = 12;
+    public static final int PREV_OFFENSIVE_XSUM_IDX = 19;
+    public static final int OFFENSIVE_LOC_SUM_MASK = 0b111111111111;
+    public static final int OFFENSIVE_LOC_SUM_SHIFT = 0;
+    public static final int PREV_OFFENSIVE_YSUM_IDX = 20;
+    public static final int CURR_OFFENSIVE_XSUM_IDX = 21;
+    public static final int CURR_OFFENSIVE_YSUM_IDX = 22;
+
+
+
+
+
 }
