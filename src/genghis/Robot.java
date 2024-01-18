@@ -301,10 +301,13 @@ public class Robot {
             scanSurroundings();
             updateComms();
 
-            if (rc.getRoundNum() <= 200) {
+            if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
                 if(potentialFlagMover){
                     potentialFlagMover = flagMover.runFlagMover();
+                }
+                else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                    defenseModule.runDefense();
                 }
                 else{
                     scout.runScout();
@@ -389,7 +392,7 @@ public class Robot {
             sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
 
-        if(rc.getRoundNum() > 200 && defaultHomeFlagLocs == null){
+        if(rc.getRoundNum() == Constants.SETUP_ROUNDS + 1){
             defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
         }
     }
@@ -416,7 +419,7 @@ public class Robot {
     public void listenToOppFlagBroadcast() throws GameActionException {
         // dropped opponent flags broadcast their location every 100 rounds
         // this method listens to the broadcast and adds the sets those broadcast locations as approximate locations
-        if (rc.getRoundNum() >= 200 && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
+        if (rc.getRoundNum() >= Constants.SETUP_ROUNDS && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
             approximateOppFlagLocations = rc.senseBroadcastFlagLocations();
             comms.setApproxOppFlags(approximateOppFlagLocations);
             Util.log("Approximate Flag Broadcast!");
@@ -595,7 +598,7 @@ public class Robot {
                 needToGetNewTarget = true;
             }
         }
-        indicatorString += "NGST: " + needToGetNewTarget + ";";
+//        indicatorString += "NGST: " + needToGetNewTarget + ";";
 
         if (needToGetNewTarget) {
             sharedOffensiveTarget = getNewSharedOffensiveTarget();
@@ -618,7 +621,7 @@ public class Robot {
     public void updateComms() throws GameActionException {
         // method to update comms
         // gets run every round
-        if (rc.getRoundNum() < 200) {
+        if (rc.getRoundNum() < Constants.SETUP_ROUNDS) {
             // currently not using comms for anything during the first 200 rounds
             return;
         }

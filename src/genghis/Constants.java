@@ -1,12 +1,20 @@
 package genghis;
 
+import battlecode.common.GameConstants;
+
 public class Constants {
     public Constants(){
 
     }
 
+    // Round number constants
+    public static final int NEW_FLAG_LOC_DECIDED_ROUND = 70;
+    public static final int SETUP_ROUNDS = GameConstants.SETUP_ROUNDS;
+
+    // Threshold constants
     public static final int BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE = 7;
 
+    // Comms constants
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
 

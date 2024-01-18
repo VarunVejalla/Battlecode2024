@@ -23,8 +23,10 @@ public class Navigation {
     int roundsSinceClosestDistReset = 0;
     MapLocation prevTarget = null;
     boolean[][] locsToIgnore;
-    MapLocation[] recentlyVisited = new MapLocation[10];
-    int recentlyVisitedIdx = 0;
+    final int RECENTLY_VISITED_LENGTH = 5;
+    MapLocation[] recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH]; // Used for circling
+    int recentlyVisitedIdx = 0; // Used for circling
+    boolean prevCircleDir = false;
     boolean bugFollowRight = true; // TODO: Figure out how to make this a smart decision.
 
     final int ROUNDS_TO_RESET_BUG_CLOSEST = 15;
@@ -214,12 +216,15 @@ public class Navigation {
     }
 
     public boolean circle(MapLocation center, int minDist, int maxDist) throws GameActionException {
-//        Util.log("Tryna circle CCW");
-        if(circle(center, minDist, maxDist, true)){
+//        Util.log("Tryna circle CCW? " + prevCircleDir);
+        if(circle(center, minDist, maxDist, prevCircleDir)){
             return true;
         }
 //        Util.log("Tryna circle CW");
-        return circle(center, minDist, maxDist, false);
+        if(circle(center, minDist, maxDist, !prevCircleDir)){
+            return true;
+        }
+        return false;
     }
 
     // from: https://github.com/srikarg89/Battlecode2022/blob/main/src/cracked4BuildOrder/Navigation.java
@@ -247,6 +252,11 @@ public class Navigation {
             return false;
         }
 
+        if(ccw != prevCircleDir){
+            recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH];
+            prevCircleDir = ccw;
+        }
+
         int dx = myLoc.x - center.x;
         int dy = myLoc.y - center.y;
         double theta = Math.atan2(dy, dx);
@@ -256,6 +266,7 @@ public class Navigation {
         int x = (int)((double)avgDist * Math.cos(theta));
         int y = (int)((double)avgDist * Math.sin(theta));
         MapLocation target = center.translate(x, y);
+        Util.addToIndicatorString("TGT " + target);
         Direction targetDir = myLoc.directionTo(target);
 
         Direction[] options = {targetDir, targetDir.rotateRight(), targetDir.rotateLeft(), targetDir.rotateRight().rotateRight(), targetDir.rotateLeft().rotateLeft()};

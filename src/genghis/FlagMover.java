@@ -80,7 +80,7 @@ public class FlagMover {
 
     public boolean runFlagMover() throws GameActionException {
         if(rc.hasFlag()){
-            if(rc.getRoundNum() > 70){
+            if(rc.getRoundNum() > Constants.NEW_FLAG_LOC_DECIDED_ROUND){
                 targetLoc = comms.readNewHomeFlagCenter();
                 if(targetLoc == null){
                     chooseTargetLoc();

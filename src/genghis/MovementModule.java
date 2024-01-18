@@ -92,7 +92,7 @@ public class MovementModule {
 
 //        tryPickingCrumbs();
 
-        if (rc.getRoundNum() < 200) {
+        if (rc.getRoundNum() < Constants.SETUP_ROUNDS) {
             runSetupMovement();
         }
 
