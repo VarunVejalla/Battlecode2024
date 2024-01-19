@@ -13,6 +13,7 @@ public class Navigation {
 
     RobotController rc;
     Robot robot;
+    Comms comms;
 
     NavigationMode mode = NavigationMode.BUGNAV;
 
@@ -31,9 +32,11 @@ public class Navigation {
 
     final int ROUNDS_TO_RESET_BUG_CLOSEST = 15;
 
-    public Navigation(RobotController rc, Robot robot){
+    public Navigation(RobotController rc, Comms comms, Robot robot) throws GameActionException {
         this.rc = rc;
+        this.comms = comms;
         this.robot = robot;
+        bugFollowRight = comms.readScoutCountEven();
         locsToIgnore = new boolean[rc.getMapWidth()][rc.getMapHeight()];
     }
 
@@ -62,7 +65,7 @@ public class Navigation {
     }
 
     public Direction bugNav(MapLocation target) throws GameActionException {
-//        Util.log("Running bugnav");
+
         // Every 20 turns reset the closest distance to target
         if(roundsSinceClosestDistReset >= ROUNDS_TO_RESET_BUG_CLOSEST){
             closestDistToTarget = Integer.MAX_VALUE;
@@ -75,31 +78,30 @@ public class Navigation {
         Direction dir = null;
 
         if(lastWallFollowed != null){
-            // If the wall no longer exists there, so note that.
+
+            // Check if the last wall still exists and update
             Direction toLastWallFollowed = robot.myLoc.directionTo(lastWallFollowed);
-            if(toLastWallFollowed == Direction.CENTER || (robot.myLoc.isAdjacentTo(lastWallFollowed) && rc.canMove(toLastWallFollowed))){
+            if (toLastWallFollowed == Direction.CENTER || (robot.myLoc.isAdjacentTo(lastWallFollowed) && rc.canMove(toLastWallFollowed))) {
                 lastWallFollowed = null;
             }
-            else{
+            else {
                 dir = robot.myLoc.directionTo(lastWallFollowed);
             }
         }
-        if(dir == null){
+        if (dir == null) {
             dir = robot.myLoc.directionTo(target);
         }
 
         // This should never happen theoretically, but in case it does, just reset and continue.
         if(dir == Direction.CENTER){
-//            System.out.println("ID: " + rc.getID());
-//            rc.resign();
-//            return null;
             resetBugNav();
             return Direction.CENTER;
         }
 
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             MapLocation newLoc = rc.adjacentLocation(dir);
-            if(rc.canSenseLocation(newLoc) && rc.canMove(dir)){
+
+            if(rc.canMove(dir)){
                 // If we can get closer to the target than we've ever been before, do that.
                 int dist = newLoc.distanceSquaredTo(target);
                 if(dist < closestDistToTarget){
@@ -112,21 +114,17 @@ public class Navigation {
                     wallDir = dir;
                 }
             }
-            else{
-                if(wallDir == null){
-                    if(!rc.onTheMap(newLoc)){ // Hard check for if wall is outer boundary (don't count that as a wall).
-                        if(rc.canSenseLocation(newLoc) && rc.senseRobotAtLocation(newLoc) == null) { // Hard check for if wall is another robot (don't count that as a wall).
-                            lastWallFollowed = newLoc;
-                        }
+
+            // If we canot move in direction
+            else {
+                if (wallDir == null) {
+                    // Count as wall if its not outer boundary or another robot
+                    if (rc.onTheMap(newLoc) && !rc.canSenseRobotAtLocation(newLoc)){
+                        lastWallFollowed = newLoc;
                     }
                 }
             }
-            if(bugFollowRight){
-                dir = dir.rotateRight();
-            }
-            else{
-                dir = dir.rotateLeft();
-            }
+            dir = bugFollowRight ? dir.rotateRight() : dir.rotateLeft();
         }
 
         if(closestDir != null){

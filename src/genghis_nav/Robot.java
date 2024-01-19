@@ -41,9 +41,9 @@ public class Robot {
 
     RobotController rc;
     Comms comms;
-    Navigation nav;
     DamScout scout;
     FlagMover flagMover;
+    Navigation nav;
     boolean potentialFlagMover = true;
     MapLocation myLoc; //current loc of robot
     MapInfo myLocInfo;
@@ -125,8 +125,8 @@ public class Robot {
         spawnCenters = Util.getSpawnLocCenters();
 //        Util.logBytecode("After computing all spawn centers");
 
-        this.nav = new Navigation(rc, this);
         this.comms = new Comms(rc, this);
+        this.nav = new Navigation(rc, comms, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
         this.movementModule = new MovementModule(this.rc, this, this.comms, this.nav);

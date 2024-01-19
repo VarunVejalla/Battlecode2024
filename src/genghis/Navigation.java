@@ -116,6 +116,7 @@ public class Navigation {
                 if(wallDir == null){
                     if(!rc.onTheMap(newLoc)){ // Hard check for if wall is outer boundary (don't count that as a wall).
                         if(rc.canSenseLocation(newLoc) && rc.senseRobotAtLocation(newLoc) == null) { // Hard check for if wall is another robot (don't count that as a wall).
+                            Util.log("GENGHIS UPDATING WALL LOCATION");
                             lastWallFollowed = newLoc;
                         }
                     }
