@@ -107,7 +107,7 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
-//    MapLocation[] defaultOppFlagLocs;
+    MapLocation[] defaultOppFlagLocs;
 
     int flagProtectingIdx = -1;
 
@@ -145,6 +145,11 @@ public class Robot {
         if (rc.getRoundNum() < 50 && knownCarriedOppFlags[0] != null) {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
+        }
+
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
+        if(rc.getRoundNum() < 200 && defaultOppFlagLocs != null){
+            comms.setAllDefaultOppFlagLocsToNull();
         }
 
         if(!comms.defaultFlagLocationsWritten()) {
@@ -291,12 +296,13 @@ public class Robot {
         indicatorString = "";
         Util.addToIndicatorString("Mode: " + mode.toShortString());
 //        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
-//        idOfFlagImCarrying = -1;
-//        boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
+        idOfFlagImCarrying = -1;
+        boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
 //
-//        if(rc.getRoundNum() % 50 == 0){
-//            Util.logArray("defaultOppFlagLocs", defaultOppFlagLocs);
-//        }
+        if(rc.getRoundNum() % 50 == 0){
+            Util.logArray("defaultOppFlagLocs", defaultOppFlagLocs);
+            Util.logArray("flagIDArray: ", comms.getOppFlagIDArray());
+        }
 
         if (!rc.isSpawned()){
             spawn();
@@ -352,11 +358,13 @@ public class Robot {
         rc.setIndicatorString(indicatorString);
 
 
-        // note, the call to Util.locIsASpawnLoc is present because we may want to purposefully drop flags in the future
-//        if(hasFlagAtBeginningOfTurn
-//                && !rc.hasFlag() && Util.locIsASpawnLoc(rc.getLocation())){
-//            comms.setOppFlagToCaptured(idOfFlagImCarrying);
-//        }
+//         note, the call to Util.locIsASpawnLoc is present because we may want to purposefully drop flags in the future
+        if(rc.getRoundNum() > 200
+            && hasFlagAtBeginningOfTurn
+            && !rc.hasFlag()
+            && Util.locIsASpawnLoc(rc.getLocation())){
+                comms.setOppFlagToCaptured(idOfFlagImCarrying);
+        }
     }
 
 
@@ -393,7 +401,7 @@ public class Robot {
         // read shared offensive target
         sharedOffensiveTarget = comms.getSharedOffensiveTarget();
 
-//        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
 
         sharedOffensiveTargetType = null;
         if(Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)){
@@ -497,14 +505,15 @@ public class Robot {
     public void tryAddingKnownOppFlags() throws GameActionException {
         for (FlagInfo flagInfo : sensedNearbyFlags) {
             if (flagInfo.getTeam() == myTeam) continue;
+
+            if(rc.getLocation().equals(flagInfo.getLocation())){
+                idOfFlagImCarrying = flagInfo.getID();
+            }
+
             if (isOppFlagKnown(flagInfo)) continue;
             if (flagInfo.isPickedUp()) {
                 // Update comms.
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), true);
-
-//                if(rc.getLocation().equals(flagInfo.getLocation())){
-//                    idOfFlagImCarrying = flagInfo.getID();
-//                }
 
                 // Update self.
                 for(int i = 0; i< Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
@@ -526,7 +535,7 @@ public class Robot {
                 }
 //
 //                // also store it as a default flag location if we don't already have a default flag location for this flagID
-//                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
+                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
             }
 
         }
@@ -643,10 +652,10 @@ public class Robot {
     public void updateComms() throws GameActionException {
         // method to update comms
         // gets run every round
-        if (rc.getRoundNum() < 200) {
-            // currently not using comms for anything during the first 200 rounds
-            return;
-        }
+//        if (rc.getRoundNum() < 200) {
+//            // currently not using comms for anything during the first 200 rounds
+//            return;
+//        }
 
         listenToOppFlagBroadcast(); // if it's been 100 rounds since last update, fetch new approximate flag locations
         tryCleaningKnownOppFlags(); // try removing records of opponent flag locations if we know they're not valid anymore

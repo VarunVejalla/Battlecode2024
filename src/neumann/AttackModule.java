@@ -260,7 +260,7 @@ public class AttackModule {
                 leastEnemyDamage = enemyDamage[i];
             }
         }
-        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
+//        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
 
         if(!bestSpot.equals(robot.myLoc)){
             rc.move(robot.myLoc.directionTo(bestSpot));
@@ -307,7 +307,6 @@ public class AttackModule {
 
         if(robot.nearbyActionEnemies.length != 0 ){
             if(rc.isMovementReady()){
-                Util.log("A: " + robot.nearbyActionEnemies);
                 moveToSafestSpot();
             }
         }
@@ -316,7 +315,6 @@ public class AttackModule {
                 moveToBestPushLocation();
             }
             else if(rc.isMovementReady()){
-                Util.log("B: " + robot.nearbyVisionEnemies);
                 moveToSafestSpot();
             }
         }

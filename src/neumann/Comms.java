@@ -796,6 +796,17 @@ public class Comms {
     }
 
 
+    public int[] getOppFlagIDArray() throws GameActionException{
+        int[] oppFlagIDs = new int[3];
+        for(int i=0; i<3; i++){
+                oppFlagIDs[i] = extractVal(
+                        Constants.OPP_FLAG_ID_INDICES[i],
+                        Constants.MASK_FOR_OPP_FLAG_ID,
+                        Constants.SHIFT_FOR_OPP_FLAG_ID);
+        }
+        return oppFlagIDs;
+    }
+
     public void writeDefaultOppFlagLocationIfNotSeenBefore(MapLocation defaultFlagLoc, int flagID) throws GameActionException {
         // this method saves the default location of an opponent flag to comms
         int firstNullIndex = -1;
@@ -843,7 +854,7 @@ public class Comms {
                     Constants.DEFAULT_OPP_FLAG_Y_MASK,
                     Constants.DEFAULT_OPP_FLAG_Y_SHIFT);
 
-            int captured = extractVal(Constants.OPP_FLAG_ID_INDICES[i],
+            int captured = extractVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
                     Constants.OPP_FLAG_CAPTURED_MASK,
                     Constants.OPP_FLAG_CAPTURED_SHIFT);
 
@@ -861,6 +872,7 @@ public class Comms {
     public void setOppFlagToCaptured(int flagID) throws GameActionException {
         // this sets the captured bit corresponding to the opponenet flag that has its ID as flagID to true
         // used by a robot as it walks into the spawnLocation
+        Util.log("Setting flag " + flagID + " to captured");
         int index = 0;
         while(index < 3){
             int currFlagID = extractVal(
@@ -870,7 +882,7 @@ public class Comms {
 
             if(currFlagID == flagID){
                 insertVal(
-                        Constants.OPP_FLAG_ID_INDICES[index],
+                        Constants.DEFAULT_OPP_FLAG_INFO_INDICES[index],
                         Constants.OPP_FLAG_CAPTURED_MASK,
                         Constants.OPP_FLAG_CAPTURED_SHIFT,
                         1);

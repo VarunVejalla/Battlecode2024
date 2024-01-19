@@ -59,6 +59,25 @@ public class Util {
     }
 
 
+
+    public static void logArray(String name, int[] array){
+        // helper method to display array of ints to the logs
+        String out = "";
+        out += name + ": ";
+        for(int i=0; i<array.length; i++){
+            if(i == 0){ // first element
+                out += "["+array[i] + ", ";
+            }
+            else if(i==array.length-1){ // last element
+                out += array[i] + "]";
+            }
+            else{   // other elements
+                out += array[i] + ", ";
+            }
+        }
+        System.out.println(out);
+    }
+
     public static <T> void logArray(String name, T[] array){
         // helper method to display array of any type to the logs
         String out = "";
