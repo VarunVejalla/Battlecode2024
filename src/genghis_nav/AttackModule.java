@@ -9,13 +9,15 @@ class AttackHeuristic {
     double friendlyAttackDamage;
     double enemyAttackDamage;
     boolean hasFlag;
+    double safetyMultipler; // If this is higher, the robot will be safer.
 
-    public AttackHeuristic(double FVD, double EVD, double FVA, double EVA, boolean HF){
+    public AttackHeuristic(double FVD, double EVD, double FVA, double EVA, boolean HF, double SM){
         friendlyVisionDamage = FVD;
         enemyVisionDamage = EVD;
         friendlyAttackDamage = FVA;
         enemyAttackDamage = EVA;
         hasFlag = HF;
+        safetyMultipler = SM;
     }
 
     public boolean getSafe(){
@@ -26,7 +28,7 @@ class AttackHeuristic {
 //            return friendlyVisionDamage >= enemyVisionDamage * 2.0; // TODO: Tune this multiplier.
 //            return friendlyVisionDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
         }
-        return friendlyVisionDamage >= enemyVisionDamage;
+        return friendlyVisionDamage >= enemyVisionDamage * safetyMultipler;
     }
 }
 
@@ -260,7 +262,7 @@ public class AttackModule {
                 leastEnemyDamage = enemyDamage[i];
             }
         }
-        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
+//        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
 
         if(!bestSpot.equals(robot.myLoc)){
             rc.move(robot.myLoc.directionTo(bestSpot));
@@ -386,7 +388,13 @@ public class AttackModule {
     public AttackHeuristic getHeuristic(RobotInfo[] visionFriendlies, RobotInfo[] visionEnemies, RobotInfo[] attackFriendlies, RobotInfo[] attackEnemies, boolean hasFlag) throws GameActionException{
         // TODO: we should calculate the legit damage values here according to bot specializations.
         //  Not sure if there's a way to that without hardcoding in values at the moment.
-        return new AttackHeuristic(visionFriendlies.length, visionEnemies.length, attackFriendlies.length, attackEnemies.length, hasFlag);
+
+        // TODO: Move this to constants.
+        double safetyMultiplier = 1.0;
+        if(robot.mode == Mode.STATIONARY_DEFENSE){
+            safetyMultiplier = 0.5;
+        }
+        return new AttackHeuristic(visionFriendlies.length + 1, visionEnemies.length, attackFriendlies.length + 1, attackEnemies.length, hasFlag, safetyMultiplier);
     }
 
 }

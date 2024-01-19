@@ -9,7 +9,6 @@ public class Comms {
     RobotController rc;
     Robot robot;
     Constants constants;
-    private int trapperCountShift;
 
     public Comms(RobotController rc, Robot robot){
         this.rc = rc;
@@ -266,6 +265,71 @@ public class Comms {
         }
     }
 
+    public MapLocation getTakenAllyFlag(int idx) throws GameActionException{
+        // this method returns the location of a single known opponent flag (specified by idx)
+        int trueIndex = constants.TAKEN_ALLY_FLAG_INDICES[idx];
+        int x = extractVal(trueIndex, constants.TAKEN_ALLY_FLAG_X_MASK, constants.TAKEN_ALLY_FLAG_X_SHIFT);
+        int y = extractVal(trueIndex, constants.TAKEN_ALLY_FLAG_Y_MASK, constants.TAKEN_ALLY_FLAG_Y_SHIFT);
+        if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+            return null;
+        }
+        return new MapLocation(x, y);
+    }
+
+    public MapLocation[] getTakenAllyFlags() throws GameActionException{
+        // this method returns the location of a single known opponent flag (specified by idx)
+        return new MapLocation[]{
+                getTakenAllyFlag(0),
+                getTakenAllyFlag(1),
+                getTakenAllyFlag(2),
+        };
+    }
+
+    public void writeTakenAllyFlagLoc(MapLocation newFlagLoc, int idx) throws GameActionException{
+        // this method writes the location of a single known opponent flag (specified by idx)
+        // this method is used internally to the Comms class
+        Util.log("Writing ally flag loc " + newFlagLoc + " to index " + idx);
+        int trueIndex = constants.TAKEN_ALLY_FLAG_INDICES[idx];
+        int x;
+        int y;
+
+        if(newFlagLoc == null){
+            x = constants.LOCATION_NULL_VAL;
+            y = constants.LOCATION_NULL_VAL;
+        } else {
+            x = newFlagLoc.x;
+            y = newFlagLoc.y;
+        }
+
+        // set the x value
+        insertVal(trueIndex, constants.TAKEN_ALLY_FLAG_X_MASK, constants.TAKEN_ALLY_FLAG_X_SHIFT, x);
+
+        // set the y value
+        insertVal(trueIndex, constants.TAKEN_ALLY_FLAG_Y_MASK, constants.TAKEN_ALLY_FLAG_Y_SHIFT, y);
+    }
+
+    public void writeTakenAllyFlagLoc(MapLocation newFlagLoc) throws GameActionException{
+        for(int i = 0; i < constants.TAKEN_ALLY_FLAG_INDICES.length; i++){
+            if(getTakenAllyFlag(i) == null){
+                writeTakenAllyFlagLoc(newFlagLoc, i);
+                return;
+            }
+        }
+
+//        // Worst-case scenario T_T. TODO: Instead of doing this, keep track of the flag IDs
+//        writeTakenAllyFlagLoc(newFlagLoc, 2);
+    }
+
+    public void removeTakenAllyFlag(MapLocation flagLoc) throws GameActionException{
+        // this method removes a known opponent flag location from the broadcast
+        // used if we notice a flag is no longer there
+        for(int i=0; i<constants.TAKEN_ALLY_FLAG_INDICES.length; i++){
+            MapLocation takenFlagLoc = getTakenAllyFlag(i);
+            if(takenFlagLoc != null && takenFlagLoc.equals(flagLoc)){
+                writeTakenAllyFlagLoc(null, i);
+            }
+        }
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // methods for reading and writing shared offensive target
@@ -357,19 +421,6 @@ public class Comms {
                 getDefaultHomeFlagLoc(1),
                 getDefaultHomeFlagLoc(2)};
     }
-
-
-    public void writeTrapper(int flagIndex, int spawned) throws GameActionException {
-        // this method writes a bit signifying that we have spawned a trapper bot at the specified flag
-        insertVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex, spawned);
-    }
-
-
-    public int readTrapper(int flagIndex) throws GameActionException {
-        // this method reads a bit signifying, if true, that we have spawned a trapper bot at the specified flag
-        return extractVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex);
-    }
-
 
     public boolean getHomeFlagTakenStatus(int flagIndex) throws GameActionException{
         // this method returns a boolean
@@ -618,12 +669,12 @@ public class Comms {
         int x = extractVal(
                 constants.SHARED_DEFENSIVE_TARGET_IDX,
                 constants.SHARED_DEFENSIVE_TARGET_X_MASK,
-                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+                constants.SHARED_DEFENSIVE_TARGET_X_SHIFT);
 
         int y = extractVal(
                 constants.SHARED_DEFENSIVE_TARGET_IDX,
-                constants.SHARED_DEFENSIVE_TARGET_X_MASK,
-                constants.SHARED_DEFENSIVE_TARGET_Y_MASK);
+                constants.SHARED_DEFENSIVE_TARGET_Y_MASK,
+                constants.SHARED_DEFENSIVE_TARGET_Y_SHIFT);
 
         if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
             return null;
@@ -675,6 +726,16 @@ public class Comms {
 
     public void decrementNumDefendersForFlag(int flagIdx) throws GameActionException{
         writeNumDefendersForFlag(flagIdx, readNumDefendersForFlag(flagIdx) - 1);
+    }
+
+    public int readNumTrapsForFlag(int flagIdx) throws GameActionException{
+        // Max value of 31.
+        return extractVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx]);
+    }
+
+    public void writeNumTrapsForFlag(int flagIdx, int count) throws GameActionException{
+        // Max value of 31.
+        insertVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx], count);
     }
 
 }

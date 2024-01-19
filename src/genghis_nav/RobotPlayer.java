@@ -44,14 +44,14 @@ public strictfp class RobotPlayer {
         while (true) {
             startTurn = rc.getRoundNum();
 
-//            if (rc.getRoundNum() > 140){
+//            if (rc.getRoundNum() > 96){
 //                rc.resign();
 //            }
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
                     Util.log("BYTECODE EXCEEDED");
-                    rc.resign();
+//                    rc.resign();
                 }
             }
             catch (Exception e) {
