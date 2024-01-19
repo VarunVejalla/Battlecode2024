@@ -260,7 +260,7 @@ public class AttackModule {
                 leastEnemyDamage = enemyDamage[i];
             }
         }
-        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
+//        Util.log("safest spot: " + bestSpot + ", with " + leastEnemyDamage + " damage ");//with sumDistanceSquared " + smallestSumDistanceSquared);
 
         if(!bestSpot.equals(robot.myLoc)){
             rc.move(robot.myLoc.directionTo(bestSpot));

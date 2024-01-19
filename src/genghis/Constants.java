@@ -145,4 +145,15 @@ public class Constants {
     public static final int NUM_DEFENDERS_FOR_FLAG_IDX = 23;
     public static final int NUM_DEFENDERS_FOR_FLAG_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
     public static final int NUM_DEFENDERS_FOR_FLAG_SHIFTS[] = {0, 5, 10};
+
+    // ------------ known flag indices from broadcast -------------------
+    public static final int TAKEN_ALLY_FLAG_1_IDX = 30;
+    public static final int TAKEN_ALLY_FLAG_2_IDX = 31;
+    public static final int TAKEN_ALLY_FLAG_3_IDX = 32;
+    public static final int[] TAKEN_ALLY_FLAG_INDICES = {TAKEN_ALLY_FLAG_1_IDX, TAKEN_ALLY_FLAG_2_IDX, TAKEN_ALLY_FLAG_3_IDX};
+
+    public static final int TAKEN_ALLY_FLAG_X_MASK = 4032; // 111111000000
+    public static final int TAKEN_ALLY_FLAG_X_SHIFT = 6;
+    public static final int TAKEN_ALLY_FLAG_Y_MASK = 63; // 00000011111
+    public static final int TAKEN_ALLY_FLAG_Y_SHIFT = 0;
 }
