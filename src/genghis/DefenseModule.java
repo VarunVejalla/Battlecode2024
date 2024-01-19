@@ -1,8 +1,6 @@
 package genghis;
 
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 
 public class DefenseModule {
 
@@ -14,6 +12,8 @@ public class DefenseModule {
     MapLocation flagDefaultLoc;
     MapLocation sharedDefensiveTarget;
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+    MapLocation trapPlacementTarget = null;
+    int trapPlacementHeuristic = Integer.MAX_VALUE;
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -94,7 +94,49 @@ public class DefenseModule {
         comms.incrementNumDefendersForFlag(defendingFlagIdx);
     }
 
+    public void updateBestTrapPlacementTarget(){
+        MapInfo[] nearbyInfos = rc.senseNearbyMapInfos();
+        int bestHeuristic = trapPlacementHeuristic;
+        MapLocation bestTrapLoc = trapPlacementTarget;
+        for(MapInfo info : nearbyInfos){
+            if(info.getTrapType() != TrapType.NONE){
+                continue;
+            }
+            if(info.isWater() || info.isWater() || info.isDam() || !info.isPassable()){
+                continue;
+            }
+            int heuristic = info.getMapLocation().distanceSquaredTo(flagDefaultLoc);
+            if(heuristic < bestHeuristic){
+                bestHeuristic = heuristic;
+                bestTrapLoc = info.getMapLocation();
+            }
+        }
+
+        trapPlacementTarget = bestTrapLoc;
+        trapPlacementHeuristic = bestHeuristic;
+    }
+
     // Movement methods
+    public void placeTrapsAroundFlag() throws GameActionException {
+        updateBestTrapPlacementTarget();
+        Util.addToIndicatorString("TPT: " + trapPlacementTarget);
+        Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
+
+        // If you don't have enough crumbs for a trap, just circle.
+        if(rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost){
+            Util.addToIndicatorString("CRC: " + flagDefaultLoc);
+            nav.circle(flagDefaultLoc, 2, 5);
+        }
+        else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
+            nav.goToBug(trapPlacementTarget, 0);
+            return;
+        }
+        else{
+            rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
+            trapPlacementTarget = null;
+            trapPlacementHeuristic = Integer.MAX_VALUE;
+        }
+    }
 
     public void runStationaryDefense() throws GameActionException {
         assert(defendingFlagIdx != -1);
@@ -104,7 +146,8 @@ public class DefenseModule {
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
-        nav.circle(flagDefaultLoc, 2, 5);
+        placeTrapsAroundFlag();
+//        nav.circle(flagDefaultLoc, 2, 5);
     }
 
     public void runMobileDefense() throws GameActionException {
