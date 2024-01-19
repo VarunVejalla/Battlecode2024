@@ -57,8 +57,6 @@ public class Constants {
 
     // ----------------------------------------------------------
     // constants for home flags
-    public static final int TRAPPERS_SPAWNED_IDX = 14;
-
     public static final int DEFAULT_FLAG_LOC_0_IDX = 8;
     public static final int DEFAULT_FLAG_LOC_1_IDX = 9;
     public static final int DEFAULT_FLAG_LOC_2_IDX = 10;
@@ -146,7 +144,7 @@ public class Constants {
     public static final int NUM_DEFENDERS_FOR_FLAG_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
     public static final int NUM_DEFENDERS_FOR_FLAG_SHIFTS[] = {0, 5, 10};
 
-    // ------------ known flag indices from broadcast -------------------
+    // ------------ spotted ally flag indices -------------------
     public static final int TAKEN_ALLY_FLAG_1_IDX = 30;
     public static final int TAKEN_ALLY_FLAG_2_IDX = 31;
     public static final int TAKEN_ALLY_FLAG_3_IDX = 32;
@@ -156,4 +154,9 @@ public class Constants {
     public static final int TAKEN_ALLY_FLAG_X_SHIFT = 6;
     public static final int TAKEN_ALLY_FLAG_Y_MASK = 63; // 00000011111
     public static final int TAKEN_ALLY_FLAG_Y_SHIFT = 0;
+
+    // ------------------- trapper shit ------------------------
+    public static final int TRAP_COUNT_IDX = 33;
+    public static final int TRAP_COUNT_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
+    public static final int TRAP_COUNT_SHIFTS[] = {0, 5, 10};
 }

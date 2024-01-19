@@ -9,7 +9,6 @@ public class Comms {
     RobotController rc;
     Robot robot;
     Constants constants;
-    private int trapperCountShift;
 
     public Comms(RobotController rc, Robot robot){
         this.rc = rc;
@@ -423,19 +422,6 @@ public class Comms {
                 getDefaultHomeFlagLoc(2)};
     }
 
-
-    public void writeTrapper(int flagIndex, int spawned) throws GameActionException {
-        // this method writes a bit signifying that we have spawned a trapper bot at the specified flag
-        insertVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex, spawned);
-    }
-
-
-    public int readTrapper(int flagIndex) throws GameActionException {
-        // this method reads a bit signifying, if true, that we have spawned a trapper bot at the specified flag
-        return extractVal(Constants.TRAPPERS_SPAWNED_IDX, 1 << flagIndex, flagIndex);
-    }
-
-
     public boolean getHomeFlagTakenStatus(int flagIndex) throws GameActionException{
         // this method returns a boolean
         return extractVal(Constants.DEFAULT_FLAG_LOCS_INDICES[flagIndex],
@@ -740,6 +726,16 @@ public class Comms {
 
     public void decrementNumDefendersForFlag(int flagIdx) throws GameActionException{
         writeNumDefendersForFlag(flagIdx, readNumDefendersForFlag(flagIdx) - 1);
+    }
+
+    public int readNumTrapsForFlag(int flagIdx) throws GameActionException{
+        // Max value of 31.
+        return extractVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx]);
+    }
+
+    public void writeNumTrapsForFlag(int flagIdx, int count) throws GameActionException{
+        // Max value of 31.
+        insertVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx], count);
     }
 
 }
