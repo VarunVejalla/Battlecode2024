@@ -1,4 +1,4 @@
-package genghis;
+package genghis_nav;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -16,6 +16,10 @@ public class OffenseModule {
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
+    }
+
+    public void getBestSpawnLoc(){
+
     }
 
     public void spawnClosestToAllyFlags() throws GameActionException {
