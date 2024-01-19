@@ -147,6 +147,36 @@ public class Util {
         return new MapLocation(code / (robot.mapHeight + 1), code % (robot.mapHeight + 1));
     }
 
+    public static int directionToInt(Direction dir){
+        switch(dir){
+            case NORTH:
+                return 0;
+            case NORTHEAST:
+                return 1;
+            case EAST:
+                return 2;
+            case SOUTHEAST:
+                return 3;
+            case SOUTH:
+                return 4;
+            case SOUTHWEST:
+                return 5;
+            case WEST:
+                return 6;
+            case NORTHWEST:
+                return 7;
+            default:
+                return Integer.MAX_VALUE;
+        }
+    }
+
+    // Assumes neither one is center.
+    public static int directionDistance(Direction a, Direction b){
+        int ai = directionToInt(a);
+        int bi = directionToInt(b);
+        return Math.min(Math.min(Math.abs(ai - bi), Math.abs(ai - bi - 8)), Math.abs(ai - bi + 8));
+    }
+
     // NOTE: Takes a worst-case of 10,000 bytecode to run.
     public static MapLocation[] getSpawnLocCenters(){
         int spawnCenterIdx = 0;
@@ -178,7 +208,6 @@ public class Util {
 
         return spawnCenters;
     }
-
 
     public static void log(String str){
         System.out.println(str);
