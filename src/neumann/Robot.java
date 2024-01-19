@@ -358,6 +358,7 @@ public class Robot {
         rc.setIndicatorString(indicatorString);
 
 
+//      code to mark an opp flag as captured if we are carrying it and reach one of our spawnLocs
 //         note, the call to Util.locIsASpawnLoc is present because we may want to purposefully drop flags in the future
         if(rc.getRoundNum() > 200
             && hasFlagAtBeginningOfTurn
@@ -533,7 +534,7 @@ public class Robot {
                         break;
                     }
                 }
-//
+
 //                // also store it as a default flag location if we don't already have a default flag location for this flagID
                 comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
             }
@@ -582,71 +583,10 @@ public class Robot {
     }
 
 
-    public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
-        // if there is a known carried flag that is not the current target, go to that
-        for (MapLocation loc : knownCarriedOppFlags) {
-            if (loc != null) {
-                return loc;
-            }
-        }
-        // if there is a known dropped flag that is not the current target, go to that
-        for (MapLocation loc : knownDroppedOppFlags) {
-            if (loc != null && !loc.equals(sharedOffensiveTarget)) {
-                return loc;
-            }
-        }
-        // if there is an approximate location of a flag that is not the current target, go to that
-        for (MapLocation loc : approximateOppFlagLocations) {
-            if (loc != null && !loc.equals(sharedOffensiveTarget)) {
-                return loc;
-            }
-        }
-        return null;
-    }
 
 
-    public void tryUpdateSharedOffensiveTarget() throws GameActionException {
-        // this method updates the sharedOffensiveTarget if the current target is no longer valid
-        boolean needToGetNewTarget = false;
 
-        // if we currently don't have a shared offensive target
-        if (sharedOffensiveTarget == null) {
-            needToGetNewTarget = true;
-        }
 
-        // if the current target is not in approximate areas or dropped flags, get a new one
-        else if (!Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations) &&
-                !Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags) &&
-                !Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)) {
-            needToGetNewTarget = true;
-        }
-
-        // If you are at the current target and there a good number of fellow bots are present, get a new one
-        else if (sharedOffensiveTargetType != OffensiveTargetType.CARRIED
-                && myLoc.distanceSquaredTo(sharedOffensiveTarget) <= distToSatisfy) {
-            if (nearbyFriendlies.length >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE) {
-//            if(Util.countBotsOfTeam(rc.getTeam(), sensedNearbyRobots) >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE){
-                needToGetNewTarget = true;
-            }
-        }
-        indicatorString += "NGST: " + needToGetNewTarget + ";";
-
-        if (needToGetNewTarget) {
-            sharedOffensiveTarget = getNewSharedOffensiveTarget();
-            comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
-
-            sharedOffensiveTargetType = null;
-            if(Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)){
-                sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
-            }
-            else if(Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags)){
-                sharedOffensiveTargetType = OffensiveTargetType.DROPPED;
-            }
-            else if(Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations)){
-                sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
-            }
-        }
-    }
 
 
     public void updateComms() throws GameActionException {
@@ -661,7 +601,7 @@ public class Robot {
         tryCleaningKnownOppFlags(); // try removing records of opponent flag locations if we know they're not valid anymore
         tryAddingKnownOppFlags(); // try adding new records of opponent flag locations based on what we sensed
         tryUpdatingHomeFlagTakenInfo();
-        tryUpdateSharedOffensiveTarget();
+        offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
 
