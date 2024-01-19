@@ -153,7 +153,7 @@ public class Navigation {
             Direction dir = moveOptions[i];
             MapLocation newLoc = robot.myLoc.add(dir);
 
-            if(!rc.canSenseLocation(newLoc) || !rc.canMove(dir)){
+            if (!rc.canMove(dir)) {
                 continue;
             }
 
@@ -186,17 +186,17 @@ public class Navigation {
 
     public boolean goTo(MapLocation target, int minDistToSatisfy) throws GameActionException{
         // thy journey hath been completed
-        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy){
+        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy) {
             return true;
         }
 
-        if(!rc.isMovementReady()){
+        if (!rc.isMovementReady()) {
             return false;
         }
 
-        while(rc.isMovementReady()){
+        while (rc.isMovementReady()) {
             Direction toGo = null;
-            switch(mode){
+            switch (mode) {
                 case FUZZYNAV:
                     toGo = fuzzyNav(target);
                     break;
