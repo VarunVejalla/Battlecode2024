@@ -18,10 +18,6 @@ public class OffenseModule {
         this.nav = nav;
     }
 
-    public void getBestSpawnLoc(){
-
-    }
-
     public void spawnClosestToAllyFlags() throws GameActionException {
         MapLocation spawnLoc = null;
         int bestDist = Integer.MAX_VALUE;

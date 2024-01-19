@@ -12,6 +12,8 @@ public class DefenseModule {
     Navigation nav;
     int defendingFlagIdx = -1;
     MapLocation flagDefaultLoc;
+    MapLocation sharedDefensiveTarget;
+    int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -20,11 +22,9 @@ public class DefenseModule {
         this.nav = nav;
     }
 
-    public void getBestSpawnLoc(){
+    // Spawning / setup methods
 
-    }
-
-    public void spawn() throws GameActionException {
+    public void spawnStationary() throws GameActionException {
         if(defendingFlagIdx == -1){
             Util.log("SETUP NOT YET CALLED??");
             rc.resign();
@@ -39,6 +39,33 @@ public class DefenseModule {
             }
 
             int dist = Util.minMovesToReach(flagDefaultLoc, spawnLocs[i]);
+            if(dist < bestDist){
+                bestDist = dist;
+                bestIdx = i;
+            }
+        }
+        if(bestIdx != -1){
+            rc.spawn(spawnLocs[bestIdx]);
+        }
+    }
+
+    public void spawnMobile() throws GameActionException {
+        if(defendingFlagIdx == -1){
+            Util.log("SETUP NOT YET CALLED??");
+            rc.resign();
+        }
+        if(sharedDefensiveTarget == null){
+            spawnStationary();
+        }
+        MapLocation[] spawnLocs = rc.getAllySpawnLocations();
+        int bestIdx = -1;
+        int bestDist = Integer.MAX_VALUE;
+        for(int i = 0; i < spawnLocs.length; i++){
+            if(!rc.canSpawn(spawnLocs[i])){
+                continue;
+            }
+
+            int dist = Util.minMovesToReach(sharedDefensiveTarget, spawnLocs[i]);
             if(dist < bestDist){
                 bestDist = dist;
                 bestIdx = i;
@@ -67,11 +94,87 @@ public class DefenseModule {
         comms.incrementNumDefendersForFlag(defendingFlagIdx);
     }
 
-    public void runDefense() throws GameActionException {
+    // Movement methods
+
+    public void runStationaryDefense() throws GameActionException {
         assert(defendingFlagIdx != -1);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
-        Util.addToIndicatorString("FL:" + flagDefaultLoc);
+        boolean targetChanged = checkSharedDefensiveTargetStillValid();
+        targetChanged |= updateSharedDefensiveTarget();
+        if(targetChanged){
+            comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
+        }
         nav.circle(flagDefaultLoc, 2, 5);
+    }
+
+    public void runMobileDefense() throws GameActionException {
+        checkSharedDefensiveTargetStillValid();
+        updateSharedDefensiveTarget();
+        comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
+        if(sharedDefensiveTarget != null){
+            Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
+            Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
+            nav.mode = NavigationMode.FUZZYNAV;
+            nav.goTo(sharedDefensiveTarget, robot.distToSatisfy);
+        }
+        else{
+            runStationaryDefense();
+        }
+    }
+
+    // Strategy methods
+//    public int getDefensiveTargetPriority(MapLocation defensiveTarget){
+//        // if there is a spotted captured flag, that's a priority of 1.
+//        if(Util.checkIfItemInArray(defensiveTarget, robot.knownCarriedAllyFlags)){
+//            return 1;
+//        }
+//
+//        // if there is a known dropped flag that is not the current target, that's a priority of 2.
+//        if(Util.checkIfItemInArray(defensiveTarget, robot.knownCarriedAllyFlags)){
+//            return 2;
+//        }
+//
+//        return Integer.MAX_VALUE;
+//    }
+
+    public boolean checkSharedDefensiveTargetStillValid() throws GameActionException {
+        if(sharedDefensiveTarget == null){
+            sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+            return false;
+        }
+
+        for (MapLocation loc : robot.knownTakenAllyFlags) {
+            if (loc != null && loc.distanceSquaredTo(sharedDefensiveTarget) <= 2) {
+                sharedDefensiveTargetPriority = 1;
+                return false;
+            }
+        }
+
+        Util.log("Resetting shared defensive target to null " + sharedDefensiveTarget.toString());
+        Util.logArray("KTA: ", robot.knownTakenAllyFlags);
+        sharedDefensiveTarget = null;
+        sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+        return true;
+    }
+
+    public boolean updateSharedDefensiveTarget() throws GameActionException {
+        // if there is a spotted captured flag, go to that
+        MapLocation bestDefensiveTargetLoc = null;
+        int bestPriority = Integer.MAX_VALUE;
+        for (MapLocation loc : robot.knownTakenAllyFlags) {
+            if (loc != null) {
+                bestDefensiveTargetLoc = loc;
+                bestPriority = 1;
+                break;
+            }
+        }
+
+        if(bestPriority < sharedDefensiveTargetPriority){
+            sharedDefensiveTarget = bestDefensiveTargetLoc;
+            sharedDefensiveTargetPriority = bestPriority;
+            return true;
+        }
+        return false;
     }
 
 

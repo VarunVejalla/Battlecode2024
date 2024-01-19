@@ -179,7 +179,6 @@ public class Util {
         return spawnCenters;
     }
 
-
     public static void log(String str){
         System.out.println(str);
     }
