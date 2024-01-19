@@ -4,7 +4,25 @@ import battlecode.common.*;
 
 import java.util.Random;
 
-enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
+enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
+
+public String shortString(){
+    switch(this){
+        case CARRIED:
+            return "C";
+        case DROPPED:
+            return "D";
+        case DEFAULT:
+            return "DE";
+        case APPROXIMATE:
+            return "A";
+        default:
+            return "NULL";
+    }
+
+}
+};
+
 
 enum SymmetryType {
     HORIZONTAL,
@@ -64,6 +82,7 @@ public class Robot {
     MapLocation prevCrumbTarget = null;
     int roundsChasingCrumb = 0;
     int idOfFlagImCarrying = -1; // flagOfID I'm carrying
+
 
     /**
      * Array containing all the possible movement directions.
@@ -581,11 +600,6 @@ public class Robot {
             }
         }
     }
-
-
-
-
-
 
 
 
