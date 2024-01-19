@@ -60,6 +60,7 @@ public class Robot {
     Team oppTeam;
     MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
+    MapLocation centerLoc;
 
     MapLocation crumbTarget = null;
     MapLocation prevCrumbTarget = null;
@@ -126,6 +127,7 @@ public class Robot {
         this.mapHeight = rc.getMapHeight();
         allSpawnLocs = rc.getAllySpawnLocations();
         spawnCenters = Util.getSpawnLocCenters();
+        centerLoc = new MapLocation(rc.getMapWidth() / 2, rc.getMapHeight() / 2);
 //        Util.logBytecode("After computing all spawn centers");
 
         this.nav = new Navigation(rc, this);

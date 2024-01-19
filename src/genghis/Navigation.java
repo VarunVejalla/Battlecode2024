@@ -240,6 +240,9 @@ public class Navigation {
         if(Util.minMovesToReach(myLoc, center) < minDist){
 //            Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
+            if(centerDir == Direction.CENTER){
+                centerDir = robot.centerLoc.directionTo(myLoc);
+            }
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
             boolean moved = goToBug(target, minDist);
             if(moved){
