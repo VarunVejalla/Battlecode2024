@@ -1,4 +1,4 @@
-package neumann;
+package genghis;
 
 import battlecode.common.*;
 
@@ -307,7 +307,6 @@ public class AttackModule {
 
         if(robot.nearbyActionEnemies.length != 0 ){
             if(rc.isMovementReady()){
-                Util.log("A: " + robot.nearbyActionEnemies);
                 moveToSafestSpot();
             }
         }
@@ -316,7 +315,6 @@ public class AttackModule {
                 moveToBestPushLocation();
             }
             else if(rc.isMovementReady()){
-                Util.log("B: " + robot.nearbyVisionEnemies);
                 moveToSafestSpot();
             }
         }

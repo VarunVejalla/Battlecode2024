@@ -1,4 +1,4 @@
-package neumann;
+package genghis;
 
 import battlecode.common.*;
 
@@ -63,7 +63,6 @@ public class Robot {
     MapLocation crumbTarget = null;
     MapLocation prevCrumbTarget = null;
     int roundsChasingCrumb = 0;
-    int idOfFlagImCarrying = -1; // flagOfID I'm carrying
 
     /**
      * Array containing all the possible movement directions.
@@ -107,7 +106,6 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
-//    MapLocation[] defaultOppFlagLocs;
 
     int flagProtectingIdx = -1;
 
@@ -291,12 +289,6 @@ public class Robot {
         indicatorString = "";
         Util.addToIndicatorString("Mode: " + mode.toShortString());
 //        if (rc.getRoundNum() > 200 && rc.getRoundNum() % 100 == 0) testLog();
-//        idOfFlagImCarrying = -1;
-//        boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
-//
-//        if(rc.getRoundNum() % 50 == 0){
-//            Util.logArray("defaultOppFlagLocs", defaultOppFlagLocs);
-//        }
 
         if (!rc.isSpawned()){
             spawn();
@@ -309,10 +301,13 @@ public class Robot {
             scanSurroundings();
             updateComms();
 
-            if (rc.getRoundNum() <= 200) {
+            if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
                 if(potentialFlagMover){
                     potentialFlagMover = flagMover.runFlagMover();
+                }
+                else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                    defenseModule.runDefense();
                 }
                 else{
                     scout.runScout();
@@ -350,13 +345,6 @@ public class Robot {
             }
         }
         rc.setIndicatorString(indicatorString);
-
-
-        // note, the call to Util.locIsASpawnLoc is present because we may want to purposefully drop flags in the future
-//        if(hasFlagAtBeginningOfTurn
-//                && !rc.hasFlag() && Util.locIsASpawnLoc(rc.getLocation())){
-//            comms.setOppFlagToCaptured(idOfFlagImCarrying);
-//        }
     }
 
 
@@ -393,8 +381,6 @@ public class Robot {
         // read shared offensive target
         sharedOffensiveTarget = comms.getSharedOffensiveTarget();
 
-//        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
-
         sharedOffensiveTargetType = null;
         if(Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)){
             sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
@@ -406,7 +392,7 @@ public class Robot {
             sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
 
-        if(rc.getRoundNum() > 200 && defaultHomeFlagLocs == null){
+        if(rc.getRoundNum() == Constants.SETUP_ROUNDS + 1){
             defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
         }
     }
@@ -433,12 +419,12 @@ public class Robot {
     public void listenToOppFlagBroadcast() throws GameActionException {
         // dropped opponent flags broadcast their location every 100 rounds
         // this method listens to the broadcast and adds the sets those broadcast locations as approximate locations
-        if (rc.getRoundNum() >= 200 && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
+        if (rc.getRoundNum() >= Constants.SETUP_ROUNDS && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
             approximateOppFlagLocations = rc.senseBroadcastFlagLocations();
             comms.setApproxOppFlags(approximateOppFlagLocations);
             Util.log("Approximate Flag Broadcast!");
             Util.logArray("approximateFlagLocs: ", approximateOppFlagLocations);
-            Util.log("approximateFlagLocs.length: " + approximateOppFlagLocations.length);
+            Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
         }
     }
 
@@ -502,10 +488,6 @@ public class Robot {
                 // Update comms.
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), true);
 
-//                if(rc.getLocation().equals(flagInfo.getLocation())){
-//                    idOfFlagImCarrying = flagInfo.getID();
-//                }
-
                 // Update self.
                 for(int i = 0; i< Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
                     if(knownCarriedOppFlags[i] == null){
@@ -518,17 +500,13 @@ public class Robot {
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), false);
 
                 // Update self.
-                for(int i = 0; i< Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
+                for(int i=0; i<Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
                     if(knownDroppedOppFlags[i] == null){
                         knownDroppedOppFlags[i] = flagInfo.getLocation();
                         break;
                     }
                 }
-//
-//                // also store it as a default flag location if we don't already have a default flag location for this flagID
-//                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
             }
-
         }
     }
 
@@ -573,77 +551,10 @@ public class Robot {
     }
 
 
-    public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
-        // if there is a known carried flag that is not the current target, go to that
-        for (MapLocation loc : knownCarriedOppFlags) {
-            if (loc != null) {
-                return loc;
-            }
-        }
-        // if there is a known dropped flag that is not the current target, go to that
-        for (MapLocation loc : knownDroppedOppFlags) {
-            if (loc != null && !loc.equals(sharedOffensiveTarget)) {
-                return loc;
-            }
-        }
-        // if there is an approximate location of a flag that is not the current target, go to that
-        for (MapLocation loc : approximateOppFlagLocations) {
-            if (loc != null && !loc.equals(sharedOffensiveTarget)) {
-                return loc;
-            }
-        }
-        return null;
-    }
-
-
-    public void tryUpdateSharedOffensiveTarget() throws GameActionException {
-        // this method updates the sharedOffensiveTarget if the current target is no longer valid
-        boolean needToGetNewTarget = false;
-
-        // if we currently don't have a shared offensive target
-        if (sharedOffensiveTarget == null) {
-            needToGetNewTarget = true;
-        }
-
-        // if the current target is not in approximate areas or dropped flags, get a new one
-        else if (!Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations) &&
-                !Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags) &&
-                !Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)) {
-            needToGetNewTarget = true;
-        }
-
-        // If you are at the current target and there a good number of fellow bots are present, get a new one
-        else if (sharedOffensiveTargetType != OffensiveTargetType.CARRIED
-                && myLoc.distanceSquaredTo(sharedOffensiveTarget) <= distToSatisfy) {
-            if (nearbyFriendlies.length >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE) {
-//            if(Util.countBotsOfTeam(rc.getTeam(), sensedNearbyRobots) >= Constants.BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE){
-                needToGetNewTarget = true;
-            }
-        }
-        indicatorString += "NGST: " + needToGetNewTarget + ";";
-
-        if (needToGetNewTarget) {
-            sharedOffensiveTarget = getNewSharedOffensiveTarget();
-            comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
-
-            sharedOffensiveTargetType = null;
-            if(Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)){
-                sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
-            }
-            else if(Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags)){
-                sharedOffensiveTargetType = OffensiveTargetType.DROPPED;
-            }
-            else if(Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations)){
-                sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
-            }
-        }
-    }
-
-
     public void updateComms() throws GameActionException {
         // method to update comms
         // gets run every round
-        if (rc.getRoundNum() < 200) {
+        if (rc.getRoundNum() < Constants.SETUP_ROUNDS) {
             // currently not using comms for anything during the first 200 rounds
             return;
         }
@@ -652,7 +563,7 @@ public class Robot {
         tryCleaningKnownOppFlags(); // try removing records of opponent flag locations if we know they're not valid anymore
         tryAddingKnownOppFlags(); // try adding new records of opponent flag locations based on what we sensed
         tryUpdatingHomeFlagTakenInfo();
-        tryUpdateSharedOffensiveTarget();
+        offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
 
