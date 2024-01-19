@@ -13,6 +13,16 @@ public class Util {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
+    public static boolean locIsASpawnLoc(MapLocation loc) throws GameActionException{
+        // this method checks if the robot is on a spawn location
+        for(MapLocation spawnCenter: robot.spawnCenters){
+            if(neumann.Util.minMovesToReach(loc, spawnCenter) <= 1){
+                return true;
+            }
+        }
+        return false;
+    }
+
     
     public static boolean tryMove(Direction dir) throws GameActionException{
         if(rc.canMove(dir)) {

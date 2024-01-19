@@ -159,4 +159,39 @@ public class Constants {
     public static final int TRAP_COUNT_IDX = 33;
     public static final int TRAP_COUNT_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
     public static final int TRAP_COUNT_SHIFTS[] = {0, 5, 10};
+
+    /////////////////// constants for default opp flag locs ////////////////
+    // constants for default opp flag loc
+    public static final int OPP_FLAG_1_ID_IDX = 24;
+    public static final int OPP_FLAG_2_ID_IDX = 26;
+    public static final int OPP_FLAG_3_ID_IDX = 28;
+
+    public static final int[] OPP_FLAG_ID_INDICES = {
+            OPP_FLAG_1_ID_IDX,
+            OPP_FLAG_2_ID_IDX,
+            OPP_FLAG_3_ID_IDX};
+
+
+    public static final int MASK_FOR_OPP_FLAG_ID = 0b1111111111111111;
+    public static final int SHIFT_FOR_OPP_FLAG_ID = 0;
+    public static final int NULL_FLAG_ID_VAL = 3700; // max the id can be is 60x60=3600
+
+    public static final int DEFAULT_OPP_FLAG_1_INFO_IDX = 25;
+    public static final int DEFAULT_OPP_FLAG_2_INFO_IDX = 27;
+    public static final int DEFAULT_OPP_FLAG_3_INFO_IDX = 29;
+    public static final int[] DEFAULT_OPP_FLAG_INFO_INDICES = {
+            DEFAULT_OPP_FLAG_1_INFO_IDX,
+            DEFAULT_OPP_FLAG_2_INFO_IDX,
+            DEFAULT_OPP_FLAG_3_INFO_IDX
+    };
+
+
+    public static final int DEFAULT_OPP_FLAG_X_SHIFT = 6;
+    public static final int DEFAULT_OPP_FLAG_X_MASK = 0b111111000000;
+    public static final int DEFAULT_OPP_FLAG_Y_SHIFT = 0;
+    public static final int DEFAULT_OPP_FLAG_Y_MASK = 0b111111;
+    public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
+    public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
+
+
 }

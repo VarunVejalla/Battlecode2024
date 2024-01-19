@@ -4,7 +4,24 @@ import battlecode.common.*;
 
 import java.util.Random;
 
-enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
+enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
+
+    public String shortString(){
+        switch(this){
+            case CARRIED:
+                return "C";
+            case DROPPED:
+                return "D";
+            case DEFAULT:
+                return "DE";
+            case APPROXIMATE:
+                return "A";
+            default:
+                return "NULL";
+        }
+
+    }
+};
 
 enum SymmetryType {
     HORIZONTAL,
@@ -110,8 +127,10 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
+    MapLocation[] defaultOppFlagLocs;
 
     int flagProtectingIdx = -1;
+    int idOfFlagImCarrying = -1;
 
     Mode mode;
 
@@ -148,6 +167,11 @@ public class Robot {
         if (rc.getRoundNum() < 50 && knownCarriedOppFlags[0] != null) {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
+        }
+
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
+        if(rc.getRoundNum() < 200 && defaultOppFlagLocs != null){
+            comms.setAllDefaultOppFlagLocsToNull();
         }
 
         if(!comms.defaultFlagLocationsWritten()) {
@@ -276,6 +300,10 @@ public class Robot {
     public void run() throws GameActionException {
         // this is the main run method that is called every turn
 
+
+        idOfFlagImCarrying = -1;
+        boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
+
         indicatorString = "";
         Util.addToIndicatorString("Mode:" + mode.toShortString());
 
@@ -283,6 +311,10 @@ public class Robot {
 //        if(rc.getRoundNum() > Constants.SETUP_ROUNDS && (mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE)){
 //            testLog();
 //        }
+
+        if (rc.getRoundNum() % 50 == 0) {
+            testLog();
+        }
 
         if (!rc.isSpawned()){
             spawn();
@@ -344,10 +376,18 @@ public class Robot {
             }
         }
         rc.setIndicatorString(indicatorString);
+
+        if(rc.getRoundNum() > 200
+                && hasFlagAtBeginningOfTurn
+                && !rc.hasFlag()
+                && Util.locIsASpawnLoc(rc.getLocation())){
+            comms.setOppFlagToCaptured(idOfFlagImCarrying);
+        }
     }
 
 
     public void testLog() throws GameActionException {
+        Util.logArray("defaultOppFlagLocs: ", defaultOppFlagLocs);
 //        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
 //        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
 //        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
@@ -363,8 +403,9 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(2)});
 //        Util.log("Shared offensive target: " + sharedOffensiveTarget);
 //        Util.log("Shared offensive target type: " + sharedOffensiveTargetType);
-//
-//        Util.log("--------------------------------");
+
+
+        Util.log("--------------------------------");
     }
 
 
@@ -398,6 +439,8 @@ public class Robot {
         }
 
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
+
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
     }
 
 
@@ -497,6 +540,11 @@ public class Robot {
     public void tryAddingKnownOppFlags() throws GameActionException {
         for (FlagInfo flagInfo : sensedNearbyFlags) {
             if (flagInfo.getTeam() == myTeam) continue;
+
+            if(rc.getLocation().equals(flagInfo.getLocation())){
+                idOfFlagImCarrying = flagInfo.getID();
+            }
+
             if (isOppFlagKnown(flagInfo)) continue;
             if (flagInfo.isPickedUp()) {
                 // Update comms.
@@ -520,6 +568,7 @@ public class Robot {
                         break;
                     }
                 }
+                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
             }
         }
     }
