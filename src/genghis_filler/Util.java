@@ -15,6 +15,9 @@ public class Util {
 
     
     public static boolean tryMove(Direction dir) throws GameActionException{
+        if(rc.canFill(rc.adjacentLocation(dir))) {
+            rc.fill(rc.adjacentLocation(dir));
+        }
         if(rc.canMove(dir)) {
             rc.move(dir);
             robot.myLoc = rc.getLocation();

@@ -1,7 +1,6 @@
 package genghis_filler;
 
 import battlecode.common.*;
-
 enum NavigationMode{
     FUZZYNAV, BUGNAV;
 }
@@ -97,8 +96,26 @@ public class Navigation {
 
         for (int i = 0; i < 8; i++) {
             MapLocation newLoc = rc.adjacentLocation(dir);
+//            if(!rc.isActionReady()) {
+//                if(!rc.canMove(dir)) {
+//                    continue;
+//                }
+//            } else {
+//                // water is fine if we have enough crumbs
+//                // TODO: 30 shouldn't be this constant value since it may be able to fill for cheaper
+//                if(rc.getCrumbs() < 30) {
+//                    if(!rc.canMove(dir)) {
+//                        continue;
+//                    }
+//                } else {
+//                    if(!rc.canMove(dir) && !rc.canFill(newLoc)) {
+//                        continue;
+//                    }
+//                }
+//            }
 
-            if(rc.canMove(dir)){
+            // TODO: improve these cases
+            if(rc.canMove(dir) || (rc.isActionReady() && rc.getCrumbs() >= 30 && rc.canFill(newLoc))){
                 // If we can get closer to the target than we've ever been before, do that.
                 int dist = newLoc.distanceSquaredTo(target);
                 if(dist < closestDistToTarget){
@@ -179,9 +196,9 @@ public class Navigation {
                 bestNewLoc = newLoc;
             }
         }
-        if(rc.canFill(bestNewLoc)) {
-            rc.fill(bestNewLoc);
-        }
+//        if(rc.canFill(bestNewLoc)) {
+//            rc.fill(bestNewLoc);
+//        }
         return bestDir;
     }
 
