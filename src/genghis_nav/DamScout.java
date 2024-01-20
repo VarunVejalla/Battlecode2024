@@ -1,8 +1,9 @@
 package genghis_nav;
 
+import genghis_nav.utils.FixedSizeQueue;
 import battlecode.common.*;
 
-import java.util.LinkedList;
+
 
 public class DamScout {
     RobotController rc;
@@ -127,20 +128,20 @@ public class DamScout {
     }
 }
 
-class FixedSizeQueue<T> extends LinkedList<T> {
-    private final int maxSize;
+// class FixedSizeQueue<T> extends LinkedList<T> {
+//     private final int maxSize;
 
-    public FixedSizeQueue(int maxSize) {
-        this.maxSize = maxSize;
-    }
+//     public FixedSizeQueue(int maxSize) {
+//         this.maxSize = maxSize;
+//     }
 
-    @Override
-    public boolean add(T element) {
-        boolean added = super.add(element);
-        if (size() > maxSize) {
-            // Remove the oldest element if the size exceeds the limit
-            super.removeFirst();
-        }
-        return added;
-    }
-}
+//     @Override
+//     public boolean add(T element) {
+//         boolean added = super.add(element);
+//         if (size() > maxSize) {
+//             // Remove the oldest element if the size exceeds the limit
+//             super.removeFirst();
+//         }
+//         return added;
+//     }
+// }
