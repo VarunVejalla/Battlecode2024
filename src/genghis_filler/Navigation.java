@@ -1,9 +1,6 @@
 package genghis_filler;
 
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 
 enum NavigationMode{
     FUZZYNAV, BUGNAV;
@@ -153,11 +150,23 @@ public class Navigation {
             Direction dir = moveOptions[i];
             MapLocation newLoc = robot.myLoc.add(dir);
 
-            if (!rc.canMove(dir)) {
-                continue;
+            if(!rc.isActionReady()) {
+                if(!rc.canMove(dir)) {
+                    continue;
+                }
+            } else {
+                // water is fine if we have enough crumbs
+                // TODO: 30 shouldn't be this constant value since it may be able to fill for cheaper
+                if(rc.getCrumbs() < 30) {
+                    if(!rc.canMove(dir)) {
+                        continue;
+                    }
+                } else {
+                    if(!rc.canMove(dir) && !rc.canFill(newLoc)) {
+                        continue;
+                    }
+                }
             }
-
-            if(!rc.sensePassability(newLoc)) continue;
 
             int numMoves = Util.minMovesToReach(newLoc, target);
             int distanceSquared = newLoc.distanceSquaredTo(target);
@@ -169,6 +178,9 @@ public class Navigation {
                 bestDir = dir;
                 bestNewLoc = newLoc;
             }
+        }
+        if(rc.canFill(bestNewLoc)) {
+            rc.fill(bestNewLoc);
         }
         return bestDir;
     }

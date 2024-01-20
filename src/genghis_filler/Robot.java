@@ -130,8 +130,9 @@ public class Robot {
         centerLoc = new MapLocation(rc.getMapWidth() / 2, rc.getMapHeight() / 2);
 //        Util.logBytecode("After computing all spawn centers");
 
-        this.nav = new Navigation(rc, this);
+
         this.comms = new Comms(rc, this);
+        this.nav = new Navigation(rc, this.comms, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
         this.movementModule = new MovementModule(this.rc, this, this.comms, this.nav);
