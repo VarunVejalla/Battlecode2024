@@ -268,7 +268,9 @@ public class AttackModule {
 
     public void updateAllNearbyAttackInfo() throws GameActionException{
         robot.nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.myTeam);
+        robot.nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         robot.nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.oppTeam);
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
 //        Util.addToIndicatorString(String.valueOf(nearbyVisionEnemies.length)+";");
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
 //        MapLocation enemyActionCOM = getCenterOfMass(robot.nearbyActionEnemies);
