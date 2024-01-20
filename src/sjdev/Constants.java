@@ -14,6 +14,11 @@ public class Constants {
     // Threshold constants
     public static final int BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE = 7;
 
+    // Attack heuristic constants
+    public static final double OFFENSE_ATTACK_SAFETY_FACTOR = 1.0;
+    public static final double STATIONARY_DEFENSE_ATTACK_SAFETY_FACTOR = 2.0;
+    public static final double MOBILE_DEFENSE_ATTACK_SAFETY_FACTOR = 0.5;
+
     // Comms constants
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
@@ -192,6 +197,4 @@ public class Constants {
     public static final int DEFAULT_OPP_FLAG_Y_MASK = 0b111111;
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
-
-
 }

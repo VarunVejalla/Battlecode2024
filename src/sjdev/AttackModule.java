@@ -24,9 +24,6 @@ class AttackHeuristic {
 //        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
         if(hasFlag){
             return friendlyAttackDamage >= enemyAttackDamage;
-//            return friendlyAttackDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
-//            return friendlyVisionDamage >= enemyVisionDamage * 2.0; // TODO: Tune this multiplier.
-//            return friendlyVisionDamage >= enemyVisionDamage; // TODO: Tune this multiplier.
         }
         return friendlyVisionDamage >= enemyVisionDamage * safetyMultipler;
     }
@@ -271,7 +268,9 @@ public class AttackModule {
 
     public void updateAllNearbyAttackInfo() throws GameActionException{
         robot.nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.myTeam);
+        robot.nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         robot.nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.oppTeam);
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
 //        Util.addToIndicatorString(String.valueOf(nearbyVisionEnemies.length)+";");
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
 //        MapLocation enemyActionCOM = getCenterOfMass(robot.nearbyActionEnemies);
@@ -322,19 +321,19 @@ public class AttackModule {
         }
     }
 
-    public MapLocation findBestHealPatient() throws GameActionException{
+    public MapLocation findBestHealPatient() throws GameActionException {
         // this method finds the best patient to heal
-        int worstHealth = 1000;
+        int worstHealth = GameConstants.DEFAULT_HEALTH;
         MapLocation weakestFriendlyLoc = null;
         for(RobotInfo robot: robot.nearbyFriendlies){
             boolean canHeal = rc.canHeal(robot.getLocation());
 
             // if the bot carrying the flag is not at 100%, priortize that one
-            if(canHeal && robot.getHealth() < worstHealth && robot.hasFlag()){
+            if(canHeal && robot.getHealth() < GameConstants.DEFAULT_HEALTH && robot.hasFlag()){
                 return robot.getLocation();
             }
 
-            if(rc.canHeal(robot.location) & robot.getHealth() < worstHealth){
+            if(rc.canHeal(robot.location) && robot.getHealth() < worstHealth){
                 worstHealth = rc.getHealth();
                 weakestFriendlyLoc = robot.getLocation();
             }
@@ -347,12 +346,11 @@ public class AttackModule {
         // this method returns true if it heals a bot, and false if it doesn't heal a bot
 
         // check to see if there are no opp in vision radius
-        if(robot.nearbyVisionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
+        if(robot.nearbyActionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
         {
             // find the weakest friendly to heal
             MapLocation weakestPatientLoc = findBestHealPatient();
             if(weakestPatientLoc != null){
-
                 // heal the boi that needs most help
                 rc.heal(weakestPatientLoc);
                 return true;
@@ -381,7 +379,21 @@ public class AttackModule {
             runUnsafeStrategy();
         }
 
+        boolean successfullyAttacked = runAttack(); // try Attacking
         runHealing(); // try healing
+    }
+
+    public double getHeuristicSafetyMultiplier(){
+        switch(robot.mode){
+            case OFFENSE:
+                return Constants.OFFENSE_ATTACK_SAFETY_FACTOR;
+            case STATIONARY_DEFENSE:
+                return Constants.STATIONARY_DEFENSE_ATTACK_SAFETY_FACTOR;
+            case MOBILE_DEFENSE:
+                return Constants.MOBILE_DEFENSE_ATTACK_SAFETY_FACTOR;
+            default:
+                throw new RuntimeException("Unkonwn mode when computing heuristic " + robot.mode.toShortString() + "!");
+        }
     }
 
 
@@ -389,11 +401,7 @@ public class AttackModule {
         // TODO: we should calculate the legit damage values here according to bot specializations.
         //  Not sure if there's a way to that without hardcoding in values at the moment.
 
-        // TODO: Move this to constants.
-        double safetyMultiplier = 1.0;
-        if(robot.mode == Mode.STATIONARY_DEFENSE){
-            safetyMultiplier = 0.5;
-        }
+        double safetyMultiplier = getHeuristicSafetyMultiplier();
         return new AttackHeuristic(visionFriendlies.length + 1, visionEnemies.length, attackFriendlies.length + 1, attackEnemies.length, hasFlag, safetyMultiplier);
     }
 
