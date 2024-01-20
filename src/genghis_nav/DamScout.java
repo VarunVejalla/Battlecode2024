@@ -2,6 +2,8 @@ package genghis_nav;
 
 import battlecode.common.*;
 
+import java.util.LinkedList;
+
 public class DamScout {
     RobotController rc;
     Robot robot;
@@ -12,6 +14,12 @@ public class DamScout {
     int[] distsToSpawnCenters;
     MapLocation targetLoc = null;
     Direction adjDir = null;
+
+    FixedSizeQueue<MapLocation> crumbs = new FixedSizeQueue<MapLocation>(Constants.CRUMB_REMEMBER_COUNT);
+
+
+
+
 
     public DamScout(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -45,43 +53,83 @@ public class DamScout {
         return null;
     }
 
-    public void runScout() throws GameActionException {
+    public void runScout(MapLocation[] nearbyCrumbs) throws GameActionException {
         distsToSpawnCenters = comms.readDistsToSpawnCenters();
 
-        // If you haven't visited the damn yet, go towards it.
-        if(adjDir == null){
-            nav.goToBug(centerLoc, 0);
-            // Check if I'm currently adjacent to the damn.
-            adjDir = getDamAdjDir();
-        }
-        // Otherwise, follow it, either left or right.
-        else{
-            MapLocation locBeforeMoving = rc.getLocation();
-            Direction moveDir = adjDir;
-            Direction prevDir = moveDir;
-            for(int i = 0; i < 8; i++){
-                if(followRight){
-                    moveDir = moveDir.rotateRight();
-                }
-                else{
-                    moveDir = moveDir.rotateLeft();
-                }
-                if(rc.canMove(moveDir)){
-                    rc.move(moveDir);
-                    robot.myLoc = rc.getLocation();
-                    adjDir = robot.myLoc.directionTo(locBeforeMoving.add(prevDir));
-                }
-                prevDir = moveDir;
-            }
-
-            if(!rc.onTheMap(robot.myLoc.add(adjDir))){
-                adjDir = null;
-                followRight = !followRight;
-            }
+        for (MapLocation crumb : nearbyCrumbs) {
+            crumbs.add(crumb);
         }
 
-        scanForNearbyDamnLocation();
-        comms.writeDistsToSpawnCenters(distsToSpawnCenters);
+        if (rc.getRoundNum() <= Constants.NEW_FLAG_LOC_DECIDED_ROUND + 5 ) {
+            if(adjDir == null){
+                nav.goToBug(centerLoc, 0);
+                // Check if I'm currently adjacent to the damn.
+                adjDir = getDamAdjDir();
+            }
+            // Otherwise, follow it, either left or right.
+            else{
+                MapLocation locBeforeMoving = rc.getLocation();
+                Direction moveDir = adjDir;
+                Direction prevDir = moveDir;
+                for(int i = 0; i < 8; i++){
+                    if(followRight){
+                        moveDir = moveDir.rotateRight();
+                    }
+                    else{
+                        moveDir = moveDir.rotateLeft();
+                    }
+                    if(rc.canMove(moveDir)){
+                        rc.move(moveDir);
+                        robot.myLoc = rc.getLocation();
+                        adjDir = robot.myLoc.directionTo(locBeforeMoving.add(prevDir));
+                    }
+                    prevDir = moveDir;
+                }
+    
+                if(!rc.onTheMap(robot.myLoc.add(adjDir))){
+                    adjDir = null;
+                    followRight = !followRight;
+                }
+            }
+            scanForNearbyDamnLocation();
+            comms.writeDistsToSpawnCenters(distsToSpawnCenters);
+        }
+        else {
+           
+            if (targetLoc == null) {
+                if (crumbs.size() > 0) {
+                    targetLoc = crumbs.poll();
+                } else {
+                    targetLoc = centerLoc;
+       
+                }
+            }
+            else {
+                MapLocation curLocation = rc.getLocation();
+                if (curLocation.equals(targetLoc)) {
+                    targetLoc = null;
+                }
+            
+            }
+            nav.goToBug(targetLoc, 0);
+        }
+    }
+}
+
+class FixedSizeQueue<T> extends LinkedList<T> {
+    private final int maxSize;
+
+    public FixedSizeQueue(int maxSize) {
+        this.maxSize = maxSize;
     }
 
+    @Override
+    public boolean add(T element) {
+        boolean added = super.add(element);
+        if (size() > maxSize) {
+            // Remove the oldest element if the size exceeds the limit
+            super.removeFirst();
+        }
+        return added;
+    }
 }

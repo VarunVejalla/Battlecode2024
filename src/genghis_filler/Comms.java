@@ -738,4 +738,126 @@ public class Comms {
         insertVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx], count);
     }
 
+    /////////// comms methods for default opp flag locations//////////////////////////////////////////////////////
+    public void setAllDefaultOppFlagLocsToNull() throws GameActionException{
+        // this method sets all the default opp flag locs to null at the beginning of the game
+        // (since we can have no idea where the opp flags are until round 200)
+        for(int i=0; i<3; i++){
+
+            // insert nullValue for the flag ID
+            insertVal(Constants.OPP_FLAG_ID_INDICES[i],
+                    Constants.MASK_FOR_OPP_FLAG_ID,
+                    Constants.SHIFT_FOR_OPP_FLAG_ID,
+                    Constants.NULL_FLAG_ID_VAL);
+
+            insertVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
+                    Constants.DEFAULT_OPP_FLAG_X_MASK,
+                    Constants.DEFAULT_OPP_FLAG_X_SHIFT,
+                    Constants.LOCATION_NULL_VAL);
+
+            insertVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
+                    Constants.DEFAULT_OPP_FLAG_Y_MASK,
+                    Constants.DEFAULT_OPP_FLAG_Y_SHIFT,
+                    Constants.LOCATION_NULL_VAL);
+        }
+    }
+
+
+    public int[] getOppFlagIDArray() throws GameActionException{
+        int[] oppFlagIDs = new int[3];
+        for(int i=0; i<3; i++){
+            oppFlagIDs[i] = extractVal(
+                    Constants.OPP_FLAG_ID_INDICES[i],
+                    Constants.MASK_FOR_OPP_FLAG_ID,
+                    Constants.SHIFT_FOR_OPP_FLAG_ID);
+        }
+        return oppFlagIDs;
+    }
+
+    public void writeDefaultOppFlagLocationIfNotSeenBefore(MapLocation defaultFlagLoc, int flagID) throws GameActionException {
+        // this method saves the default location of an opponent flag to comms
+        int firstNullIndex = -1;
+
+        for(int i=0; i<3; i++){
+            int currFlagId = extractVal(
+                    Constants.OPP_FLAG_ID_INDICES[i],
+                    Constants.MASK_FOR_OPP_FLAG_ID,
+                    Constants.SHIFT_FOR_OPP_FLAG_ID);
+            if(currFlagId == flagID) return;    // we've already seen this flagID, so we should already have its default location
+            else if(currFlagId == sjdev.Constants.NULL_FLAG_ID_VAL && firstNullIndex == -1) firstNullIndex = i;
+        }
+
+        // if we get here, then we haven't seen this flagID before, so we need to add it
+        if(firstNullIndex != -1){
+            // we have a null index, so we can write the default location to that index
+            insertVal(Constants.OPP_FLAG_ID_INDICES[firstNullIndex],
+                    Constants.MASK_FOR_OPP_FLAG_ID,
+                    Constants.SHIFT_FOR_OPP_FLAG_ID,
+                    flagID);
+
+            insertVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[firstNullIndex],
+                    Constants.DEFAULT_OPP_FLAG_X_MASK,
+                    Constants.DEFAULT_OPP_FLAG_X_SHIFT,
+                    defaultFlagLoc.x);
+
+            insertVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[firstNullIndex],
+                    Constants.DEFAULT_OPP_FLAG_Y_MASK,
+                    Constants.DEFAULT_OPP_FLAG_Y_SHIFT,
+                    defaultFlagLoc.y);
+        }
+    }
+
+
+    public MapLocation[] getDefaultOppFlagLocations() throws GameActionException{
+        // this method will read all the default Opp flag locations and return them an array in size 3
+        // (with nulls if we don't know them yet)
+        MapLocation[] defaultOppFlagLocations = new MapLocation[3];
+        for(int i = 0; i < 3; i++){
+            int x = extractVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
+                    Constants.DEFAULT_OPP_FLAG_X_MASK,
+                    Constants.DEFAULT_OPP_FLAG_X_SHIFT);
+
+            int y = extractVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
+                    Constants.DEFAULT_OPP_FLAG_Y_MASK,
+                    Constants.DEFAULT_OPP_FLAG_Y_SHIFT);
+
+            int captured = extractVal(Constants.DEFAULT_OPP_FLAG_INFO_INDICES[i],
+                    Constants.OPP_FLAG_CAPTURED_MASK,
+                    Constants.OPP_FLAG_CAPTURED_SHIFT);
+
+            if(x == Constants.LOCATION_NULL_VAL || y == Constants.LOCATION_NULL_VAL || captured == 1){
+                defaultOppFlagLocations[i] = null;
+            }
+            else{
+                defaultOppFlagLocations[i] = new MapLocation(x, y);
+            }
+        }
+        return defaultOppFlagLocations;
+    }
+
+
+    public void setOppFlagToCaptured(int flagID) throws GameActionException {
+        // this sets the captured bit corresponding to the opponenet flag that has its ID as flagID to true
+        // used by a robot as it walks into the spawnLocation
+        sjdev.Util.log("Setting flag " + flagID + " to captured");
+        int index = 0;
+        while(index < 3){
+            int currFlagID = extractVal(
+                    Constants.OPP_FLAG_ID_INDICES[index],
+                    Constants.MASK_FOR_OPP_FLAG_ID,
+                    Constants.SHIFT_FOR_OPP_FLAG_ID);
+
+            if(currFlagID == flagID){
+                insertVal(
+                        Constants.DEFAULT_OPP_FLAG_INFO_INDICES[index],
+                        Constants.OPP_FLAG_CAPTURED_MASK,
+                        Constants.OPP_FLAG_CAPTURED_SHIFT,
+                        1);
+                return;
+            }
+            index++;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }

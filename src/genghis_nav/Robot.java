@@ -66,6 +66,8 @@ public class Robot {
     MapLocation prevCrumbTarget = null;
     int roundsChasingCrumb = 0;
 
+    MapLocation[] nearbyCrumbs;
+
     /**
      * Array containing all the possible movement directions.
      */
@@ -305,8 +307,8 @@ public class Robot {
                 else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runMobileDefense();
                 }
-                else{
-                    scout.runScout();
+                else {
+                    scout.runScout(nearbyCrumbs);
                 }
             }
             else if(rc.hasFlag()){
@@ -673,6 +675,7 @@ public class Robot {
         nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, myTeam);
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
+        nearbyCrumbs = rc.senseNearbyCrumbs(Constants.CRUMB_SENSE_RADIUS);      // senseNearbyCrumbs() is 0 bytecode??? https://releases.battlecode.org/javadoc/battlecode24/2.0.1/index.html
     }
 
 
