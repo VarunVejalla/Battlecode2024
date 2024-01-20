@@ -4,25 +4,6 @@ import battlecode.common.*;
 
 import java.util.Random;
 
-enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
-
-    public String shortString(){
-        switch(this){
-            case CARRIED:
-                return "C";
-            case DROPPED:
-                return "DR";
-            case DEFAULT:
-                return "DE";
-            case APPROXIMATE:
-                return "A";
-            default:
-                return "NULL";
-        }
-
-    }
-};
-
 enum SymmetryType {
     HORIZONTAL,
     VERTICAL,
@@ -78,26 +59,10 @@ public class Robot {
     int distToSatisfy = 6;
     MapLocation centerLoc;
 
-    MapLocation crumbTarget = null;
-    MapLocation prevCrumbTarget = null;
-    int roundsChasingCrumb = 0;
-
     /**
      * Array containing all the possible movement directions.
      */
     static final Direction[] movementDirections = {
-            Direction.NORTH,
-            Direction.NORTHEAST,
-            Direction.EAST,
-            Direction.SOUTHEAST,
-            Direction.SOUTH,
-            Direction.SOUTHWEST,
-            Direction.WEST,
-            Direction.NORTHWEST,
-    };
-
-    /* Array containing all directions */
-    Direction[] allDirections = {
             Direction.NORTH,
             Direction.NORTHEAST,
             Direction.EAST,
@@ -126,7 +91,6 @@ public class Robot {
     MapLocation[] allSpawnLocs;
 
     MapLocation[] defaultOppFlagLocs;
-    int flagProtectingIdx = -1;
     int idOfFlagImCarrying = -1;
 
     Mode mode;

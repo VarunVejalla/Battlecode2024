@@ -4,11 +4,24 @@ import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
+enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
 
-import static genghis_filler.OffensiveTargetType.CARRIED;
-import static genghis_filler.OffensiveTargetType.DROPPED;
-import static genghis_filler.OffensiveTargetType.APPROXIMATE;
-import static genghis_filler.OffensiveTargetType.DEFAULT;
+    public String shortString(){
+        switch(this){
+            case CARRIED:
+                return "C";
+            case DROPPED:
+                return "DR";
+            case DEFAULT:
+                return "DE";
+            case APPROXIMATE:
+                return "A";
+            default:
+                return "NULL";
+        }
+
+    }
+};
 
 class OffensiveTarget {
     MapLocation loc;
@@ -38,33 +51,6 @@ public class OffenseModule {
         this.nav = nav;
     }
 
-    public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
-        // if there is a known carried flag that is not the current target, go to that
-        for (MapLocation loc : robot.knownCarriedOppFlags) {
-            if (loc != null) {
-                return loc;
-            }
-    public void spawnClosestToAllyFlags() throws GameActionException {
-        MapLocation spawnLoc = null;
-        int bestDist = Integer.MAX_VALUE;
-        for(MapLocation potentialSpawnLoc : rc.getAllySpawnLocations()){
-            if(!rc.canSpawn(potentialSpawnLoc)){
-                continue;
-            }
-            for(MapLocation flagLoc : robot.defaultHomeFlagLocs){
-                int dist = potentialSpawnLoc.distanceSquaredTo(flagLoc);
-                if(dist < bestDist){
-                    spawnLoc = potentialSpawnLoc;
-                    bestDist = dist;
-                }
-            }
-        }
-        if(spawnLoc != null){
-            rc.spawn(spawnLoc);
-        }
-    }
-
-
     public int getOffensiveTargetCost(OffensiveTarget target){
         // this method returns the cost of the target
         int typeCost;
@@ -81,6 +67,7 @@ public class OffenseModule {
                 break;
             case DEFAULT:
                 typeCost = 2;
+                break;
             case APPROXIMATE:
                 typeCost = 3;
                 break;
@@ -102,7 +89,7 @@ public class OffenseModule {
         int currentTargetCost = getOffensiveTargetCost(currentTarget);
 
         for(MapLocation flagLoc : robot.knownCarriedOppFlags){
-            OffensiveTarget target = new OffensiveTarget(flagLoc, CARRIED);
+            OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.CARRIED);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
                 currentTarget = target;
@@ -116,7 +103,7 @@ public class OffenseModule {
 
         // loop over dropped flags
         for(MapLocation flagLoc : robot.knownDroppedOppFlags){
-            OffensiveTarget target = new OffensiveTarget(flagLoc, DROPPED);
+            OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DROPPED);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
                 currentTarget = target;
@@ -130,7 +117,7 @@ public class OffenseModule {
 
         // loop over default opp flag locations
         for(MapLocation flagLoc : robot.defaultOppFlagLocs){
-            OffensiveTarget target = new OffensiveTarget(flagLoc, DEFAULT);
+            OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DEFAULT);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
                 currentTarget = target;
@@ -145,7 +132,7 @@ public class OffenseModule {
 
         // loop over approximate flag locations
         for(MapLocation flagLoc : robot.approximateOppFlagLocations){
-            OffensiveTarget target = new OffensiveTarget(flagLoc, APPROXIMATE);
+            OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.APPROXIMATE);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
                 currentTarget = target;
@@ -158,17 +145,14 @@ public class OffenseModule {
         }
         return currentTarget;
     }
-
-
+    
     public void tryUpdateSharedOffensiveTarget() throws GameActionException {
         // loop over carried flags
         OffensiveTarget currentTarget = new OffensiveTarget(sharedOffensiveTarget, sharedOffensiveTargetType);
-
-//        Util.log("currentTarget: " + currentTarget.loc + " " + currentTarget.type);
+//        Util.log("Current Target: " + currentTarget.loc + " " + currentTarget.type);
 
         OffensiveTarget newTarget = tryGettingNewTarget(currentTarget);
-//        Util.log("newTarget: " + newTarget);
-//        Util.log("New target: " + newTarget.loc + " " + newTarget.type);
+//        Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
 
         if(newTarget == null || newTarget.equals(currentTarget)){
             return;
@@ -182,12 +166,9 @@ public class OffenseModule {
         }
     }
 
-
-
-
     public void spawn() throws GameActionException {
         if(sharedOffensiveTarget != null){
-            Util.spawnClosestToLocation(robot.sharedOffensiveTarget);
+            Util.spawnClosestToLocation(sharedOffensiveTarget);
         }
         // Pick a random spawn location to attempt spawning in.
         else{
