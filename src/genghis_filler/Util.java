@@ -15,6 +15,9 @@ public class Util {
 
     
     public static boolean tryMove(Direction dir) throws GameActionException{
+        if(rc.canFill(rc.adjacentLocation(dir))) {
+            rc.fill(rc.adjacentLocation(dir));
+        }
         if(rc.canMove(dir)) {
             rc.move(dir);
             robot.myLoc = rc.getLocation();
@@ -243,4 +246,15 @@ public class Util {
                 dir.opposite()
         };
     }
+
+    public static boolean locIsASpawnLoc(MapLocation loc) throws GameActionException{
+        // this method checks if the robot is on a spawn location
+        for(MapLocation spawnCenter: robot.spawnCenters){
+            if(neumann.Util.minMovesToReach(loc, spawnCenter) <= 1){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

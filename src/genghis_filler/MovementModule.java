@@ -39,24 +39,24 @@ public class MovementModule {
             nav.mode = NavigationMode.BUGNAV;
             nav.goTo(robot.homeLocWhenCarryingFlag, 0);
             Util.addToIndicatorString("HL: " + robot.homeLocWhenCarryingFlag);
-            if(robot.sharedOffensiveTarget.equals(robot.myLoc)){
-                robot.sharedOffensiveTarget = rc.getLocation();
-                comms.writeSharedOffensiveTarget(robot.sharedOffensiveTarget);
+            if(robot.offenseModule.sharedOffensiveTarget.equals(robot.myLoc)){
+                robot.offenseModule.sharedOffensiveTarget = rc.getLocation();
+                comms.writeSharedOffensiveTarget(robot.offenseModule.sharedOffensiveTarget);
             }
             robot.myLoc = rc.getLocation();
             comms.writeKnownOppFlagLoc(robot.myLoc, true);
-        } else if (robot.sharedOffensiveTarget == null) {
+        } else if (robot.offenseModule.sharedOffensiveTarget == null) {
             nav.moveRandom();
             Util.addToIndicatorString("RND");
         } else {
             nav.mode = NavigationMode.BUGNAV;
-            if(robot.sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
-                nav.circle(robot.sharedOffensiveTarget, 3, 8);
-                Util.addToIndicatorString("CRC: " + robot.sharedOffensiveTarget);
+            if(robot.offenseModule.sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
+                nav.circle(robot.offenseModule.sharedOffensiveTarget, 3, 8);
+                Util.addToIndicatorString("CRC: " + robot.offenseModule.sharedOffensiveTarget);
             }
             else{
-                Util.addToIndicatorString("SHRD TGT: " + robot.sharedOffensiveTarget);
-                nav.goTo(robot.sharedOffensiveTarget, robot.distToSatisfy);
+                Util.addToIndicatorString("SHRD TGT: " + robot.offenseModule.sharedOffensiveTarget);
+                nav.goTo(robot.offenseModule.sharedOffensiveTarget, robot.distToSatisfy);
             }
         }
     }
