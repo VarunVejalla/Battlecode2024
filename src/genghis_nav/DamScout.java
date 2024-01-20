@@ -14,6 +14,8 @@ public class DamScout {
     int[] distsToSpawnCenters;
     MapLocation targetLoc = null;
     Direction adjDir = null;
+    int reachCrumbCount = 0;
+    boolean moveBackFlag = true;
 
     FixedSizeQueue<MapLocation> crumbs = new FixedSizeQueue<MapLocation>(Constants.CRUMB_REMEMBER_COUNT);
 
@@ -92,8 +94,23 @@ public class DamScout {
             comms.writeDistsToSpawnCenters(distsToSpawnCenters);
         }
         else {
+
+            reachCrumbCount += 1;
+
+            if (reachCrumbCount >= Constants.CRUMB_GIVE_UP_STEPS) {
+                if (moveBackFlag) {
+                    targetLoc = robot.spawnLoc;
+                }
+                else {
+                    targetLoc = null;
+                }
+                moveBackFlag = !moveBackFlag;
+                reachCrumbCount = 0; 
+            }
+
             if (targetLoc == null  && crumbs.size() > 0) {
                 targetLoc = crumbs.poll();
+                reachCrumbCount = 0;
             }
 
             if (targetLoc != null) {
