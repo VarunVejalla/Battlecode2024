@@ -205,7 +205,7 @@ public class OffenseModule {
             }
             else{
                 Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
-                nav.goTo(sharedOffensiveTarget, robot.distToSatisfy);
+                nav.goTo(sharedOffensiveTarget, 0);
             }
         }
     }

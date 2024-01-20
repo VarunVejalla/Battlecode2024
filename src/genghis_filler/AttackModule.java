@@ -319,7 +319,6 @@ public class AttackModule {
         }
     }
 
-    // TODO: Better healing.
     public MapLocation findBestHealPatient() throws GameActionException {
         // this method finds the best patient to heal
         int worstHealth = GameConstants.DEFAULT_HEALTH;
@@ -328,11 +327,11 @@ public class AttackModule {
             boolean canHeal = rc.canHeal(robot.getLocation());
 
             // if the bot carrying the flag is not at 100%, priortize that one
-            if(canHeal && robot.getHealth() < worstHealth && robot.hasFlag()){
+            if(canHeal && robot.getHealth() < GameConstants.DEFAULT_HEALTH && robot.hasFlag()){
                 return robot.getLocation();
             }
 
-            if(rc.canHeal(robot.location) & robot.getHealth() < worstHealth){
+            if(rc.canHeal(robot.location) && robot.getHealth() < worstHealth){
                 worstHealth = rc.getHealth();
                 weakestFriendlyLoc = robot.getLocation();
             }
@@ -345,12 +344,11 @@ public class AttackModule {
         // this method returns true if it heals a bot, and false if it doesn't heal a bot
 
         // check to see if there are no opp in vision radius
-        if(robot.nearbyVisionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
+        if(robot.nearbyActionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
         {
             // find the weakest friendly to heal
             MapLocation weakestPatientLoc = findBestHealPatient();
             if(weakestPatientLoc != null){
-
                 // heal the boi that needs most help
                 rc.heal(weakestPatientLoc);
                 return true;

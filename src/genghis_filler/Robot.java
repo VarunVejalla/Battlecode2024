@@ -49,14 +49,11 @@ public class Robot {
     int mapWidth, mapHeight;
     final Random rng;
     String indicatorString = "";
-    String targetLocType = "";
     AttackModule attackModule;
-    MovementModule movementModule;
     DefenseModule defenseModule;
     OffenseModule offenseModule;
     Team myTeam;
     Team oppTeam;
-    int distToSatisfy = 6;
     MapLocation centerLoc;
 
     /**
@@ -108,19 +105,15 @@ public class Robot {
         allSpawnLocs = rc.getAllySpawnLocations();
         spawnCenters = Util.getSpawnLocCenters();
         centerLoc = new MapLocation(rc.getMapWidth() / 2, rc.getMapHeight() / 2);
-//        Util.logBytecode("After computing all spawn centers");
 
         this.comms = new Comms(rc, this);
         this.nav = new Navigation(rc, this.comms, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
         this.attackModule = new AttackModule(this.rc, this);
-        this.movementModule = new MovementModule(this.rc, this, this.comms, this.nav);
         this.defenseModule = new DefenseModule(this.rc, this, this.comms, this.nav);
         this.offenseModule = new OffenseModule(this.rc, this, this.comms, this.nav);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
         this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
-
-//        Util.logBytecode("After creating all the modules");
 
         // if the round number is less than 50, set all opponent flags in the shared array to null
         // since we don't know anything about them yet
