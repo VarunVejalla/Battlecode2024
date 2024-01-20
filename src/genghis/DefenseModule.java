@@ -205,7 +205,6 @@ public class DefenseModule {
     // Movement methods
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
-        Util.logBytecode("After updating best placement");
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
 
@@ -233,20 +232,15 @@ public class DefenseModule {
 
         assert(defendingFlagIdx != -1);
         Util.addToIndicatorString("FL: " + flagDefaultLoc);
-        Util.logBytecode("Start of SD");
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecode("Checking defensive target");
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecode("Updating defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
         updateTrapCountValue();
-        Util.logBytecode("Updating trap count");
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
-        Util.logBytecode("Placing traps");
     }
 
     public void runMobileDefense() throws GameActionException {

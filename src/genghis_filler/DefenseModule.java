@@ -205,13 +205,12 @@ public class DefenseModule {
     // Movement methods
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
-        Util.logBytecode("After updating best placement");
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
 
         // If you don't have enough crumbs for a trap, just circle.
         boolean isOurTurnToTrap = checkIfLowestTrapCount();
-        if(rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost || !isOurTurnToTrap){
+        if((trapPlacementTarget == null) || (rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost) || !isOurTurnToTrap){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5);
         }
@@ -226,30 +225,38 @@ public class DefenseModule {
         }
     }
 
+    // TODO: This method takes up so much ducking bytecode T_T.
     public void runStationaryDefense() throws GameActionException {
+        // If your flag was taken, run the mobile defense code.
+        if(comms.getHomeFlagTakenStatus(defendingFlagIdx)){
+            Util.addToIndicatorString("RMD");
+            runMobileDefense();
+            return;
+        }
+
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
 
         assert(defendingFlagIdx != -1);
         Util.addToIndicatorString("FL: " + flagDefaultLoc);
-        Util.logBytecode("Start of SD");
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecode("Checking defensive target");
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecode("Updating defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
         updateTrapCountValue();
-        Util.logBytecode("Updating trap count");
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
-        Util.logBytecode("Placing traps");
     }
 
     public void runMobileDefense() throws GameActionException {
+        allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
+        allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
+        allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
+        flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
+
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
         targetChanged |= updateSharedDefensiveTarget();
         if(targetChanged){
@@ -259,10 +266,28 @@ public class DefenseModule {
             Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
             Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
             nav.mode = NavigationMode.FUZZYNAV;
-            nav.goTo(sharedDefensiveTarget, robot.distToSatisfy);
+            nav.goTo(sharedDefensiveTarget, 0);
         }
-        else{
+        else if(comms.getHomeFlagTakenStatus(defendingFlagIdx) == false){ // If our home flag is still there, circle that.
+            Util.addToIndicatorString("FL");
             nav.circle(flagDefaultLoc, 2, 5);
+        }
+        else if(comms.getHomeFlagTakenStatus(0) == false){ // Otherwise check if flag Idx 0 is still there, and circle that.
+            Util.addToIndicatorString("F0");
+            nav.circle(allFlagDefaultLocs[0], 2, 5);
+        }
+        else if(comms.getHomeFlagTakenStatus(1) == false){ // Otherwise check if flag Idx 1 is still there, and circle that.
+            Util.addToIndicatorString("F1");
+            nav.circle(allFlagDefaultLocs[1], 2, 5);
+        }
+        else if(comms.getHomeFlagTakenStatus(2) == false){ // Otherwise check if flag Idx 2 is still there, and circle that.
+            Util.addToIndicatorString("F2");
+            nav.circle(allFlagDefaultLocs[2], 2, 5);
+        }
+        else if(robot.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
+            Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
+            Util.addToIndicatorString("OF");
+            nav.goTo(robot.sharedOffensiveTarget, 0);
         }
     }
 
@@ -301,6 +326,7 @@ public class DefenseModule {
         return true;
     }
 
+    // TODO: Comm when enemies are nearby a flag.
     public boolean updateSharedDefensiveTarget() throws GameActionException {
         // if there is a spotted captured flag, go to that
         MapLocation bestDefensiveTargetLoc = null;

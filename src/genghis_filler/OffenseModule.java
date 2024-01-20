@@ -18,27 +18,6 @@ public class OffenseModule {
         this.nav = nav;
     }
 
-    public void spawnClosestToAllyFlags() throws GameActionException {
-        MapLocation spawnLoc = null;
-        int bestDist = Integer.MAX_VALUE;
-        for(MapLocation potentialSpawnLoc : rc.getAllySpawnLocations()){
-            if(!rc.canSpawn(potentialSpawnLoc)){
-                continue;
-            }
-            for(MapLocation flagLoc : robot.defaultHomeFlagLocs){
-                int dist = potentialSpawnLoc.distanceSquaredTo(flagLoc);
-                if(dist < bestDist){
-                    spawnLoc = potentialSpawnLoc;
-                    bestDist = dist;
-                }
-            }
-        }
-        if(spawnLoc != null){
-            rc.spawn(spawnLoc);
-        }
-    }
-
-
     public MapLocation getNewSharedOffensiveTarget() throws GameActionException {
         // if there is a known carried flag that is not the current target, go to that
         for (MapLocation loc : robot.knownCarriedOppFlags) {
@@ -105,19 +84,15 @@ public class OffenseModule {
         }
     }
 
-    // TODO: Change this to spawn closest to opponent flags?
     public void spawn() throws GameActionException {
-        robot.sharedOffensiveTarget = null;
-        robot.sharedOffensiveTargetType = null;
-        robot.prevTargetLoc = null;
+        if(robot.sharedOffensiveTarget != null){
+            Util.spawnClosestToLocation(robot.sharedOffensiveTarget);
+        }
         // Pick a random spawn location to attempt spawning in.
-        if(robot.defaultHomeFlagLocs == null){
+        else{
             MapLocation randomLoc = robot.allSpawnLocs[robot.rng.nextInt(robot.allSpawnLocs.length)];
             if (rc.canSpawn(randomLoc)) rc.spawn(randomLoc);
             robot.spawnLoc = randomLoc;
-        }
-        else{
-            spawnClosestToAllyFlags();
         }
     }
 

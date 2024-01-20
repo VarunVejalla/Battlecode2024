@@ -385,7 +385,7 @@ public class Comms {
         // this method checks if we have written defaultFlagLocations
         // these are the default locations of the home team flags after round 200
 
-        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT); // TODO: Make these constants.
+        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT);
         int y0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT);
 
         if(x0 >= 61 || y0 >= 61) {

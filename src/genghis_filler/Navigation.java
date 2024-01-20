@@ -65,7 +65,7 @@ public class Navigation {
     }
 
     public Direction bugNav(MapLocation target) throws GameActionException {
-
+        Util.addToIndicatorString("BGN");
         // Every 20 turns reset the closest distance to target
         if(roundsSinceClosestDistReset >= ROUNDS_TO_RESET_BUG_CLOSEST){
             closestDistToTarget = Integer.MAX_VALUE;
@@ -134,6 +134,7 @@ public class Navigation {
     }
 
     public Direction fuzzyNav(MapLocation target) throws GameActionException{
+        Util.addToIndicatorString("FZN");
         Direction toTarget = robot.myLoc.directionTo(target);
         Direction[] moveOptions = {
                 toTarget,
@@ -238,6 +239,9 @@ public class Navigation {
         if(Util.minMovesToReach(myLoc, center) < minDist){
 //            Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
+            if(centerDir == Direction.CENTER){
+                centerDir = robot.centerLoc.directionTo(myLoc);
+            }
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
             boolean moved = goToBug(target, minDist);
             if(moved){

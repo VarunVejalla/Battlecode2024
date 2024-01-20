@@ -58,7 +58,6 @@ public class Robot {
     OffenseModule offenseModule;
     Team myTeam;
     Team oppTeam;
-    MapLocation prevTargetLoc = null; // previous target I travelled to
     int distToSatisfy = 6;
     MapLocation centerLoc;
 
@@ -110,8 +109,6 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
-
-    int flagProtectingIdx = -1;
 
     Mode mode;
 
@@ -547,6 +544,9 @@ public class Robot {
                             if(flagInfo.getTeam() == oppTeam){
                                 continue;
                             }
+                            if(Util.checkIfItemInArray(flagInfo.getLocation(), defaultHomeFlagLocs)){
+                                continue;
+                            }
                             // Only clean out if it's moved by more than 2 (distance squared) squares.
                             if(flagInfo.getLocation().distanceSquaredTo(knownTakenAllyFlags[i]) <= 2){
                                 flagIsStillValid = true;
@@ -599,28 +599,19 @@ public class Robot {
         for(int i=0;i<3; i++){
             MapLocation defaultHomeFlagLoc = defaultHomeFlagLocs[i];
             if(rc.canSenseLocation(defaultHomeFlagLoc)){
-                boolean flagAtLocation = false;
+                boolean flagTaken = true;
 
                 for(FlagInfo flagInfo: sensedNearbyFlags){
                     if(flagInfo.getTeam() == myTeam && flagInfo.getLocation().equals(defaultHomeFlagLoc)){
-                        flagAtLocation = true;
+                        flagTaken = false;
                     }
                 }
 
-
-//                if(flagAtLocation && comms.getHomeFlagTakenStatus(i)){
-//                    comms.writeHomeFlagTakenStatus(i, false);
-//                }
-//
-//                else if(!flagAtLocation && !comms.getHomeFlagTakenStatus(i)){
-//                    comms.writeHomeFlagTakenStatus(i, true);
-//                }
-
                 // note: this code is a simplification of the previous two conditionals
                 // with this simplication, only one read to comms is needed
-                boolean valsEqual = flagAtLocation == comms.getHomeFlagTakenStatus(i);
-                if(valsEqual){
-                    comms.writeHomeFlagTakenStatus(i, !flagAtLocation);
+                boolean valsDiff = flagTaken != comms.getHomeFlagTakenStatus(i);
+                if(valsDiff){
+                    comms.writeHomeFlagTakenStatus(i, flagTaken);
                 }
 
             }
@@ -662,34 +653,14 @@ public class Robot {
         }
     }
 
-
     public void scanSurroundings() throws GameActionException {
         // this method scans the surroundings of the bot and updates comms if needed
         sensedNearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
         sensedNearbyMapInfos = rc.senseNearbyMapInfos();
 
-        // TODO: maybe it would be more efficient to call rc.senseNearbyRobots once and generate the arrays ourselves?
         nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, myTeam);
         nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, myTeam);
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
     }
-
-
-    // TODO: improve initial flag placement
-
-    //    public boolean tryPickingCrumbs() throws GameActionException{
-
-
-//    public boolean tryPickingCrumbs() throws GameActionException{
-//
-////
-////
-////        if(crumbTarget != null && roundsChasingCrumb < Constants.MAX_ROUNDS_TO_CHASE_CRUMB){
-////            nav.goToBug(crumbTarget);
-////        }
-////
-////        return false;
-//    }
-
 }

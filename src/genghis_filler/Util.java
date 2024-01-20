@@ -107,6 +107,23 @@ public class Util {
         return nearestHomeSpawnLoc;
     }
 
+    public static void spawnClosestToLocation(MapLocation targetLoc) throws GameActionException {
+        MapLocation spawnLoc = null;
+        int bestDist = Integer.MAX_VALUE;
+        for(MapLocation potentialSpawnLoc : robot.allSpawnLocs){
+            if(!rc.canSpawn(potentialSpawnLoc)){
+                continue;
+            }
+            int dist = potentialSpawnLoc.distanceSquaredTo(targetLoc);
+            if(dist < bestDist){
+                spawnLoc = potentialSpawnLoc;
+                bestDist = dist;
+            }
+        }
+        if(spawnLoc != null){
+            rc.spawn(spawnLoc);
+        }
+    }
 
     // TODO: fix the right and left diagonal symmetry cases
     public static MapLocation applySymmetry(MapLocation loc, SymmetryType type){

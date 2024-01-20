@@ -74,22 +74,8 @@ public class MovementModule {
         }
     }
 
-
-    public void runTrapperMovement() throws GameActionException{
-        // TODO: place bombs around the flag you're defending
-        //  TODO: go out and level up your specialization in the beginning of the game
-        return;
-    }
-
-
     public void runMovement() throws GameActionException {
         // if the round number is less than 200, walk around randomly
-
-        if(robot.mode == Mode.TRAPPING){
-            runTrapperMovement();
-            return;
-        }
-
 //        tryPickingCrumbs();
 
         if (rc.getRoundNum() < Constants.SETUP_ROUNDS) {
