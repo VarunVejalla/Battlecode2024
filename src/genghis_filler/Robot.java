@@ -4,7 +4,24 @@ import battlecode.common.*;
 
 import java.util.Random;
 
-enum OffensiveTargetType { CARRIED, DROPPED, APPROXIMATE };
+enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
+
+    public String shortString(){
+        switch(this){
+            case CARRIED:
+                return "C";
+            case DROPPED:
+                return "D";
+            case DEFAULT:
+                return "DE";
+            case APPROXIMATE:
+                return "A";
+            default:
+                return "NULL";
+        }
+
+    }
+};
 
 enum SymmetryType {
     HORIZONTAL,
@@ -98,8 +115,8 @@ public class Robot {
     MapLocation[] knownCarriedOppFlags;
     MapLocation[] knownTakenAllyFlags;
 
-    MapLocation sharedOffensiveTarget;
-    OffensiveTargetType sharedOffensiveTargetType;
+//    MapLocation sharedOffensiveTarget;
+//    OffensiveTargetType sharedOffensiveTargetType;
     MapLocation homeLocWhenCarryingFlag = null;
     FlagInfo[] sensedNearbyFlags;
     MapInfo[] sensedNearbyMapInfos;
@@ -111,7 +128,9 @@ public class Robot {
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
 
+    MapLocation[] defaultOppFlagLocs;
     int flagProtectingIdx = -1;
+    int idOfFlagImCarrying = -1;
 
     Mode mode;
 
@@ -148,6 +167,11 @@ public class Robot {
         if (rc.getRoundNum() < 50 && knownCarriedOppFlags[0] != null) {
             comms.setKnownOppFlagsToNull();
             comms.setApproxOppFlags(new MapLocation[]{null, null, null});
+        }
+
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
+        if(rc.getRoundNum() < 200 && defaultOppFlagLocs != null){
+            comms.setAllDefaultOppFlagLocsToNull();
         }
 
         if(!comms.defaultFlagLocationsWritten()) {
@@ -276,6 +300,9 @@ public class Robot {
     public void run() throws GameActionException {
         // this is the main run method that is called every turn
 
+        idOfFlagImCarrying = -1;
+        boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
+
         indicatorString = "";
         Util.addToIndicatorString("Mode:" + mode.toShortString());
 
@@ -321,11 +348,11 @@ public class Robot {
                     attackModule.runUnsafeStrategy();
                     comms.removeKnownOppFlagLoc(myLoc);
 
-                    if(sharedOffensiveTarget.equals(myLoc)){
-                        sharedOffensiveTarget = rc.getLocation();
-                        comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
+                    if(offenseModule.sharedOffensiveTarget.equals(myLoc)){
+                        offenseModule.sharedOffensiveTarget = rc.getLocation();
+                        comms.writeSharedOffensiveTarget(offenseModule.sharedOffensiveTarget);
                     }
-                    comms.writeKnownOppFlagLoc(sharedOffensiveTarget, true);
+                    comms.writeKnownOppFlagLoc(offenseModule.sharedOffensiveTarget, true);
                 }
             }
             else{
@@ -344,6 +371,13 @@ public class Robot {
             }
         }
         rc.setIndicatorString(indicatorString);
+
+        if(rc.getRoundNum() > 200
+                && hasFlagAtBeginningOfTurn
+                && !rc.hasFlag()
+                && Util.locIsASpawnLoc(rc.getLocation())){
+            comms.setOppFlagToCaptured(idOfFlagImCarrying);
+        }
     }
 
 
@@ -382,22 +416,25 @@ public class Robot {
         knownTakenAllyFlags = comms.getTakenAllyFlags();
 
         // read shared offensive target
-        sharedOffensiveTarget = comms.getSharedOffensiveTarget();
+        offenseModule.sharedOffensiveTarget = comms.getSharedOffensiveTarget();
 
         defenseModule.sharedDefensiveTarget = comms.getSharedDefensiveTarget();
 
-        sharedOffensiveTargetType = null;
-        if(Util.checkIfItemInArray(sharedOffensiveTarget, knownCarriedOppFlags)){
-            sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
+        offenseModule.sharedOffensiveTargetType = null;
+        if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, knownCarriedOppFlags)){
+            offenseModule.sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
         }
-        else if(Util.checkIfItemInArray(sharedOffensiveTarget, knownDroppedOppFlags)){
-            sharedOffensiveTargetType = OffensiveTargetType.DROPPED;
+        else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, knownDroppedOppFlags)){
+            offenseModule.sharedOffensiveTargetType = OffensiveTargetType.DROPPED;
         }
-        else if(Util.checkIfItemInArray(sharedOffensiveTarget, approximateOppFlagLocations)){
-            sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
+        else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, approximateOppFlagLocations)){
+            offenseModule.sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
 
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
+
+        defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
+
     }
 
 
@@ -497,6 +534,11 @@ public class Robot {
     public void tryAddingKnownOppFlags() throws GameActionException {
         for (FlagInfo flagInfo : sensedNearbyFlags) {
             if (flagInfo.getTeam() == myTeam) continue;
+
+            if(rc.getLocation().equals(flagInfo.getLocation())){
+                idOfFlagImCarrying = flagInfo.getID();
+            }
+
             if (isOppFlagKnown(flagInfo)) continue;
             if (flagInfo.isPickedUp()) {
                 // Update comms.
@@ -509,6 +551,8 @@ public class Robot {
                         break;
                     }
                 }
+                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
+
             } else {
                 // Update comms.
                 comms.writeKnownOppFlagLoc(flagInfo.getLocation(), false);
