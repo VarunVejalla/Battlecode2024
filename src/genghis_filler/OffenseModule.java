@@ -145,7 +145,7 @@ public class OffenseModule {
         }
         return currentTarget;
     }
-    
+
     public void tryUpdateSharedOffensiveTarget() throws GameActionException {
         // loop over carried flags
         OffensiveTarget currentTarget = new OffensiveTarget(sharedOffensiveTarget, sharedOffensiveTargetType);

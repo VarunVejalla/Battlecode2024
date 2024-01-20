@@ -284,10 +284,10 @@ public class DefenseModule {
             Util.addToIndicatorString("F2");
             nav.circle(allFlagDefaultLocs[2], 2, 5);
         }
-        else if(robot.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
+        else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
             Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
-            nav.goTo(robot.sharedOffensiveTarget, 0);
+            nav.goTo(robot.offenseModule.sharedOffensiveTarget, 0);
         }
     }
 
