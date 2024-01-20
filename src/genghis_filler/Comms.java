@@ -784,7 +784,7 @@ public class Comms {
                     Constants.MASK_FOR_OPP_FLAG_ID,
                     Constants.SHIFT_FOR_OPP_FLAG_ID);
             if(currFlagId == flagID) return;    // we've already seen this flagID, so we should already have its default location
-            else if(currFlagId == sjdev.Constants.NULL_FLAG_ID_VAL && firstNullIndex == -1) firstNullIndex = i;
+            else if(currFlagId == Constants.NULL_FLAG_ID_VAL && firstNullIndex == -1) firstNullIndex = i;
         }
 
         // if we get here, then we haven't seen this flagID before, so we need to add it
@@ -839,7 +839,7 @@ public class Comms {
     public void setOppFlagToCaptured(int flagID) throws GameActionException {
         // this sets the captured bit corresponding to the opponenet flag that has its ID as flagID to true
         // used by a robot as it walks into the spawnLocation
-        sjdev.Util.log("Setting flag " + flagID + " to captured");
+        Util.log("Setting flag " + flagID + " to captured");
         int index = 0;
         while(index < 3){
             int currFlagID = extractVal(
