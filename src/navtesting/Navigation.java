@@ -1,4 +1,4 @@
-package magellan;
+package navtesting;
 
 import battlecode.common.*;
 

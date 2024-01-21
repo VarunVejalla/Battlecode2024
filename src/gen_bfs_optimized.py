@@ -5,6 +5,7 @@ OUTPUT_FILENAME = "magellan/BFS20.java"
 PACKAGE_NAME = "magellan"
 start_loc = (5, 4)  # you may need to increase these vals if the RADIUS_SQUARED is increased from 20
 THRESHOLD_KEEP_ALL_DIRECTIONS = 8
+VERBOSE = False
 
 DIR_DICT = {(-1, 1): "NORTHWEST",
             (0, 1): "NORTH",
@@ -142,7 +143,8 @@ def gen_code(f, methodname, target_dir):
 
     # section 3
     f.write("Direction " + methodname + "(MapLocation target) throws GameActionException{\n")
-    f.write("System.out.println(\"Starting BFS Method: \" + Clock.getBytecodesLeft());\n")
+    if VERBOSE:
+        f.write("System.out.println(\"Starting BFS Method: \" + Clock.getBytecodesLeft());\n")
     f.write("try{ \n")
     f.write("\tdouble sum;\n")
     for i in range(1, len(order)):
@@ -188,7 +190,8 @@ def gen_code(f, methodname, target_dir):
         f.write("}\n")
 
     # section 4 (try catch section to check if we have just explored the target)
-    f.write("System.out.println(\"Ran BFS: \" + Clock.getBytecodesLeft());\n")
+    if VERBOSE:
+        f.write("System.out.println(\"Ran BFS: \" + Clock.getBytecodesLeft());\n")
 
     f.write("int dx = target.x - l{}{}.x;\n".format(start_loc[0], start_loc[1]))
     f.write("int dy = target.y - l{}{}.y;\n".format(start_loc[0], start_loc[1]))
@@ -205,7 +208,8 @@ def gen_code(f, methodname, target_dir):
         f.write("break;\n")
     f.write("}\n")
 
-    f.write("System.out.println(\"Didn't find within radius, gonna use distance heuristic: \" + Clock.getBytecodesLeft());\n")
+    if VERBOSE:
+        f.write("System.out.println(\"Didn't find within radius, gonna use distance heuristic: \" + Clock.getBytecodesLeft());\n")
 
     f.write("Direction ans = null;\n")
     # f.write("double bestScore = Double.MAX_VALUE;\n")
@@ -225,7 +229,8 @@ def gen_code(f, methodname, target_dir):
         f.write("if(currScore > bestScore){\n")
         f.write("bestScore = currScore;\n")
         f.write("ans = d{}{};\n".format(e_x, e_y))
-        f.write("System.out.println(\"Best end location: \" + l{}{}.toString());".format(e_x, e_y))
+        if VERBOSE:
+            f.write("System.out.println(\"Best end location: \" + l{}{}.toString());".format(e_x, e_y))
         f.write("}\n")
 
     f.write("return ans;\n")
@@ -272,7 +277,7 @@ extra_code = """
         if(!this.vars_are_reset){
             resetVars(heuristicMap);
         }
-        System.out.println("Running getBestDir: " + Clock.getBytecodesLeft());
+//        System.out.println("Running getBestDir: " + Clock.getBytecodesLeft());
         Direction output = null;
         switch(targetDir){
             case NORTH:
@@ -353,7 +358,8 @@ for d in direction_arr[1:]:
     f.write("p{}{} = heuristicMap[{}][{}];\n\n".format(curr_x, curr_y, curr_x, curr_y))
 
 f.write("this.vars_are_reset = true;\n")
-f.write("System.out.println(\"Finished Initializing Variables: \" + Clock.getBytecodesLeft());\n")
+if VERBOSE:
+    f.write("System.out.println(\"Finished Initializing Variables: \" + Clock.getBytecodesLeft());\n")
 f.write("}\n\n")
 
 

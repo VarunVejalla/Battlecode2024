@@ -1,6 +1,7 @@
-package magellan;
+package navtesting;
 import battlecode.common.*;
-public class BFS20 extends BFS{
+
+public class BFS20 extends BFS {
 BFS20(RobotController rc, Robot robot){
 super(rc, robot);
 }
