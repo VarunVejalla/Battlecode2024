@@ -665,6 +665,9 @@ public class Robot {
         nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, myTeam);
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
-        nearbyCrumbs = rc.senseNearbyCrumbs(Constants.CRUMB_SENSE_RADIUS);      // senseNearbyCrumbs() is 0 bytecode??? https://releases.battlecode.org/javadoc/battlecode24/2.0.1/index.html
+
+        if (rc.getRoundNum() < Constants.SETUP_ROUNDS) {
+            nearbyCrumbs = rc.senseNearbyCrumbs(Constants.CRUMB_SENSE_RADIUS);      // senseNearbyCrumbs() is 0 bytecode??? https://releases.battlecode.org/javadoc/battlecode24/2.0.1/index.html
+        }
     }
 }

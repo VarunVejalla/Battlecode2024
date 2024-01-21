@@ -1,6 +1,6 @@
 package genghis_filler_crumbs;
 
-import genghis_filler.utils.FixedSizeQueue;
+import genghis_filler_crumbs.utils.FixedSizeQueue;
 import battlecode.common.*;
 
 public class DamScout {
