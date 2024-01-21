@@ -1,4 +1,4 @@
-package sjdev;
+package musashi;
 
 import battlecode.common.*;
 
