@@ -385,7 +385,7 @@ public class Comms {
         // this method checks if we have written defaultFlagLocations
         // these are the default locations of the home team flags after round 200
 
-        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT); // TODO: Make these constants.
+        int x0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_X_MASK, Constants.DEFAULT_FLAG_LOC_X_SHIFT);
         int y0 = extractVal(Constants.DEFAULT_FLAG_LOC_0_IDX, Constants.DEFAULT_FLAG_LOC_Y_MASK, Constants.DEFAULT_FLAG_LOC_Y_SHIFT);
 
         if(x0 >= 61 || y0 >= 61) {
@@ -737,10 +737,8 @@ public class Comms {
         // Max value of 31.
         insertVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx], count);
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // comms methods for storing default opp flag locations
 
-
+    /////////// comms methods for default opp flag locations//////////////////////////////////////////////////////
     public void setAllDefaultOppFlagLocsToNull() throws GameActionException{
         // this method sets all the default opp flag locs to null at the beginning of the game
         // (since we can have no idea where the opp flags are until round 200)
@@ -860,5 +858,6 @@ public class Comms {
             index++;
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

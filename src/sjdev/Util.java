@@ -13,18 +13,11 @@ public class Util {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    public static boolean locIsASpawnLoc(MapLocation loc) throws GameActionException{
-        // this method checks if the robot is on a spawn location
-        for(MapLocation spawnCenter: robot.spawnCenters){
-            if(Util.minMovesToReach(loc, spawnCenter) <= 1){
-                return true;
-            }
-        }
-        return false;
-    }
-
     
     public static boolean tryMove(Direction dir) throws GameActionException{
+        if(rc.canFill(rc.adjacentLocation(dir))) {
+            rc.fill(rc.adjacentLocation(dir));
+        }
         if(rc.canMove(dir)) {
             rc.move(dir);
             robot.myLoc = rc.getLocation();
@@ -117,6 +110,23 @@ public class Util {
         return nearestHomeSpawnLoc;
     }
 
+    public static void spawnClosestToLocation(MapLocation targetLoc) throws GameActionException {
+        MapLocation spawnLoc = null;
+        int bestDist = Integer.MAX_VALUE;
+        for(MapLocation potentialSpawnLoc : robot.allSpawnLocs){
+            if(!rc.canSpawn(potentialSpawnLoc)){
+                continue;
+            }
+            int dist = potentialSpawnLoc.distanceSquaredTo(targetLoc);
+            if(dist < bestDist){
+                spawnLoc = potentialSpawnLoc;
+                bestDist = dist;
+            }
+        }
+        if(spawnLoc != null){
+            rc.spawn(spawnLoc);
+        }
+    }
 
     // TODO: fix the right and left diagonal symmetry cases
     public static MapLocation applySymmetry(MapLocation loc, SymmetryType type){
@@ -236,4 +246,15 @@ public class Util {
                 dir.opposite()
         };
     }
+
+    public static boolean locIsASpawnLoc(MapLocation loc) throws GameActionException{
+        // this method checks if the robot is on a spawn location
+        for(MapLocation spawnCenter: robot.spawnCenters){
+            if(Util.minMovesToReach(loc, spawnCenter) <= 1){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
