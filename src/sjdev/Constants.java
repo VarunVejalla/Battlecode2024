@@ -197,4 +197,8 @@ public class Constants {
     public static final int DEFAULT_OPP_FLAG_Y_MASK = 0b111111;
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
+
+    ////--------------------------------------------------------------
+    public static final int NUM_ROUNDS_TO_RETREAT_FOR = 3;
+
 }

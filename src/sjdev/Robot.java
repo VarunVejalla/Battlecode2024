@@ -70,6 +70,19 @@ public class Robot {
             Direction.NORTHWEST,
     };
 
+        static final Direction[] allDirections = {
+                Direction.NORTH,
+                Direction.NORTHEAST,
+                Direction.EAST,
+                Direction.SOUTHEAST,
+                Direction.SOUTH,
+                Direction.SOUTHWEST,
+                Direction.WEST,
+                Direction.NORTHWEST,
+                Direction.CENTER
+        };
+
+
     // array containing enemy flag locations (updated every round using comms)
     MapLocation[] approximateOppFlagLocations;
     MapLocation[] knownDroppedOppFlags;
@@ -148,7 +161,7 @@ public class Robot {
             offenseModule.setup();
         }
         else{
-            Util.log("UNKNOWN MODE: " + mode);
+//            Util.log("UNKNOWN MODE: " + mode);
             rc.resign();
         }
 
@@ -246,7 +259,7 @@ public class Robot {
             offenseModule.spawn();
         }
         else{
-            Util.log("ROBOT IS UNKNOWN MODE: " + mode);
+//            Util.log("ROBOT IS UNKNOWN MODE: " + mode);
             rc.resign();
         }
     }
@@ -277,6 +290,7 @@ public class Robot {
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
+
                 if(potentialFlagMover){
                     potentialFlagMover = flagMover.runFlagMover();
                 }
@@ -313,7 +327,8 @@ public class Robot {
                 homeLocWhenCarryingFlag = null;
                 attackModule.runSetup();
                 attackModule.runStrategy();
-                if(mode == Mode.OFFENSE){
+                nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+                if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
                 }
                 else if(mode == Mode.STATIONARY_DEFENSE){
@@ -427,9 +442,9 @@ public class Robot {
         if (rc.getRoundNum() >= Constants.SETUP_ROUNDS && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
             approximateOppFlagLocations = rc.senseBroadcastFlagLocations();
             comms.setApproxOppFlags(approximateOppFlagLocations);
-            Util.log("Approximate Flag Broadcast!");
-            Util.logArray("approximateFlagLocs: ", approximateOppFlagLocations);
-            Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
+//            Util.log("Approximate Flag Broadcast!");
+//            Util.logArray("approximateFlagLocs: ", approximateOppFlagLocations);
+//            Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
         }
     }
 
@@ -558,7 +573,7 @@ public class Robot {
                     if (!flagIsStillValid) {
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
-                        Util.log("REMOVING TAKEN ALLY FLAG: " + knownTakenAllyFlags[i]);
+//                        Util.log("REMOVING TAKEN ALLY FLAG: " + knownTakenAllyFlags[i]);
                         comms.removeTakenAllyFlag(knownTakenAllyFlags[i]);
                         knownTakenAllyFlags[i] = null;
                     }
@@ -584,9 +599,10 @@ public class Robot {
                 }
             }
             Util.log("Found new taken ally flag");
-            Util.logArray("KTA is now: ", knownTakenAllyFlags);
+//            Util.logArray("KTA is now: ", knownTakenAllyFlags);
         }
     }
+
 
     public void tryUpdatingHomeFlagTakenInfo() throws GameActionException {
         // this method tries to update the "taken" status of home flags if the current robot can see

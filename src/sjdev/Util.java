@@ -208,6 +208,12 @@ public class Util {
         for(int i = 0; i < spawnLocs.length; i++){
             int x = spawnLocs[i].x;
             int y = spawnLocs[i].y;
+
+            // check if moving in any direction will go off the map
+            // without this check, bot errors out on maps where spawn locs are on the edge
+            if(x == 0 || x == rc.getMapWidth() - 1 || y == 0 || y == rc.getMapHeight() - 1){
+                continue;
+            }
             if(spawnLocMap[x - 1][y]
                 && spawnLocMap[x + 1][y]
                 && spawnLocMap[x][y - 1]
@@ -257,4 +263,43 @@ public class Util {
         return false;
     }
 
+
+
+    // this method checks if a direction is cardinal
+    // used in AttackModule when prioritizing to move in cardinal directions to maintain attack formation
+    public static boolean checkIfDirIsCardinal(Direction dir){
+        return dir == Direction.CENTER
+                || dir == Direction.NORTH
+                || dir == Direction.EAST
+                || dir == Direction.SOUTH
+                || dir == Direction.WEST;
+    }
+
+
+    // this method is a helper method to get the currentTarget of a robot based on its mode
+    public static MapLocation getCurrentTarget() throws GameActionException {
+        if(robot.mode == Mode.OFFENSE){
+            return robot.offenseModule.sharedOffensiveTarget;
+        }
+        else if(robot.mode == Mode.MOBILE_DEFENSE){
+            return robot.defenseModule.sharedDefensiveTarget;
+        }
+
+        else if(robot.mode == Mode.STATIONARY_DEFENSE && robot.defenseModule.defendingFlagIdx != -1){
+            return robot.comms.getDefaultHomeFlagLoc(robot.defenseModule.defendingFlagIdx);
+        }
+        return null;
+    }
+
+    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
+        // TODO: implement this method to take into account attack specializations
+        // this method returns the attack damage of the robot given its specialization
+        return 150.0;
+    }
+
+
+    public static double getAttackCooldown(RobotInfo robotInfo) throws GameActionException{
+        // TODO: implement this method to take into account attack specializations
+        return 20.0;
+    }
 }
