@@ -208,6 +208,13 @@ public class Util {
         for(int i = 0; i < spawnLocs.length; i++){
             int x = spawnLocs[i].x;
             int y = spawnLocs[i].y;
+
+            // check if moving in any direction will go off the map
+            // without this check, bot errors out on maps where spawn locs are on the edge
+            if(x == 0 || x == rc.getMapWidth() - 1 || y == 0 || y == rc.getMapHeight() - 1){
+                continue;
+            }
+
             if(spawnLocMap[x - 1][y]
                 && spawnLocMap[x + 1][y]
                 && spawnLocMap[x][y - 1]
