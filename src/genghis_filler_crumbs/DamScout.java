@@ -1,7 +1,9 @@
 package genghis_filler_crumbs;
 
-import genghis_filler_crumbs.utils.FixedSizeQueue;
 import battlecode.common.*;
+import genghis_nav.utils.FixedSizeQueue;
+
+
 
 public class DamScout {
     RobotController rc;
@@ -13,10 +15,9 @@ public class DamScout {
     int[] distsToSpawnCenters;
     MapLocation targetLoc = null;
     Direction adjDir = null;
-    int reachCrumbCount = 0;
-    boolean moveBackFlag = true;
 
     FixedSizeQueue<MapLocation> crumbs = new FixedSizeQueue<MapLocation>(Constants.CRUMB_REMEMBER_COUNT);
+    int movingToCrumbStepCount = 0;
 
     public DamScout(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -50,9 +51,11 @@ public class DamScout {
         return null;
     }
 
-    public void runScout(MapLocation[] nearbyCrumbs) throws GameActionException {
+    public void runScout() throws GameActionException {
         distsToSpawnCenters = comms.readDistsToSpawnCenters();
 
+        // Populate Nearby Crumbs
+        MapLocation[] nearbyCrumbs = rc.senseNearbyCrumbs(Constants.CRUMB_SENSE_RADIUS);      // senseNearbyCrumbs() is 0 bytecode??? https://releases.battlecode.org/javadoc/battlecode24/2.0.1/index.html
         for (MapLocation crumb : nearbyCrumbs) {
             crumbs.add(crumb);
         }
@@ -91,34 +94,31 @@ public class DamScout {
             }
 
             scanForNearbyDamnLocation();
-            comms.writeDistsToSpawnCenters(distsToSpawnCenters);            
-        } else {
-            reachCrumbCount += 1;
+            comms.writeDistsToSpawnCenters(distsToSpawnCenters);
+        } else {        // Grab the crumbs
+            movingToCrumbStepCount += 1;
 
-            if (reachCrumbCount >= Constants.CRUMB_GIVE_UP_STEPS) {
-                if (moveBackFlag) {
-                    targetLoc = robot.spawnLoc;
-                }
-                else {
-                    targetLoc = null;
-                }
-                moveBackFlag = !moveBackFlag;
-                reachCrumbCount = 0; 
+            if (movingToCrumbStepCount >= Constants.CRUMB_GIVE_UP_STEPS) {
+                movingToCrumbStepCount = 0;
+                // TODO Get a new target
+                targetLoc = null;
             }
-
-            if (targetLoc == null  && crumbs.size() > 0) {
+            
+            // Get a new target
+            if (targetLoc == null && crumbs.size() > 0) {
                 targetLoc = crumbs.poll();
-                reachCrumbCount = 0;
             }
-
+            
+            // If we have a target
             if (targetLoc != null) {
                 nav.goToBug(targetLoc, 0);
+
+                // Reset target location once reached
                 MapLocation curLocation = rc.getLocation();
                 if (curLocation.equals(targetLoc)) {
                     targetLoc = null;
                 }
-            }
-            else {
+            } else { // Can't Do anything
                 nav.moveRandom();
             }
         }

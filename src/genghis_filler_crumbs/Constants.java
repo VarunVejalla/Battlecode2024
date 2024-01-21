@@ -164,11 +164,6 @@ public class Constants {
     public static final int TRAP_COUNT_IDX = 33;
     public static final int TRAP_COUNT_MASKS[] = {0b000000000011111, 0b000001111100000, 0b111110000000000};
     public static final int TRAP_COUNT_SHIFTS[] = {0, 5, 10};
-    
-    // ------------------- crumbs shit ------------------------
-    public static final int CRUMB_SENSE_RADIUS = 10;
-    public static final int CRUMB_REMEMBER_COUNT = 10;
-    public static final int CRUMB_GIVE_UP_STEPS = 20;
 
     /////////////////// constants for default opp flag locs ////////////////
     // constants for default opp flag loc
@@ -202,4 +197,9 @@ public class Constants {
     public static final int DEFAULT_OPP_FLAG_Y_MASK = 0b111111;
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
+    
+    // ------------------- crumbs shit ------------------------
+    public static final int CRUMB_SENSE_RADIUS = 10;
+    public static final int CRUMB_REMEMBER_COUNT = 10;
+    public static final int CRUMB_GIVE_UP_STEPS = 20;
 }

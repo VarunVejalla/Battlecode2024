@@ -379,6 +379,7 @@ public class AttackModule {
             runUnsafeStrategy();
         }
 
+        bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
         runHealing(); // try healing
     }
