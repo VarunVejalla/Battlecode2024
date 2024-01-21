@@ -762,7 +762,6 @@ public class Comms {
         }
     }
 
-
     public int[] getOppFlagIDArray() throws GameActionException{
         int[] oppFlagIDs = new int[3];
         for(int i=0; i<3; i++){
@@ -858,6 +857,79 @@ public class Comms {
             index++;
         }
     }
+
+    // Defense help related stuff
+
+    // Enemy count near flag.
+    public void setEnemyCountNearFlagPrevRound(int flagIdx, int count) throws GameActionException {
+        count = Math.min(count, 31); // Write a max of 31
+        insertVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_SHIFT, count);
+    }
+
+    public int getEnemyCountNearFlagPrevRound(int flagIdx) throws GameActionException {
+        return extractVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_SHIFT);
+    }
+
+    public int[] getEnemyCountsNearFlagsPrevRound() throws GameActionException {
+        return new int[]{
+            getEnemyCountNearFlagPrevRound(0),
+            getEnemyCountNearFlagPrevRound(1),
+            getEnemyCountNearFlagPrevRound(2)
+        };
+    }
+
+    public void setEnemyCountNearFlagCurrRound(int flagIdx, int count) throws GameActionException {
+        count = Math.min(count, 31); // Write a max of 31
+        insertVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_SHIFT, count);
+    }
+
+    public int getEnemyCountNearFlagCurrRound(int flagIdx) throws GameActionException {
+        return extractVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_SHIFT);
+    }
+
+    // Mod of round number when last updated.
+    public void setEnemyCountNearFlagLastUpdated(int flagIdx, int roundMod) throws GameActionException {
+        assert(roundMod <= 2);
+        insertVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_SHIFT, roundMod);
+    }
+
+    // Mod of round number when last updated.
+    public int getEnemyCountNearFlagLastUpdated(int flagIdx) throws GameActionException {
+        return extractVal(Constants.ENEMY_COUNT_NEAR_FLAG_INDICES[flagIdx], Constants.ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_MASK, Constants.ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_SHIFT);
+    }
+
+    // Closest enemy to flag data (so far this round).
+    public void setClosestEnemyToFlagLocation(int flagIdx, MapLocation loc) throws GameActionException {
+        int trueIndex = constants.CLOSEST_ENEMY_TO_FLAG_INDICES[flagIdx];
+        int x;
+        int y;
+
+        if(loc == null){
+            x = constants.LOCATION_NULL_VAL;
+            y = constants.LOCATION_NULL_VAL;
+        } else {
+            x = loc.x;
+            y = loc.y;
+        }
+
+        // set the x value
+        insertVal(trueIndex, constants.CLOSEST_ENEMY_TO_FLAG_X_MASK, constants.CLOSEST_ENEMY_TO_FLAG_X_SHIFT, x);
+
+        // set the y value
+        insertVal(trueIndex, constants.CLOSEST_ENEMY_TO_FLAG_Y_MASK, constants.CLOSEST_ENEMY_TO_FLAG_Y_SHIFT, y);
+    }
+
+    public MapLocation getClosestEnemyToFlagLocation(int flagIdx) throws GameActionException {
+        // this method returns the location of a single known opponent flag (specified by idx)
+        int trueIndex = constants.CLOSEST_ENEMY_TO_FLAG_INDICES[flagIdx];
+        int x = extractVal(trueIndex, constants.CLOSEST_ENEMY_TO_FLAG_X_MASK, constants.CLOSEST_ENEMY_TO_FLAG_X_SHIFT);
+        int y = extractVal(trueIndex, constants.CLOSEST_ENEMY_TO_FLAG_Y_MASK, constants.CLOSEST_ENEMY_TO_FLAG_Y_SHIFT);
+        if(x == constants.LOCATION_NULL_VAL || y == constants.LOCATION_NULL_VAL){
+            return null;
+        }
+        return new MapLocation(x, y);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

@@ -12,6 +12,7 @@ public class DefenseModule {
     MapLocation flagDefaultLoc;
     MapLocation sharedDefensiveTarget;
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+    int mobileDefendingFlagIdx = -1;
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
     MapLocation[] trapsList = new MapLocation[31];
@@ -189,6 +190,9 @@ public class DefenseModule {
             if(info.getMapLocation().equals(flagDefaultLoc)){
                 continue;
             }
+            if(Util.checkLocsSameLattice(info.getMapLocation(), flagDefaultLoc)){ // This is to only place traps on lattice.
+                continue;
+            }
             int heuristic = info.getMapLocation().distanceSquaredTo(flagDefaultLoc) * 10;
             Direction flagToSpot = flagDefaultLoc.directionTo(info.getMapLocation());
             heuristic += Util.directionDistance(flagToSpot, flagToCenter) * 10;
@@ -207,19 +211,24 @@ public class DefenseModule {
         updateBestTrapPlacementTarget();
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
+        TrapType targetTrapType = null;
+        if(trapPlacementTarget != null){
+//            targetTrapType = Util.checkLocsSameLattice(flagDefaultLoc, trapPlacementTarget) ? TrapType.EXPLOSIVE : TrapType.STUN;
+            targetTrapType = TrapType.STUN;
+        }
 
         // If you don't have enough crumbs for a trap, just circle.
         boolean isOurTurnToTrap = checkIfLowestTrapCount();
-        if((trapPlacementTarget == null) || (rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost) || !isOurTurnToTrap){
+        if((trapPlacementTarget == null) || (rc.getCrumbs() < targetTrapType.buildCost) || !isOurTurnToTrap){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5);
         }
-        else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
+        else if(!rc.canBuild(targetTrapType, trapPlacementTarget)){
             nav.goToBug(trapPlacementTarget, 0);
             return;
         }
         else{
-            rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
+            rc.build(targetTrapType, trapPlacementTarget);
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
         }
@@ -265,6 +274,7 @@ public class DefenseModule {
         if(sharedDefensiveTarget != null){
             Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
             Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
+            Util.addToIndicatorString("MDFI" + mobileDefendingFlagIdx);
             nav.mode = NavigationMode.FUZZYNAV;
             nav.goTo(sharedDefensiveTarget, 0);
         }
@@ -292,29 +302,30 @@ public class DefenseModule {
     }
 
     // Strategy methods
-//    public int getDefensiveTargetPriority(MapLocation defensiveTarget){
-//        // if there is a spotted captured flag, that's a priority of 1.
-//        if(Util.checkIfItemInArray(defensiveTarget, robot.knownCarriedAllyFlags)){
-//            return 1;
-//        }
-//
-//        // if there is a known dropped flag that is not the current target, that's a priority of 2.
-//        if(Util.checkIfItemInArray(defensiveTarget, robot.knownCarriedAllyFlags)){
-//            return 2;
-//        }
-//
-//        return Integer.MAX_VALUE;
-//    }
-
+    final int HOME_DANGER_ENTER_THRESHOLD = 3;
+    final int HOME_DANGER_EXIT_THRESHOLD = 1;
+    final int HOME_DANGER_SWITCH_THRESHOLD = 3;
     public boolean checkSharedDefensiveTargetStillValid() throws GameActionException {
         if(sharedDefensiveTarget == null){
             sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+            mobileDefendingFlagIdx = -1;
             return false;
         }
 
         for (MapLocation loc : robot.knownTakenAllyFlags) {
             if (loc != null && loc.distanceSquaredTo(sharedDefensiveTarget) <= 2) {
                 sharedDefensiveTargetPriority = 1;
+                mobileDefendingFlagIdx = -1;
+                return false;
+            }
+        }
+
+        // Check if base is still under attack.
+        if(Util.checkIfItemInArray(sharedDefensiveTarget, allFlagDefaultLocs)){
+            int flagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
+            if(comms.getEnemyCountNearFlagPrevRound(flagIdx) > HOME_DANGER_EXIT_THRESHOLD){
+                sharedDefensiveTargetPriority = 2;
+                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
                 return false;
             }
         }
@@ -323,6 +334,7 @@ public class DefenseModule {
         Util.logArray("KTA: ", robot.knownTakenAllyFlags);
         sharedDefensiveTarget = null;
         sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+        mobileDefendingFlagIdx = -1;
         return true;
     }
 
@@ -339,9 +351,23 @@ public class DefenseModule {
             }
         }
 
+        if(bestPriority >= 2){
+            int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
+            int mostInDangerFlagIdx = Util.maxIndexInArray(enemyCounts);
+            if(enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_ENTER_THRESHOLD){
+                if(mobileDefendingFlagIdx == -1 || enemyCounts[mobileDefendingFlagIdx] - enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_SWITCH_THRESHOLD){
+                    bestDefensiveTargetLoc = allFlagDefaultLocs[mostInDangerFlagIdx];
+                    bestPriority = 2;
+                }
+            }
+        }
+
         if(bestPriority < sharedDefensiveTargetPriority){
             sharedDefensiveTarget = bestDefensiveTargetLoc;
             sharedDefensiveTargetPriority = bestPriority;
+            if(sharedDefensiveTargetPriority == 2){
+                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
+            }
             return true;
         }
         return false;

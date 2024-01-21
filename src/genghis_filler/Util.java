@@ -61,6 +61,21 @@ public class Util {
         return getItemIndexInArray(item, array) != -1;
     }
 
+    public static int maxIndexInArray(int[] array){
+        int maxVal = array[0];
+        int maxIdx = 0;
+        for(int i = 1; i < array.length; i++){
+            if(array[i] > maxVal){
+                maxVal = array[i];
+                maxIdx = i;
+            }
+        }
+        return maxIdx;
+    }
+    public static boolean maxIndexInArray(MapLocation a, MapLocation b){
+        return (a.x + b.x + a.y + b.y) % 2 == 0;
+    }
+
 
     public static <T> void logArray(String name, T[] array){
         // helper method to display array of any type to the logs
@@ -256,5 +271,10 @@ public class Util {
         }
         return false;
     }
+
+    public static boolean checkLocsSameLattice(MapLocation a, MapLocation b){
+        return (a.x + b.x + a.y + b.y) % 2 == 0;
+    }
+
 
 }

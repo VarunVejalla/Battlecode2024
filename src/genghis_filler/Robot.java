@@ -349,6 +349,14 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(0),
 //                        comms.getHomeFlagTakenStatus(1),
 //                        comms.getHomeFlagTakenStatus(2)});
+        if(defaultHomeFlagLocs != null){
+            Util.logArray("defaultHomeFlagLocs: ", defaultHomeFlagLocs);
+        }
+        Util.logArray("Enemy counts near flags", new Integer[] {
+                comms.getEnemyCountNearFlagPrevRound(0),
+                comms.getEnemyCountNearFlagPrevRound(1),
+                comms.getEnemyCountNearFlagPrevRound(2),
+        });
 //        Util.log("Shared offensive target: " + sharedOffensiveTarget);
 //        Util.log("Shared offensive target type: " + sharedOffensiveTargetType);
 //
@@ -619,7 +627,6 @@ public class Robot {
         }
     }
 
-
     public void updateComms() throws GameActionException {
         // method to update comms
         // gets run every round
@@ -634,6 +641,13 @@ public class Robot {
         tryCleaningTakenAllyFlags();
         tryAddingTakenAllyFlags();
         tryUpdatingHomeFlagTakenInfo();
+
+        // Figuring out how close enemies are to us.
+        setEnemyCountsToPrevRoundIfNotAlreadySet();
+        updateEnemyCountsNearFlag();
+        updateClosestEnemyToFlag();
+
+        // Update shared offensive target.
         offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
@@ -664,4 +678,82 @@ public class Robot {
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
     }
+
+    public void updateClosestEnemyToFlag() throws GameActionException {
+        for(int flagIdx = 0; flagIdx < 3; flagIdx++){
+            MapLocation closestLoc = comms.getClosestEnemyToFlagLocation(flagIdx);
+            int closestDist = Integer.MAX_VALUE;
+            if(comms.getHomeFlagTakenStatus(0)){
+                continue;
+            }
+            for(RobotInfo info : nearbyVisionEnemies){
+                MapLocation infoLoc = info.getLocation();
+                int dist = infoLoc.distanceSquaredTo(defaultHomeFlagLocs[flagIdx]);
+                if(dist < closestDist){
+                    closestDist = dist;
+                    closestLoc = infoLoc;
+                }
+            }
+            comms.setClosestEnemyToFlagLocation(flagIdx, closestLoc);
+        }
+    }
+
+    public void updateEnemyCountsNearFlag() throws GameActionException {
+        int[] counts = new int[3];
+        for(RobotInfo info : nearbyVisionEnemies){
+            MapLocation infoLoc = info.getLocation();
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[0]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[0] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[1]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[1] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[2]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[2] += 1;
+            }
+        }
+        if(!comms.getHomeFlagTakenStatus(0) && counts[0] > comms.getEnemyCountNearFlagCurrRound(0)){
+            comms.setEnemyCountNearFlagCurrRound(0, counts[0]);
+        }
+        if(!comms.getHomeFlagTakenStatus(1) && counts[1] > comms.getEnemyCountNearFlagCurrRound(1)){
+            comms.setEnemyCountNearFlagCurrRound(1, counts[1]);
+        }
+        if(!comms.getHomeFlagTakenStatus(2) && counts[2] > comms.getEnemyCountNearFlagCurrRound(2)){
+            comms.setEnemyCountNearFlagCurrRound(2, counts[2]);
+        }
+    }
+
+    public void setEnemyCountsToPrevRoundIfNotAlreadySet() throws GameActionException {
+        int mod = rc.getRoundNum() % 2;
+        boolean setDefensiveTarget = comms.getEnemyCountNearFlagLastUpdated(0) != mod;
+        if(setDefensiveTarget){
+            testLog();
+            MapLocation[] closestEnemyLocs = {comms.getClosestEnemyToFlagLocation(0), comms.getClosestEnemyToFlagLocation(1) , comms.getClosestEnemyToFlagLocation(2)};
+//            defenseModule.tryUpdateSharedDefensiveTarget();
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(0)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(0, comms.getEnemyCountNearFlagCurrRound(0));
+            comms.setEnemyCountNearFlagCurrRound(0, 0);
+            comms.setEnemyCountNearFlagLastUpdated(0, mod);
+            comms.setClosestEnemyToFlagLocation(0, null);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(1)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(1, comms.getEnemyCountNearFlagCurrRound(1));
+            comms.setEnemyCountNearFlagCurrRound(1,  0);
+            comms.setEnemyCountNearFlagLastUpdated(1, mod);
+            comms.setClosestEnemyToFlagLocation(1, null);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(2)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(2, comms.getEnemyCountNearFlagCurrRound(2));
+            comms.setEnemyCountNearFlagCurrRound( 2, 0);
+            comms.setEnemyCountNearFlagLastUpdated(2, mod);
+            comms.setClosestEnemyToFlagLocation(2, null);
+        }
+    }
+
+
+
 }

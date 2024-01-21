@@ -147,6 +147,7 @@ public class Navigation {
         return wallDir;
     }
 
+    // TODO: Keep track of recently visited squares and don't revisit.
     public Direction fuzzyNav(MapLocation target) throws GameActionException{
         Util.addToIndicatorString("FZN");
         Direction toTarget = robot.myLoc.directionTo(target);
