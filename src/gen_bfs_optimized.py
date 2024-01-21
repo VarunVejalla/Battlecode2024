@@ -147,17 +147,18 @@ def gen_code(f, methodname, target_dir):
     f.write("\tdouble sum;\n")
     for i in range(1, len(order)):
         x, y = order[i]
-        f.write("if(rc.onTheMap(l{}{})){{\n".format(x, y))
+        # f.write("if(rc.onTheMap(l{}{})){{\n".format(x, y))
         if start_loc in get_neighbor_locs((x, y)):
             # if True:
             f.write("if(!rc.isLocationOccupied(l{}{})){{\n".format(x, y))
 
         # f.write("p{}{} = 20*((double)rc.senseRubble(l{}{})/10.0 + 1);\n".format(x, y, x, y))
 
-        f.write("info = rc.senseMapInfo(l{}{});\n".format(x, y))
+        # f.write("info = rc.senseMapInfo(l{}{});\n".format(x, y))
         # f.write("if(info.isPassable()){\n")
-        f.write("if(robot.nav.isPassableBFS(info)){\n")
-        f.write("p{}{} = info.isWater() ? 3.0 : 1.0;\n".format(x, y, x, y))
+        # f.write("if(robot.nav.isPassableBFS(info)){\n")
+        f.write("if(p{}{} != 0){{\n".format(x, y))
+        # f.write("p{}{} = info.isWater() ? 3.0 : 1.0;\n".format(x, y, x, y))
         f.write("v{}{} -= p{}{};\n".format(x, y, x, y))
 
         neighbors = get_neighbor_locs((x, y))
@@ -180,7 +181,7 @@ def gen_code(f, methodname, target_dir):
                 f.write("}\n")
 
         f.write("v{}{} += p{}{};\n".format(x, y, x, y))
-        f.write("}\n")
+        # f.write("}\n")
         if start_loc in get_neighbor_locs((x, y)):
             # if True:
             f.write("}\n")
@@ -266,10 +267,10 @@ extra_code_commented = """
     }
 """
 extra_code = """
-    public Direction getBestDir(MapLocation target) throws GameActionException {
+    public Direction getBestDir(MapLocation target, int[][] heuristicMap) throws GameActionException {
         Direction targetDir = robot.myLoc.directionTo(target);
         if(!this.vars_are_reset){
-            resetVars();
+            resetVars(heuristicMap);
         }
         System.out.println("Running getBestDir: " + Clock.getBytecodesLeft());
         Direction output = null;
@@ -328,12 +329,12 @@ for x, y in full_order:
     f.write("static MapLocation l{}{};\n".format(x, y))
     f.write("static double v{}{};\n".format(x, y))
     f.write("static Direction d{}{};\n".format(x, y))
-    f.write("static double p{}{};\n".format(x, y))
+    f.write("static int p{}{};\n".format(x, y))
     f.write("\n"*2)
 
 # section 2
 direction_arr = get_direction_arr([0, 0], full_order)
-f.write("public void resetVars() throws GameActionException{\n")
+f.write("public void resetVars(int[][] heuristicMap) throws GameActionException{\n")
 
 f.write("l{}{} = robot.myLoc;\n".format(start_loc[0], start_loc[1]))
 f.write("v{}{} = 0;\n\n".format(start_loc[0], start_loc[1]))
@@ -349,6 +350,7 @@ for d in direction_arr[1:]:
     f.write("l{}{} = l{}{}.add(Direction.{});\n".format(curr_x, curr_y, prev_x, prev_y, dir))
     f.write("v{}{} = 100000000;\n".format(curr_x, curr_y, prev_x, prev_y, dir))
     f.write("d{}{} = null;\n\n".format(curr_x, curr_y))
+    f.write("p{}{} = heuristicMap[{}][{}];\n\n".format(curr_x, curr_y, curr_x, curr_y))
 
 f.write("this.vars_are_reset = true;\n")
 f.write("System.out.println(\"Finished Initializing Variables: \" + Clock.getBytecodesLeft());\n")

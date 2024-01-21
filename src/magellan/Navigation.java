@@ -18,6 +18,9 @@ public class Navigation {
             Direction.NORTHWEST,
     };
 
+    static final int BFS_CENTER_X = 5;
+    static final int BFS_CENTER_Y = 4;
+
     RobotController rc;
     Robot robot;
     Comms comms;
@@ -26,6 +29,11 @@ public class Navigation {
     BugNav bugNav;
     BFS bfs;
     int closestBugDist = Integer.MAX_VALUE;
+
+    int passableBFSBytecode = 0;
+    int checkInVisitedBytecode = 0;
+    int[][] heuristicMap;
+    int lastRoundHeuristicMapCalculated = 0;
 
     boolean[][] locsToIgnore;
     final int RECENTLY_VISITED_LENGTH = 5;
@@ -71,7 +79,7 @@ public class Navigation {
         }
         if(wasRunningBug && bugNav.currWallLocation == null) { // If we were previously going towards target.
             // Try running BFS
-            Direction moveDir = bfs.getBestDir(target);
+            Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
             Util.addToIndicatorString("SW_BFS");
             if(moveDir != null){
                 Util.tryMove(moveDir);
@@ -108,7 +116,7 @@ public class Navigation {
         }
         else { // If was previously running BFS.
             // Try continuing BFS.
-            Direction moveDir = bfs.getBestDir(target);
+            Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
             Util.addToIndicatorString("CT_BFS");
             if(moveDir != null){
                 Util.tryMove(moveDir);
@@ -134,7 +142,7 @@ public class Navigation {
 
     public void update() throws GameActionException {
         if(!bfs.vars_are_reset){
-            bfs.resetVars();
+            bfs.resetVars(getHeuristicMapBFS());
         }
     }
 
@@ -148,15 +156,56 @@ public class Navigation {
     }
 
     public boolean isPassableBFS(MapInfo info) throws GameActionException {
+        int startPassable = Clock.getBytecodeNum();
         MapLocation loc = info.getMapLocation();
         if(Util.checkIfItemInArray(loc, recentlyVisited)){
+            passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
             return false;
         }
         if(info.isWater() && waterFillingAllowed){
+            passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
             return true;
         }
-        return info.isPassable();
+        boolean ret = info.isPassable();
+        passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
+        return ret;
     }
+
+    public int[][] getHeuristicMapBFS() throws GameActionException {
+        if(rc.getRoundNum() == lastRoundHeuristicMapCalculated){
+            return heuristicMap;
+        }
+        MapInfo[] infos = rc.senseNearbyMapInfos();
+        heuristicMap = new int[10][10];
+        int ourX = rc.getLocation().x;
+        int ourY = rc.getLocation().y;
+        for(int i = infos.length; i-- > 0;){
+            MapLocation infoLoc = infos[i].getMapLocation();
+            int bfsX = infoLoc.x - ourX + BFS_CENTER_X;
+            int bfsY = infoLoc.y - ourY + BFS_CENTER_Y;
+            if(waterFillingAllowed && infos[i].isWater()){
+                heuristicMap[bfsX][bfsY] = 3;
+            }
+            else if(infos[i].isPassable()){
+                heuristicMap[bfsX][bfsY] = 1;
+            }
+        }
+        for(MapLocation loc : recentlyVisited){
+            if(loc == null){
+                continue;
+            }
+            int bfsX = loc.x - ourX + BFS_CENTER_X;
+            int bfsY = loc.y - ourY + BFS_CENTER_Y;
+            if(bfsX >= 0 && bfsX < heuristicMap.length && bfsY >= 0 && bfsY < heuristicMap[0].length){
+                heuristicMap[bfsX][bfsY] = 0;
+            }
+        }
+        heuristicMap[BFS_CENTER_X][BFS_CENTER_Y] = 1;
+
+        lastRoundHeuristicMapCalculated = rc.getRoundNum();
+        return heuristicMap;
+    }
+
 
     public boolean circle(MapLocation center, int minDist, int maxDist, int minCrumbsForNavigation) throws GameActionException {
 //        Util.log("Tryna circle CCW? " + prevCircleDir);

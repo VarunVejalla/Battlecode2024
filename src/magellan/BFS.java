@@ -17,7 +17,7 @@ abstract class BFS {
         this.vars_are_reset=false;
     }
 
-    abstract void resetVars() throws GameActionException;
+    abstract void resetVars(int[][] heuristicMap) throws GameActionException;
     abstract Direction runBFSNorth(MapLocation target) throws GameActionException;
     abstract Direction runBFSSouth(MapLocation target) throws GameActionException;
     abstract Direction runBFSEast(MapLocation target) throws GameActionException;
@@ -26,7 +26,7 @@ abstract class BFS {
     abstract Direction runBFSNorthwest(MapLocation target) throws GameActionException;
     abstract Direction runBFSSoutheast(MapLocation target) throws GameActionException;
     abstract Direction runBFSSouthwest(MapLocation target) throws GameActionException;
-    abstract Direction getBestDir(MapLocation target) throws GameActionException;
+    abstract Direction getBestDir(MapLocation target, int[][] heuristicMap) throws GameActionException;
 
 
 }

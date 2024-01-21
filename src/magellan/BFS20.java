@@ -9,418 +9,418 @@ static MapInfo info;
 static MapLocation l54;
 static double v54;
 static Direction d54;
-static double p54;
+static int p54;
 
 
 static MapLocation l44;
 static double v44;
 static Direction d44;
-static double p44;
+static int p44;
 
 
 static MapLocation l64;
 static double v64;
 static Direction d64;
-static double p64;
+static int p64;
 
 
 static MapLocation l53;
 static double v53;
 static Direction d53;
-static double p53;
+static int p53;
 
 
 static MapLocation l55;
 static double v55;
 static Direction d55;
-static double p55;
+static int p55;
 
 
 static MapLocation l43;
 static double v43;
 static Direction d43;
-static double p43;
+static int p43;
 
 
 static MapLocation l45;
 static double v45;
 static Direction d45;
-static double p45;
+static int p45;
 
 
 static MapLocation l63;
 static double v63;
 static Direction d63;
-static double p63;
+static int p63;
 
 
 static MapLocation l65;
 static double v65;
 static Direction d65;
-static double p65;
+static int p65;
 
 
 static MapLocation l34;
 static double v34;
 static Direction d34;
-static double p34;
+static int p34;
 
 
 static MapLocation l74;
 static double v74;
 static Direction d74;
-static double p74;
+static int p74;
 
 
 static MapLocation l52;
 static double v52;
 static Direction d52;
-static double p52;
+static int p52;
 
 
 static MapLocation l56;
 static double v56;
 static Direction d56;
-static double p56;
+static int p56;
 
 
 static MapLocation l33;
 static double v33;
 static Direction d33;
-static double p33;
+static int p33;
 
 
 static MapLocation l35;
 static double v35;
 static Direction d35;
-static double p35;
+static int p35;
 
 
 static MapLocation l73;
 static double v73;
 static Direction d73;
-static double p73;
+static int p73;
 
 
 static MapLocation l75;
 static double v75;
 static Direction d75;
-static double p75;
+static int p75;
 
 
 static MapLocation l42;
 static double v42;
 static Direction d42;
-static double p42;
+static int p42;
 
 
 static MapLocation l46;
 static double v46;
 static Direction d46;
-static double p46;
+static int p46;
 
 
 static MapLocation l62;
 static double v62;
 static Direction d62;
-static double p62;
+static int p62;
 
 
 static MapLocation l66;
 static double v66;
 static Direction d66;
-static double p66;
+static int p66;
 
 
 static MapLocation l32;
 static double v32;
 static Direction d32;
-static double p32;
+static int p32;
 
 
 static MapLocation l36;
 static double v36;
 static Direction d36;
-static double p36;
+static int p36;
 
 
 static MapLocation l72;
 static double v72;
 static Direction d72;
-static double p72;
+static int p72;
 
 
 static MapLocation l76;
 static double v76;
 static Direction d76;
-static double p76;
+static int p76;
 
 
 static MapLocation l24;
 static double v24;
 static Direction d24;
-static double p24;
+static int p24;
 
 
 static MapLocation l84;
 static double v84;
 static Direction d84;
-static double p84;
+static int p84;
 
 
 static MapLocation l51;
 static double v51;
 static Direction d51;
-static double p51;
+static int p51;
 
 
 static MapLocation l57;
 static double v57;
 static Direction d57;
-static double p57;
+static int p57;
 
 
 static MapLocation l23;
 static double v23;
 static Direction d23;
-static double p23;
+static int p23;
 
 
 static MapLocation l25;
 static double v25;
 static Direction d25;
-static double p25;
+static int p25;
 
 
 static MapLocation l83;
 static double v83;
 static Direction d83;
-static double p83;
+static int p83;
 
 
 static MapLocation l85;
 static double v85;
 static Direction d85;
-static double p85;
+static int p85;
 
 
 static MapLocation l41;
 static double v41;
 static Direction d41;
-static double p41;
+static int p41;
 
 
 static MapLocation l47;
 static double v47;
 static Direction d47;
-static double p47;
+static int p47;
 
 
 static MapLocation l61;
 static double v61;
 static Direction d61;
-static double p61;
+static int p61;
 
 
 static MapLocation l67;
 static double v67;
 static Direction d67;
-static double p67;
+static int p67;
 
 
 static MapLocation l22;
 static double v22;
 static Direction d22;
-static double p22;
+static int p22;
 
 
 static MapLocation l26;
 static double v26;
 static Direction d26;
-static double p26;
+static int p26;
 
 
 static MapLocation l82;
 static double v82;
 static Direction d82;
-static double p82;
+static int p82;
 
 
 static MapLocation l86;
 static double v86;
 static Direction d86;
-static double p86;
+static int p86;
 
 
 static MapLocation l31;
 static double v31;
 static Direction d31;
-static double p31;
+static int p31;
 
 
 static MapLocation l37;
 static double v37;
 static Direction d37;
-static double p37;
+static int p37;
 
 
 static MapLocation l71;
 static double v71;
 static Direction d71;
-static double p71;
+static int p71;
 
 
 static MapLocation l77;
 static double v77;
 static Direction d77;
-static double p77;
+static int p77;
 
 
 static MapLocation l21;
 static double v21;
 static Direction d21;
-static double p21;
+static int p21;
 
 
 static MapLocation l27;
 static double v27;
 static Direction d27;
-static double p27;
+static int p27;
 
 
 static MapLocation l81;
 static double v81;
 static Direction d81;
-static double p81;
+static int p81;
 
 
 static MapLocation l87;
 static double v87;
 static Direction d87;
-static double p87;
+static int p87;
 
 
 static MapLocation l14;
 static double v14;
 static Direction d14;
-static double p14;
+static int p14;
 
 
 static MapLocation l94;
 static double v94;
 static Direction d94;
-static double p94;
+static int p94;
 
 
 static MapLocation l50;
 static double v50;
 static Direction d50;
-static double p50;
+static int p50;
 
 
 static MapLocation l58;
 static double v58;
 static Direction d58;
-static double p58;
+static int p58;
 
 
 static MapLocation l13;
 static double v13;
 static Direction d13;
-static double p13;
+static int p13;
 
 
 static MapLocation l15;
 static double v15;
 static Direction d15;
-static double p15;
+static int p15;
 
 
 static MapLocation l93;
 static double v93;
 static Direction d93;
-static double p93;
+static int p93;
 
 
 static MapLocation l95;
 static double v95;
 static Direction d95;
-static double p95;
+static int p95;
 
 
 static MapLocation l40;
 static double v40;
 static Direction d40;
-static double p40;
+static int p40;
 
 
 static MapLocation l48;
 static double v48;
 static Direction d48;
-static double p48;
+static int p48;
 
 
 static MapLocation l60;
 static double v60;
 static Direction d60;
-static double p60;
+static int p60;
 
 
 static MapLocation l68;
 static double v68;
 static Direction d68;
-static double p68;
+static int p68;
 
 
 static MapLocation l12;
 static double v12;
 static Direction d12;
-static double p12;
+static int p12;
 
 
 static MapLocation l16;
 static double v16;
 static Direction d16;
-static double p16;
+static int p16;
 
 
 static MapLocation l92;
 static double v92;
 static Direction d92;
-static double p92;
+static int p92;
 
 
 static MapLocation l96;
 static double v96;
 static Direction d96;
-static double p96;
+static int p96;
 
 
 static MapLocation l30;
 static double v30;
 static Direction d30;
-static double p30;
+static int p30;
 
 
 static MapLocation l38;
 static double v38;
 static Direction d38;
-static double p38;
+static int p38;
 
 
 static MapLocation l70;
 static double v70;
 static Direction d70;
-static double p70;
+static int p70;
 
 
 static MapLocation l78;
 static double v78;
 static Direction d78;
-static double p78;
+static int p78;
 
 
-public void resetVars() throws GameActionException{
+public void resetVars(int[][] heuristicMap) throws GameActionException{
 l54 = robot.myLoc;
 v54 = 0;
 
@@ -428,273 +428,409 @@ l44 = l54.add(Direction.WEST);
 v44 = 100000000;
 d44 = null;
 
+p44 = heuristicMap[4][4];
+
 l64 = l54.add(Direction.EAST);
 v64 = 100000000;
 d64 = null;
+
+p64 = heuristicMap[6][4];
 
 l53 = l54.add(Direction.SOUTH);
 v53 = 100000000;
 d53 = null;
 
+p53 = heuristicMap[5][3];
+
 l55 = l54.add(Direction.NORTH);
 v55 = 100000000;
 d55 = null;
+
+p55 = heuristicMap[5][5];
 
 l43 = l44.add(Direction.SOUTH);
 v43 = 100000000;
 d43 = null;
 
+p43 = heuristicMap[4][3];
+
 l45 = l55.add(Direction.WEST);
 v45 = 100000000;
 d45 = null;
+
+p45 = heuristicMap[4][5];
 
 l63 = l53.add(Direction.EAST);
 v63 = 100000000;
 d63 = null;
 
+p63 = heuristicMap[6][3];
+
 l65 = l55.add(Direction.EAST);
 v65 = 100000000;
 d65 = null;
+
+p65 = heuristicMap[6][5];
 
 l34 = l44.add(Direction.WEST);
 v34 = 100000000;
 d34 = null;
 
+p34 = heuristicMap[3][4];
+
 l74 = l64.add(Direction.EAST);
 v74 = 100000000;
 d74 = null;
+
+p74 = heuristicMap[7][4];
 
 l52 = l53.add(Direction.SOUTH);
 v52 = 100000000;
 d52 = null;
 
+p52 = heuristicMap[5][2];
+
 l56 = l55.add(Direction.NORTH);
 v56 = 100000000;
 d56 = null;
+
+p56 = heuristicMap[5][6];
 
 l33 = l34.add(Direction.SOUTH);
 v33 = 100000000;
 d33 = null;
 
+p33 = heuristicMap[3][3];
+
 l35 = l45.add(Direction.WEST);
 v35 = 100000000;
 d35 = null;
+
+p35 = heuristicMap[3][5];
 
 l73 = l63.add(Direction.EAST);
 v73 = 100000000;
 d73 = null;
 
+p73 = heuristicMap[7][3];
+
 l75 = l65.add(Direction.EAST);
 v75 = 100000000;
 d75 = null;
+
+p75 = heuristicMap[7][5];
 
 l42 = l43.add(Direction.SOUTH);
 v42 = 100000000;
 d42 = null;
 
+p42 = heuristicMap[4][2];
+
 l46 = l56.add(Direction.WEST);
 v46 = 100000000;
 d46 = null;
+
+p46 = heuristicMap[4][6];
 
 l62 = l52.add(Direction.EAST);
 v62 = 100000000;
 d62 = null;
 
+p62 = heuristicMap[6][2];
+
 l66 = l56.add(Direction.EAST);
 v66 = 100000000;
 d66 = null;
+
+p66 = heuristicMap[6][6];
 
 l32 = l33.add(Direction.SOUTH);
 v32 = 100000000;
 d32 = null;
 
+p32 = heuristicMap[3][2];
+
 l36 = l46.add(Direction.WEST);
 v36 = 100000000;
 d36 = null;
+
+p36 = heuristicMap[3][6];
 
 l72 = l62.add(Direction.EAST);
 v72 = 100000000;
 d72 = null;
 
+p72 = heuristicMap[7][2];
+
 l76 = l66.add(Direction.EAST);
 v76 = 100000000;
 d76 = null;
+
+p76 = heuristicMap[7][6];
 
 l24 = l34.add(Direction.WEST);
 v24 = 100000000;
 d24 = null;
 
+p24 = heuristicMap[2][4];
+
 l84 = l74.add(Direction.EAST);
 v84 = 100000000;
 d84 = null;
+
+p84 = heuristicMap[8][4];
 
 l51 = l52.add(Direction.SOUTH);
 v51 = 100000000;
 d51 = null;
 
+p51 = heuristicMap[5][1];
+
 l57 = l56.add(Direction.NORTH);
 v57 = 100000000;
 d57 = null;
+
+p57 = heuristicMap[5][7];
 
 l23 = l24.add(Direction.SOUTH);
 v23 = 100000000;
 d23 = null;
 
+p23 = heuristicMap[2][3];
+
 l25 = l35.add(Direction.WEST);
 v25 = 100000000;
 d25 = null;
+
+p25 = heuristicMap[2][5];
 
 l83 = l73.add(Direction.EAST);
 v83 = 100000000;
 d83 = null;
 
+p83 = heuristicMap[8][3];
+
 l85 = l75.add(Direction.EAST);
 v85 = 100000000;
 d85 = null;
+
+p85 = heuristicMap[8][5];
 
 l41 = l42.add(Direction.SOUTH);
 v41 = 100000000;
 d41 = null;
 
+p41 = heuristicMap[4][1];
+
 l47 = l57.add(Direction.WEST);
 v47 = 100000000;
 d47 = null;
+
+p47 = heuristicMap[4][7];
 
 l61 = l51.add(Direction.EAST);
 v61 = 100000000;
 d61 = null;
 
+p61 = heuristicMap[6][1];
+
 l67 = l57.add(Direction.EAST);
 v67 = 100000000;
 d67 = null;
+
+p67 = heuristicMap[6][7];
 
 l22 = l23.add(Direction.SOUTH);
 v22 = 100000000;
 d22 = null;
 
+p22 = heuristicMap[2][2];
+
 l26 = l36.add(Direction.WEST);
 v26 = 100000000;
 d26 = null;
+
+p26 = heuristicMap[2][6];
 
 l82 = l72.add(Direction.EAST);
 v82 = 100000000;
 d82 = null;
 
+p82 = heuristicMap[8][2];
+
 l86 = l76.add(Direction.EAST);
 v86 = 100000000;
 d86 = null;
+
+p86 = heuristicMap[8][6];
 
 l31 = l32.add(Direction.SOUTH);
 v31 = 100000000;
 d31 = null;
 
+p31 = heuristicMap[3][1];
+
 l37 = l47.add(Direction.WEST);
 v37 = 100000000;
 d37 = null;
+
+p37 = heuristicMap[3][7];
 
 l71 = l61.add(Direction.EAST);
 v71 = 100000000;
 d71 = null;
 
+p71 = heuristicMap[7][1];
+
 l77 = l67.add(Direction.EAST);
 v77 = 100000000;
 d77 = null;
+
+p77 = heuristicMap[7][7];
 
 l21 = l22.add(Direction.SOUTH);
 v21 = 100000000;
 d21 = null;
 
+p21 = heuristicMap[2][1];
+
 l27 = l37.add(Direction.WEST);
 v27 = 100000000;
 d27 = null;
+
+p27 = heuristicMap[2][7];
 
 l81 = l71.add(Direction.EAST);
 v81 = 100000000;
 d81 = null;
 
+p81 = heuristicMap[8][1];
+
 l87 = l77.add(Direction.EAST);
 v87 = 100000000;
 d87 = null;
+
+p87 = heuristicMap[8][7];
 
 l14 = l24.add(Direction.WEST);
 v14 = 100000000;
 d14 = null;
 
+p14 = heuristicMap[1][4];
+
 l94 = l84.add(Direction.EAST);
 v94 = 100000000;
 d94 = null;
+
+p94 = heuristicMap[9][4];
 
 l50 = l51.add(Direction.SOUTH);
 v50 = 100000000;
 d50 = null;
 
+p50 = heuristicMap[5][0];
+
 l58 = l57.add(Direction.NORTH);
 v58 = 100000000;
 d58 = null;
+
+p58 = heuristicMap[5][8];
 
 l13 = l14.add(Direction.SOUTH);
 v13 = 100000000;
 d13 = null;
 
+p13 = heuristicMap[1][3];
+
 l15 = l25.add(Direction.WEST);
 v15 = 100000000;
 d15 = null;
+
+p15 = heuristicMap[1][5];
 
 l93 = l83.add(Direction.EAST);
 v93 = 100000000;
 d93 = null;
 
+p93 = heuristicMap[9][3];
+
 l95 = l85.add(Direction.EAST);
 v95 = 100000000;
 d95 = null;
+
+p95 = heuristicMap[9][5];
 
 l40 = l41.add(Direction.SOUTH);
 v40 = 100000000;
 d40 = null;
 
+p40 = heuristicMap[4][0];
+
 l48 = l58.add(Direction.WEST);
 v48 = 100000000;
 d48 = null;
+
+p48 = heuristicMap[4][8];
 
 l60 = l50.add(Direction.EAST);
 v60 = 100000000;
 d60 = null;
 
+p60 = heuristicMap[6][0];
+
 l68 = l58.add(Direction.EAST);
 v68 = 100000000;
 d68 = null;
+
+p68 = heuristicMap[6][8];
 
 l12 = l13.add(Direction.SOUTH);
 v12 = 100000000;
 d12 = null;
 
+p12 = heuristicMap[1][2];
+
 l16 = l26.add(Direction.WEST);
 v16 = 100000000;
 d16 = null;
+
+p16 = heuristicMap[1][6];
 
 l92 = l82.add(Direction.EAST);
 v92 = 100000000;
 d92 = null;
 
+p92 = heuristicMap[9][2];
+
 l96 = l86.add(Direction.EAST);
 v96 = 100000000;
 d96 = null;
+
+p96 = heuristicMap[9][6];
 
 l30 = l31.add(Direction.SOUTH);
 v30 = 100000000;
 d30 = null;
 
+p30 = heuristicMap[3][0];
+
 l38 = l48.add(Direction.WEST);
 v38 = 100000000;
 d38 = null;
+
+p38 = heuristicMap[3][8];
 
 l70 = l60.add(Direction.EAST);
 v70 = 100000000;
 d70 = null;
 
+p70 = heuristicMap[7][0];
+
 l78 = l68.add(Direction.EAST);
 v78 = 100000000;
 d78 = null;
+
+p78 = heuristicMap[7][8];
 
 this.vars_are_reset = true;
 System.out.println("Finished Initializing Variables: " + Clock.getBytecodesLeft());
@@ -704,11 +840,8 @@ Direction runBFSNorth(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -717,12 +850,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -731,12 +860,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -753,12 +878,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -775,12 +896,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -797,12 +914,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -819,12 +932,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -841,12 +950,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -863,11 +968,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -883,11 +984,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -903,11 +1000,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -923,11 +1016,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -943,11 +1032,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -963,11 +1048,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -983,11 +1064,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -1003,11 +1080,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -1023,11 +1096,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -1047,11 +1116,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -1071,11 +1136,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -1095,11 +1156,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -1119,11 +1176,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -1139,11 +1192,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -1159,11 +1208,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -1179,11 +1224,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -1199,11 +1240,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -1219,11 +1256,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -1239,11 +1272,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -1259,11 +1288,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -1283,11 +1308,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -1307,11 +1328,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -1331,11 +1348,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -1355,11 +1368,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -1379,11 +1388,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -1403,11 +1408,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -1423,11 +1424,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -1443,11 +1440,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -1463,11 +1456,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -1483,11 +1472,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -1507,11 +1492,7 @@ d37 = d26;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -1531,11 +1512,7 @@ d77 = d86;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l27)){
-info = rc.senseMapInfo(l27);
-if(robot.nav.isPassableBFS(info)){
-p27 = info.isWater() ? 3.0 : 1.0;
+if(p27 != 0){
 v27 -= p27;
 if(v27 > v36){
 v27 = v36;
@@ -1551,11 +1528,7 @@ d27 = d26;
 }
 v27 += p27;
 }
-}
-if(rc.onTheMap(l87)){
-info = rc.senseMapInfo(l87);
-if(robot.nav.isPassableBFS(info)){
-p87 = info.isWater() ? 3.0 : 1.0;
+if(p87 != 0){
 v87 -= p87;
 if(v87 > v76){
 v87 = v76;
@@ -1571,11 +1544,7 @@ d87 = d86;
 }
 v87 += p87;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -1591,11 +1560,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -1611,11 +1576,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -1631,11 +1592,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -1655,11 +1612,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -1679,11 +1632,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -1703,11 +1652,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -1727,11 +1672,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -1751,11 +1692,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -1775,11 +1712,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -1795,11 +1728,7 @@ d12 = d13;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -1819,11 +1748,7 @@ d16 = d27;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -1839,11 +1764,7 @@ d92 = d93;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -1863,11 +1784,7 @@ d96 = d87;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -1887,11 +1804,7 @@ d38 = d27;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -1910,7 +1823,6 @@ v78 = v87;
 d78 = d87;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -2221,11 +2133,8 @@ Direction runBFSSouth(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -2234,12 +2143,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -2248,12 +2153,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -2270,12 +2171,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -2292,12 +2189,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -2314,12 +2207,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -2336,12 +2225,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -2358,12 +2243,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -2380,11 +2261,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -2400,11 +2277,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -2420,11 +2293,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -2440,11 +2309,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -2460,11 +2325,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -2480,11 +2341,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -2500,11 +2357,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -2520,11 +2373,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -2540,11 +2389,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -2564,11 +2409,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -2588,11 +2429,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -2612,11 +2449,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -2636,11 +2469,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -2656,11 +2485,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -2676,11 +2501,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -2696,11 +2517,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -2716,11 +2533,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -2736,11 +2549,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -2756,11 +2565,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -2776,11 +2581,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -2800,11 +2601,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -2824,11 +2621,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -2848,11 +2641,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -2872,11 +2661,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -2896,11 +2681,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -2920,11 +2701,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -2940,11 +2717,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -2960,11 +2733,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -2980,11 +2749,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -3000,11 +2765,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -3024,11 +2785,7 @@ d31 = d22;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -3048,11 +2805,7 @@ d71 = d82;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l21)){
-info = rc.senseMapInfo(l21);
-if(robot.nav.isPassableBFS(info)){
-p21 = info.isWater() ? 3.0 : 1.0;
+if(p21 != 0){
 v21 -= p21;
 if(v21 > v32){
 v21 = v32;
@@ -3068,11 +2821,7 @@ d21 = d31;
 }
 v21 += p21;
 }
-}
-if(rc.onTheMap(l81)){
-info = rc.senseMapInfo(l81);
-if(robot.nav.isPassableBFS(info)){
-p81 = info.isWater() ? 3.0 : 1.0;
+if(p81 != 0){
 v81 -= p81;
 if(v81 > v72){
 v81 = v72;
@@ -3088,11 +2837,7 @@ d81 = d82;
 }
 v81 += p81;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -3108,11 +2853,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -3128,11 +2869,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -3148,11 +2885,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -3172,11 +2905,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -3196,11 +2925,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -3220,11 +2945,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -3244,11 +2965,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -3268,11 +2985,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -3292,11 +3005,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -3316,11 +3025,7 @@ d12 = d21;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -3336,11 +3041,7 @@ d16 = d15;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -3360,11 +3061,7 @@ d92 = d81;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -3380,11 +3077,7 @@ d96 = d95;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -3404,11 +3097,7 @@ d30 = d21;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -3427,7 +3116,6 @@ v70 = v81;
 d70 = d81;
 }
 v70 += p70;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -3738,11 +3426,8 @@ Direction runBFSEast(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -3751,12 +3436,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -3765,12 +3446,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -3787,12 +3464,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -3809,12 +3482,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -3831,12 +3500,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -3853,12 +3518,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -3875,12 +3536,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -3897,11 +3554,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -3917,11 +3570,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -3937,11 +3586,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -3957,11 +3602,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -3977,11 +3618,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -3997,11 +3634,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -4017,11 +3650,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -4037,11 +3666,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -4057,11 +3682,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -4081,11 +3702,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -4105,11 +3722,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -4129,11 +3742,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -4153,11 +3762,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -4173,11 +3778,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -4193,11 +3794,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -4213,11 +3810,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -4233,11 +3826,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -4253,11 +3842,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -4273,11 +3858,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -4293,11 +3874,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -4317,11 +3894,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -4341,11 +3914,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -4365,11 +3934,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -4389,11 +3954,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -4413,11 +3974,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -4437,11 +3994,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -4457,11 +4010,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -4477,11 +4026,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -4497,11 +4042,7 @@ d31 = d41;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -4517,11 +4058,7 @@ d37 = d47;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -4541,11 +4078,7 @@ d71 = d82;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -4565,11 +4098,7 @@ d77 = d86;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l81)){
-info = rc.senseMapInfo(l81);
-if(robot.nav.isPassableBFS(info)){
-p81 = info.isWater() ? 3.0 : 1.0;
+if(p81 != 0){
 v81 -= p81;
 if(v81 > v72){
 v81 = v72;
@@ -4585,11 +4114,7 @@ d81 = d82;
 }
 v81 += p81;
 }
-}
-if(rc.onTheMap(l87)){
-info = rc.senseMapInfo(l87);
-if(robot.nav.isPassableBFS(info)){
-p87 = info.isWater() ? 3.0 : 1.0;
+if(p87 != 0){
 v87 -= p87;
 if(v87 > v76){
 v87 = v76;
@@ -4605,11 +4130,7 @@ d87 = d86;
 }
 v87 += p87;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -4625,11 +4146,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -4645,11 +4162,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -4665,11 +4178,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -4689,11 +4198,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -4713,11 +4218,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -4737,11 +4238,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -4761,11 +4258,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -4785,11 +4278,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -4809,11 +4298,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -4833,11 +4318,7 @@ d92 = d81;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -4857,11 +4338,7 @@ d96 = d87;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -4877,11 +4354,7 @@ d30 = d40;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -4897,11 +4370,7 @@ d38 = d48;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -4921,11 +4390,7 @@ d70 = d81;
 }
 v70 += p70;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -4944,7 +4409,6 @@ v78 = v87;
 d78 = d87;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -5247,11 +4711,8 @@ Direction runBFSWest(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -5260,12 +4721,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -5274,12 +4731,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -5296,12 +4749,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -5318,12 +4767,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -5340,12 +4785,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -5362,12 +4803,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -5384,12 +4821,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -5406,11 +4839,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -5426,11 +4855,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -5446,11 +4871,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -5466,11 +4887,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -5486,11 +4903,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -5506,11 +4919,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -5526,11 +4935,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -5546,11 +4951,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -5566,11 +4967,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -5590,11 +4987,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -5614,11 +5007,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -5638,11 +5027,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -5662,11 +5047,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -5682,11 +5063,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -5702,11 +5079,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -5722,11 +5095,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -5742,11 +5111,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -5762,11 +5127,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -5782,11 +5143,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -5802,11 +5159,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -5826,11 +5179,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -5850,11 +5199,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -5874,11 +5219,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -5898,11 +5239,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -5922,11 +5259,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -5946,11 +5279,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -5966,11 +5295,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -5986,11 +5311,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -6010,11 +5331,7 @@ d31 = d22;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -6034,11 +5351,7 @@ d37 = d26;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -6054,11 +5367,7 @@ d71 = d61;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -6074,11 +5383,7 @@ d77 = d67;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l21)){
-info = rc.senseMapInfo(l21);
-if(robot.nav.isPassableBFS(info)){
-p21 = info.isWater() ? 3.0 : 1.0;
+if(p21 != 0){
 v21 -= p21;
 if(v21 > v32){
 v21 = v32;
@@ -6094,11 +5399,7 @@ d21 = d31;
 }
 v21 += p21;
 }
-}
-if(rc.onTheMap(l27)){
-info = rc.senseMapInfo(l27);
-if(robot.nav.isPassableBFS(info)){
-p27 = info.isWater() ? 3.0 : 1.0;
+if(p27 != 0){
 v27 -= p27;
 if(v27 > v36){
 v27 = v36;
@@ -6114,11 +5415,7 @@ d27 = d26;
 }
 v27 += p27;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -6134,11 +5431,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -6154,11 +5447,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -6174,11 +5463,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -6198,11 +5483,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -6222,11 +5503,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -6246,11 +5523,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -6270,11 +5543,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -6294,11 +5563,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -6318,11 +5583,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -6342,11 +5603,7 @@ d12 = d21;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -6366,11 +5623,7 @@ d16 = d27;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -6390,11 +5643,7 @@ d30 = d21;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -6414,11 +5663,7 @@ d38 = d27;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -6434,11 +5679,7 @@ d70 = d60;
 }
 v70 += p70;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -6453,7 +5694,6 @@ v78 = v68;
 d78 = d68;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -6756,11 +5996,8 @@ Direction runBFSNortheast(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -6769,12 +6006,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -6783,12 +6016,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -6805,12 +6034,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -6827,12 +6052,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -6849,12 +6070,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -6871,12 +6088,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -6893,12 +6106,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -6915,11 +6124,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -6935,11 +6140,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -6955,11 +6156,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -6975,11 +6172,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -6995,11 +6188,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -7015,11 +6204,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -7035,11 +6220,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -7055,11 +6236,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -7075,11 +6252,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -7099,11 +6272,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -7123,11 +6292,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -7147,11 +6312,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -7171,11 +6332,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -7191,11 +6348,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -7211,11 +6364,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -7231,11 +6380,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -7251,11 +6396,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -7271,11 +6412,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -7291,11 +6428,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -7311,11 +6444,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -7331,11 +6460,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -7355,11 +6480,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -7379,11 +6500,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -7403,11 +6520,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -7427,11 +6540,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -7451,11 +6560,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -7475,11 +6580,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -7495,11 +6596,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -7515,11 +6612,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -7535,11 +6628,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -7559,11 +6648,7 @@ d37 = d26;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -7583,11 +6668,7 @@ d71 = d82;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -7607,11 +6688,7 @@ d77 = d86;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l27)){
-info = rc.senseMapInfo(l27);
-if(robot.nav.isPassableBFS(info)){
-p27 = info.isWater() ? 3.0 : 1.0;
+if(p27 != 0){
 v27 -= p27;
 if(v27 > v36){
 v27 = v36;
@@ -7627,11 +6704,7 @@ d27 = d26;
 }
 v27 += p27;
 }
-}
-if(rc.onTheMap(l81)){
-info = rc.senseMapInfo(l81);
-if(robot.nav.isPassableBFS(info)){
-p81 = info.isWater() ? 3.0 : 1.0;
+if(p81 != 0){
 v81 -= p81;
 if(v81 > v72){
 v81 = v72;
@@ -7647,11 +6720,7 @@ d81 = d82;
 }
 v81 += p81;
 }
-}
-if(rc.onTheMap(l87)){
-info = rc.senseMapInfo(l87);
-if(robot.nav.isPassableBFS(info)){
-p87 = info.isWater() ? 3.0 : 1.0;
+if(p87 != 0){
 v87 -= p87;
 if(v87 > v76){
 v87 = v76;
@@ -7667,11 +6736,7 @@ d87 = d86;
 }
 v87 += p87;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -7683,11 +6748,7 @@ d14 = d25;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -7703,11 +6764,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -7719,11 +6776,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -7739,11 +6792,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -7763,11 +6812,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -7787,11 +6832,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -7811,11 +6852,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -7835,11 +6872,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -7859,11 +6892,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -7883,11 +6912,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -7907,11 +6932,7 @@ d16 = d27;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -7931,11 +6952,7 @@ d92 = d81;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -7955,11 +6972,7 @@ d96 = d87;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -7979,11 +6992,7 @@ d38 = d27;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -8003,11 +7012,7 @@ d70 = d81;
 }
 v70 += p70;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -8026,7 +7031,6 @@ v78 = v87;
 d78 = d87;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -8363,11 +7367,8 @@ Direction runBFSNorthwest(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -8376,12 +7377,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -8390,12 +7387,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -8412,12 +7405,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -8434,12 +7423,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -8456,12 +7441,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -8478,12 +7459,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -8500,12 +7477,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -8522,11 +7495,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -8542,11 +7511,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -8562,11 +7527,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -8582,11 +7543,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -8602,11 +7559,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -8622,11 +7575,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -8642,11 +7591,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -8662,11 +7607,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -8682,11 +7623,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -8706,11 +7643,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -8730,11 +7663,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -8754,11 +7683,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -8778,11 +7703,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -8798,11 +7719,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -8818,11 +7735,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -8838,11 +7751,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -8858,11 +7767,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -8878,11 +7783,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -8898,11 +7799,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -8918,11 +7815,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -8938,11 +7831,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -8962,11 +7851,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -8986,11 +7871,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -9010,11 +7891,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -9034,11 +7911,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -9058,11 +7931,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -9082,11 +7951,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -9102,11 +7967,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -9122,11 +7983,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -9142,11 +7999,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -9166,11 +8019,7 @@ d31 = d22;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -9190,11 +8039,7 @@ d37 = d26;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -9214,11 +8059,7 @@ d77 = d86;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l21)){
-info = rc.senseMapInfo(l21);
-if(robot.nav.isPassableBFS(info)){
-p21 = info.isWater() ? 3.0 : 1.0;
+if(p21 != 0){
 v21 -= p21;
 if(v21 > v32){
 v21 = v32;
@@ -9234,11 +8075,7 @@ d21 = d31;
 }
 v21 += p21;
 }
-}
-if(rc.onTheMap(l27)){
-info = rc.senseMapInfo(l27);
-if(robot.nav.isPassableBFS(info)){
-p27 = info.isWater() ? 3.0 : 1.0;
+if(p27 != 0){
 v27 -= p27;
 if(v27 > v36){
 v27 = v36;
@@ -9254,11 +8091,7 @@ d27 = d26;
 }
 v27 += p27;
 }
-}
-if(rc.onTheMap(l87)){
-info = rc.senseMapInfo(l87);
-if(robot.nav.isPassableBFS(info)){
-p87 = info.isWater() ? 3.0 : 1.0;
+if(p87 != 0){
 v87 -= p87;
 if(v87 > v76){
 v87 = v76;
@@ -9274,11 +8107,7 @@ d87 = d86;
 }
 v87 += p87;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -9294,11 +8123,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -9310,11 +8135,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -9326,11 +8147,7 @@ d50 = d41;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -9346,11 +8163,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -9370,11 +8183,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -9394,11 +8203,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -9418,11 +8223,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -9442,11 +8243,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -9466,11 +8263,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -9490,11 +8283,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -9514,11 +8303,7 @@ d12 = d21;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -9538,11 +8323,7 @@ d16 = d27;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -9562,11 +8343,7 @@ d96 = d87;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -9586,11 +8363,7 @@ d30 = d21;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -9610,11 +8383,7 @@ d38 = d27;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -9633,7 +8402,6 @@ v78 = v87;
 d78 = d87;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -9970,11 +8738,8 @@ Direction runBFSSoutheast(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -9983,12 +8748,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -9997,12 +8758,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -10019,12 +8776,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -10041,12 +8794,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -10063,12 +8812,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -10085,12 +8830,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -10107,12 +8848,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -10129,11 +8866,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -10149,11 +8882,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -10169,11 +8898,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -10189,11 +8914,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -10209,11 +8930,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -10229,11 +8946,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -10249,11 +8962,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -10269,11 +8978,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -10289,11 +8994,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -10313,11 +9014,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -10337,11 +9034,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -10361,11 +9054,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -10385,11 +9074,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -10405,11 +9090,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -10425,11 +9106,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -10445,11 +9122,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -10465,11 +9138,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -10485,11 +9154,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -10505,11 +9170,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -10525,11 +9186,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -10545,11 +9202,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -10569,11 +9222,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -10593,11 +9242,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l85)){
-info = rc.senseMapInfo(l85);
-if(robot.nav.isPassableBFS(info)){
-p85 = info.isWater() ? 3.0 : 1.0;
+if(p85 != 0){
 v85 -= p85;
 if(v85 > v74){
 v85 = v74;
@@ -10617,11 +9262,7 @@ d85 = d84;
 }
 v85 += p85;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -10641,11 +9282,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -10665,11 +9302,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l67)){
-info = rc.senseMapInfo(l67);
-if(robot.nav.isPassableBFS(info)){
-p67 = info.isWater() ? 3.0 : 1.0;
+if(p67 != 0){
 v67 -= p67;
 if(v67 > v56){
 v67 = v56;
@@ -10689,11 +9322,7 @@ d67 = d57;
 }
 v67 += p67;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -10709,11 +9338,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -10729,11 +9354,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l86)){
-info = rc.senseMapInfo(l86);
-if(robot.nav.isPassableBFS(info)){
-p86 = info.isWater() ? 3.0 : 1.0;
+if(p86 != 0){
 v86 -= p86;
 if(v86 > v75){
 v86 = v75;
@@ -10749,11 +9370,7 @@ d86 = d85;
 }
 v86 += p86;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -10773,11 +9390,7 @@ d31 = d22;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -10797,11 +9410,7 @@ d71 = d82;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l77)){
-info = rc.senseMapInfo(l77);
-if(robot.nav.isPassableBFS(info)){
-p77 = info.isWater() ? 3.0 : 1.0;
+if(p77 != 0){
 v77 -= p77;
 if(v77 > v66){
 v77 = v66;
@@ -10821,11 +9430,7 @@ d77 = d86;
 }
 v77 += p77;
 }
-}
-if(rc.onTheMap(l21)){
-info = rc.senseMapInfo(l21);
-if(robot.nav.isPassableBFS(info)){
-p21 = info.isWater() ? 3.0 : 1.0;
+if(p21 != 0){
 v21 -= p21;
 if(v21 > v32){
 v21 = v32;
@@ -10841,11 +9446,7 @@ d21 = d31;
 }
 v21 += p21;
 }
-}
-if(rc.onTheMap(l81)){
-info = rc.senseMapInfo(l81);
-if(robot.nav.isPassableBFS(info)){
-p81 = info.isWater() ? 3.0 : 1.0;
+if(p81 != 0){
 v81 -= p81;
 if(v81 > v72){
 v81 = v72;
@@ -10861,11 +9462,7 @@ d81 = d82;
 }
 v81 += p81;
 }
-}
-if(rc.onTheMap(l87)){
-info = rc.senseMapInfo(l87);
-if(robot.nav.isPassableBFS(info)){
-p87 = info.isWater() ? 3.0 : 1.0;
+if(p87 != 0){
 v87 -= p87;
 if(v87 > v76){
 v87 = v76;
@@ -10881,11 +9478,7 @@ d87 = d86;
 }
 v87 += p87;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -10897,11 +9490,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -10917,11 +9506,7 @@ d94 = d85;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -10937,11 +9522,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -10953,11 +9534,7 @@ d58 = d67;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -10977,11 +9554,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -11001,11 +9574,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l95)){
-info = rc.senseMapInfo(l95);
-if(robot.nav.isPassableBFS(info)){
-p95 = info.isWater() ? 3.0 : 1.0;
+if(p95 != 0){
 v95 -= p95;
 if(v95 > v84){
 v95 = v84;
@@ -11025,11 +9594,7 @@ d95 = d94;
 }
 v95 += p95;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -11049,11 +9614,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -11073,11 +9634,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l68)){
-info = rc.senseMapInfo(l68);
-if(robot.nav.isPassableBFS(info)){
-p68 = info.isWater() ? 3.0 : 1.0;
+if(p68 != 0){
 v68 -= p68;
 if(v68 > v57){
 v68 = v57;
@@ -11097,11 +9654,7 @@ d68 = d58;
 }
 v68 += p68;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -11121,11 +9674,7 @@ d12 = d21;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -11145,11 +9694,7 @@ d92 = d81;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l96)){
-info = rc.senseMapInfo(l96);
-if(robot.nav.isPassableBFS(info)){
-p96 = info.isWater() ? 3.0 : 1.0;
+if(p96 != 0){
 v96 -= p96;
 if(v96 > v85){
 v96 = v85;
@@ -11169,11 +9714,7 @@ d96 = d87;
 }
 v96 += p96;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -11193,11 +9734,7 @@ d30 = d21;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -11217,11 +9754,7 @@ d70 = d81;
 }
 v70 += p70;
 }
-}
-if(rc.onTheMap(l78)){
-info = rc.senseMapInfo(l78);
-if(robot.nav.isPassableBFS(info)){
-p78 = info.isWater() ? 3.0 : 1.0;
+if(p78 != 0){
 v78 -= p78;
 if(v78 > v67){
 v78 = v67;
@@ -11240,7 +9773,6 @@ v78 = v87;
 d78 = d87;
 }
 v78 += p78;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -11577,11 +10109,8 @@ Direction runBFSSouthwest(MapLocation target) throws GameActionException{
 System.out.println("Starting BFS Method: " + Clock.getBytecodesLeft());
 try{ 
 	double sum;
-if(rc.onTheMap(l44)){
 if(!rc.isLocationOccupied(l44)){
-info = rc.senseMapInfo(l44);
-if(robot.nav.isPassableBFS(info)){
-p44 = info.isWater() ? 3.0 : 1.0;
+if(p44 != 0){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -11590,12 +10119,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-}
-if(rc.onTheMap(l64)){
 if(!rc.isLocationOccupied(l64)){
-info = rc.senseMapInfo(l64);
-if(robot.nav.isPassableBFS(info)){
-p64 = info.isWater() ? 3.0 : 1.0;
+if(p64 != 0){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -11604,12 +10129,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-}
-if(rc.onTheMap(l53)){
 if(!rc.isLocationOccupied(l53)){
-info = rc.senseMapInfo(l53);
-if(robot.nav.isPassableBFS(info)){
-p53 = info.isWater() ? 3.0 : 1.0;
+if(p53 != 0){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -11626,12 +10147,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-}
-if(rc.onTheMap(l55)){
 if(!rc.isLocationOccupied(l55)){
-info = rc.senseMapInfo(l55);
-if(robot.nav.isPassableBFS(info)){
-p55 = info.isWater() ? 3.0 : 1.0;
+if(p55 != 0){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -11648,12 +10165,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-}
-if(rc.onTheMap(l43)){
 if(!rc.isLocationOccupied(l43)){
-info = rc.senseMapInfo(l43);
-if(robot.nav.isPassableBFS(info)){
-p43 = info.isWater() ? 3.0 : 1.0;
+if(p43 != 0){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -11670,12 +10183,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-}
-if(rc.onTheMap(l45)){
 if(!rc.isLocationOccupied(l45)){
-info = rc.senseMapInfo(l45);
-if(robot.nav.isPassableBFS(info)){
-p45 = info.isWater() ? 3.0 : 1.0;
+if(p45 != 0){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -11692,12 +10201,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-}
-if(rc.onTheMap(l63)){
 if(!rc.isLocationOccupied(l63)){
-info = rc.senseMapInfo(l63);
-if(robot.nav.isPassableBFS(info)){
-p63 = info.isWater() ? 3.0 : 1.0;
+if(p63 != 0){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -11714,12 +10219,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-}
-if(rc.onTheMap(l65)){
 if(!rc.isLocationOccupied(l65)){
-info = rc.senseMapInfo(l65);
-if(robot.nav.isPassableBFS(info)){
-p65 = info.isWater() ? 3.0 : 1.0;
+if(p65 != 0){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -11736,11 +10237,7 @@ d65 = d64;
 v65 += p65;
 }
 }
-}
-if(rc.onTheMap(l34)){
-info = rc.senseMapInfo(l34);
-if(robot.nav.isPassableBFS(info)){
-p34 = info.isWater() ? 3.0 : 1.0;
+if(p34 != 0){
 v34 -= p34;
 if(v34 > v44){
 v34 = v44;
@@ -11756,11 +10253,7 @@ d34 = d43;
 }
 v34 += p34;
 }
-}
-if(rc.onTheMap(l74)){
-info = rc.senseMapInfo(l74);
-if(robot.nav.isPassableBFS(info)){
-p74 = info.isWater() ? 3.0 : 1.0;
+if(p74 != 0){
 v74 -= p74;
 if(v74 > v64){
 v74 = v64;
@@ -11776,11 +10269,7 @@ d74 = d65;
 }
 v74 += p74;
 }
-}
-if(rc.onTheMap(l52)){
-info = rc.senseMapInfo(l52);
-if(robot.nav.isPassableBFS(info)){
-p52 = info.isWater() ? 3.0 : 1.0;
+if(p52 != 0){
 v52 -= p52;
 if(v52 > v53){
 v52 = v53;
@@ -11796,11 +10285,7 @@ d52 = d63;
 }
 v52 += p52;
 }
-}
-if(rc.onTheMap(l56)){
-info = rc.senseMapInfo(l56);
-if(robot.nav.isPassableBFS(info)){
-p56 = info.isWater() ? 3.0 : 1.0;
+if(p56 != 0){
 v56 -= p56;
 if(v56 > v55){
 v56 = v55;
@@ -11816,11 +10301,7 @@ d56 = d65;
 }
 v56 += p56;
 }
-}
-if(rc.onTheMap(l33)){
-info = rc.senseMapInfo(l33);
-if(robot.nav.isPassableBFS(info)){
-p33 = info.isWater() ? 3.0 : 1.0;
+if(p33 != 0){
 v33 -= p33;
 if(v33 > v44){
 v33 = v44;
@@ -11836,11 +10317,7 @@ d33 = d34;
 }
 v33 += p33;
 }
-}
-if(rc.onTheMap(l35)){
-info = rc.senseMapInfo(l35);
-if(robot.nav.isPassableBFS(info)){
-p35 = info.isWater() ? 3.0 : 1.0;
+if(p35 != 0){
 v35 -= p35;
 if(v35 > v44){
 v35 = v44;
@@ -11856,11 +10333,7 @@ d35 = d34;
 }
 v35 += p35;
 }
-}
-if(rc.onTheMap(l73)){
-info = rc.senseMapInfo(l73);
-if(robot.nav.isPassableBFS(info)){
-p73 = info.isWater() ? 3.0 : 1.0;
+if(p73 != 0){
 v73 -= p73;
 if(v73 > v64){
 v73 = v64;
@@ -11876,11 +10349,7 @@ d73 = d74;
 }
 v73 += p73;
 }
-}
-if(rc.onTheMap(l75)){
-info = rc.senseMapInfo(l75);
-if(robot.nav.isPassableBFS(info)){
-p75 = info.isWater() ? 3.0 : 1.0;
+if(p75 != 0){
 v75 -= p75;
 if(v75 > v64){
 v75 = v64;
@@ -11896,11 +10365,7 @@ d75 = d74;
 }
 v75 += p75;
 }
-}
-if(rc.onTheMap(l42)){
-info = rc.senseMapInfo(l42);
-if(robot.nav.isPassableBFS(info)){
-p42 = info.isWater() ? 3.0 : 1.0;
+if(p42 != 0){
 v42 -= p42;
 if(v42 > v53){
 v42 = v53;
@@ -11920,11 +10385,7 @@ d42 = d33;
 }
 v42 += p42;
 }
-}
-if(rc.onTheMap(l46)){
-info = rc.senseMapInfo(l46);
-if(robot.nav.isPassableBFS(info)){
-p46 = info.isWater() ? 3.0 : 1.0;
+if(p46 != 0){
 v46 -= p46;
 if(v46 > v55){
 v46 = v55;
@@ -11944,11 +10405,7 @@ d46 = d35;
 }
 v46 += p46;
 }
-}
-if(rc.onTheMap(l62)){
-info = rc.senseMapInfo(l62);
-if(robot.nav.isPassableBFS(info)){
-p62 = info.isWater() ? 3.0 : 1.0;
+if(p62 != 0){
 v62 -= p62;
 if(v62 > v53){
 v62 = v53;
@@ -11968,11 +10425,7 @@ d62 = d73;
 }
 v62 += p62;
 }
-}
-if(rc.onTheMap(l66)){
-info = rc.senseMapInfo(l66);
-if(robot.nav.isPassableBFS(info)){
-p66 = info.isWater() ? 3.0 : 1.0;
+if(p66 != 0){
 v66 -= p66;
 if(v66 > v55){
 v66 = v55;
@@ -11992,11 +10445,7 @@ d66 = d75;
 }
 v66 += p66;
 }
-}
-if(rc.onTheMap(l32)){
-info = rc.senseMapInfo(l32);
-if(robot.nav.isPassableBFS(info)){
-p32 = info.isWater() ? 3.0 : 1.0;
+if(p32 != 0){
 v32 -= p32;
 if(v32 > v43){
 v32 = v43;
@@ -12012,11 +10461,7 @@ d32 = d42;
 }
 v32 += p32;
 }
-}
-if(rc.onTheMap(l36)){
-info = rc.senseMapInfo(l36);
-if(robot.nav.isPassableBFS(info)){
-p36 = info.isWater() ? 3.0 : 1.0;
+if(p36 != 0){
 v36 -= p36;
 if(v36 > v45){
 v36 = v45;
@@ -12032,11 +10477,7 @@ d36 = d35;
 }
 v36 += p36;
 }
-}
-if(rc.onTheMap(l72)){
-info = rc.senseMapInfo(l72);
-if(robot.nav.isPassableBFS(info)){
-p72 = info.isWater() ? 3.0 : 1.0;
+if(p72 != 0){
 v72 -= p72;
 if(v72 > v63){
 v72 = v63;
@@ -12052,11 +10493,7 @@ d72 = d73;
 }
 v72 += p72;
 }
-}
-if(rc.onTheMap(l76)){
-info = rc.senseMapInfo(l76);
-if(robot.nav.isPassableBFS(info)){
-p76 = info.isWater() ? 3.0 : 1.0;
+if(p76 != 0){
 v76 -= p76;
 if(v76 > v65){
 v76 = v65;
@@ -12072,11 +10509,7 @@ d76 = d75;
 }
 v76 += p76;
 }
-}
-if(rc.onTheMap(l24)){
-info = rc.senseMapInfo(l24);
-if(robot.nav.isPassableBFS(info)){
-p24 = info.isWater() ? 3.0 : 1.0;
+if(p24 != 0){
 v24 -= p24;
 if(v24 > v34){
 v24 = v34;
@@ -12092,11 +10525,7 @@ d24 = d33;
 }
 v24 += p24;
 }
-}
-if(rc.onTheMap(l84)){
-info = rc.senseMapInfo(l84);
-if(robot.nav.isPassableBFS(info)){
-p84 = info.isWater() ? 3.0 : 1.0;
+if(p84 != 0){
 v84 -= p84;
 if(v84 > v74){
 v84 = v74;
@@ -12112,11 +10541,7 @@ d84 = d75;
 }
 v84 += p84;
 }
-}
-if(rc.onTheMap(l51)){
-info = rc.senseMapInfo(l51);
-if(robot.nav.isPassableBFS(info)){
-p51 = info.isWater() ? 3.0 : 1.0;
+if(p51 != 0){
 v51 -= p51;
 if(v51 > v52){
 v51 = v52;
@@ -12132,11 +10557,7 @@ d51 = d62;
 }
 v51 += p51;
 }
-}
-if(rc.onTheMap(l57)){
-info = rc.senseMapInfo(l57);
-if(robot.nav.isPassableBFS(info)){
-p57 = info.isWater() ? 3.0 : 1.0;
+if(p57 != 0){
 v57 -= p57;
 if(v57 > v56){
 v57 = v56;
@@ -12152,11 +10573,7 @@ d57 = d66;
 }
 v57 += p57;
 }
-}
-if(rc.onTheMap(l23)){
-info = rc.senseMapInfo(l23);
-if(robot.nav.isPassableBFS(info)){
-p23 = info.isWater() ? 3.0 : 1.0;
+if(p23 != 0){
 v23 -= p23;
 if(v23 > v34){
 v23 = v34;
@@ -12176,11 +10593,7 @@ d23 = d24;
 }
 v23 += p23;
 }
-}
-if(rc.onTheMap(l25)){
-info = rc.senseMapInfo(l25);
-if(robot.nav.isPassableBFS(info)){
-p25 = info.isWater() ? 3.0 : 1.0;
+if(p25 != 0){
 v25 -= p25;
 if(v25 > v34){
 v25 = v34;
@@ -12200,11 +10613,7 @@ d25 = d24;
 }
 v25 += p25;
 }
-}
-if(rc.onTheMap(l83)){
-info = rc.senseMapInfo(l83);
-if(robot.nav.isPassableBFS(info)){
-p83 = info.isWater() ? 3.0 : 1.0;
+if(p83 != 0){
 v83 -= p83;
 if(v83 > v74){
 v83 = v74;
@@ -12224,11 +10633,7 @@ d83 = d84;
 }
 v83 += p83;
 }
-}
-if(rc.onTheMap(l41)){
-info = rc.senseMapInfo(l41);
-if(robot.nav.isPassableBFS(info)){
-p41 = info.isWater() ? 3.0 : 1.0;
+if(p41 != 0){
 v41 -= p41;
 if(v41 > v52){
 v41 = v52;
@@ -12248,11 +10653,7 @@ d41 = d51;
 }
 v41 += p41;
 }
-}
-if(rc.onTheMap(l47)){
-info = rc.senseMapInfo(l47);
-if(robot.nav.isPassableBFS(info)){
-p47 = info.isWater() ? 3.0 : 1.0;
+if(p47 != 0){
 v47 -= p47;
 if(v47 > v56){
 v47 = v56;
@@ -12272,11 +10673,7 @@ d47 = d57;
 }
 v47 += p47;
 }
-}
-if(rc.onTheMap(l61)){
-info = rc.senseMapInfo(l61);
-if(robot.nav.isPassableBFS(info)){
-p61 = info.isWater() ? 3.0 : 1.0;
+if(p61 != 0){
 v61 -= p61;
 if(v61 > v52){
 v61 = v52;
@@ -12296,11 +10693,7 @@ d61 = d51;
 }
 v61 += p61;
 }
-}
-if(rc.onTheMap(l22)){
-info = rc.senseMapInfo(l22);
-if(robot.nav.isPassableBFS(info)){
-p22 = info.isWater() ? 3.0 : 1.0;
+if(p22 != 0){
 v22 -= p22;
 if(v22 > v33){
 v22 = v33;
@@ -12316,11 +10709,7 @@ d22 = d23;
 }
 v22 += p22;
 }
-}
-if(rc.onTheMap(l26)){
-info = rc.senseMapInfo(l26);
-if(robot.nav.isPassableBFS(info)){
-p26 = info.isWater() ? 3.0 : 1.0;
+if(p26 != 0){
 v26 -= p26;
 if(v26 > v35){
 v26 = v35;
@@ -12336,11 +10725,7 @@ d26 = d25;
 }
 v26 += p26;
 }
-}
-if(rc.onTheMap(l82)){
-info = rc.senseMapInfo(l82);
-if(robot.nav.isPassableBFS(info)){
-p82 = info.isWater() ? 3.0 : 1.0;
+if(p82 != 0){
 v82 -= p82;
 if(v82 > v73){
 v82 = v73;
@@ -12356,11 +10741,7 @@ d82 = d83;
 }
 v82 += p82;
 }
-}
-if(rc.onTheMap(l31)){
-info = rc.senseMapInfo(l31);
-if(robot.nav.isPassableBFS(info)){
-p31 = info.isWater() ? 3.0 : 1.0;
+if(p31 != 0){
 v31 -= p31;
 if(v31 > v42){
 v31 = v42;
@@ -12380,11 +10761,7 @@ d31 = d22;
 }
 v31 += p31;
 }
-}
-if(rc.onTheMap(l37)){
-info = rc.senseMapInfo(l37);
-if(robot.nav.isPassableBFS(info)){
-p37 = info.isWater() ? 3.0 : 1.0;
+if(p37 != 0){
 v37 -= p37;
 if(v37 > v46){
 v37 = v46;
@@ -12404,11 +10781,7 @@ d37 = d26;
 }
 v37 += p37;
 }
-}
-if(rc.onTheMap(l71)){
-info = rc.senseMapInfo(l71);
-if(robot.nav.isPassableBFS(info)){
-p71 = info.isWater() ? 3.0 : 1.0;
+if(p71 != 0){
 v71 -= p71;
 if(v71 > v62){
 v71 = v62;
@@ -12428,11 +10801,7 @@ d71 = d82;
 }
 v71 += p71;
 }
-}
-if(rc.onTheMap(l21)){
-info = rc.senseMapInfo(l21);
-if(robot.nav.isPassableBFS(info)){
-p21 = info.isWater() ? 3.0 : 1.0;
+if(p21 != 0){
 v21 -= p21;
 if(v21 > v32){
 v21 = v32;
@@ -12448,11 +10817,7 @@ d21 = d31;
 }
 v21 += p21;
 }
-}
-if(rc.onTheMap(l27)){
-info = rc.senseMapInfo(l27);
-if(robot.nav.isPassableBFS(info)){
-p27 = info.isWater() ? 3.0 : 1.0;
+if(p27 != 0){
 v27 -= p27;
 if(v27 > v36){
 v27 = v36;
@@ -12468,11 +10833,7 @@ d27 = d26;
 }
 v27 += p27;
 }
-}
-if(rc.onTheMap(l81)){
-info = rc.senseMapInfo(l81);
-if(robot.nav.isPassableBFS(info)){
-p81 = info.isWater() ? 3.0 : 1.0;
+if(p81 != 0){
 v81 -= p81;
 if(v81 > v72){
 v81 = v72;
@@ -12488,11 +10849,7 @@ d81 = d82;
 }
 v81 += p81;
 }
-}
-if(rc.onTheMap(l14)){
-info = rc.senseMapInfo(l14);
-if(robot.nav.isPassableBFS(info)){
-p14 = info.isWater() ? 3.0 : 1.0;
+if(p14 != 0){
 v14 -= p14;
 if(v14 > v24){
 v14 = v24;
@@ -12508,11 +10865,7 @@ d14 = d23;
 }
 v14 += p14;
 }
-}
-if(rc.onTheMap(l94)){
-info = rc.senseMapInfo(l94);
-if(robot.nav.isPassableBFS(info)){
-p94 = info.isWater() ? 3.0 : 1.0;
+if(p94 != 0){
 v94 -= p94;
 if(v94 > v84){
 v94 = v84;
@@ -12524,11 +10877,7 @@ d94 = d83;
 }
 v94 += p94;
 }
-}
-if(rc.onTheMap(l50)){
-info = rc.senseMapInfo(l50);
-if(robot.nav.isPassableBFS(info)){
-p50 = info.isWater() ? 3.0 : 1.0;
+if(p50 != 0){
 v50 -= p50;
 if(v50 > v51){
 v50 = v51;
@@ -12544,11 +10893,7 @@ d50 = d61;
 }
 v50 += p50;
 }
-}
-if(rc.onTheMap(l58)){
-info = rc.senseMapInfo(l58);
-if(robot.nav.isPassableBFS(info)){
-p58 = info.isWater() ? 3.0 : 1.0;
+if(p58 != 0){
 v58 -= p58;
 if(v58 > v57){
 v58 = v57;
@@ -12560,11 +10905,7 @@ d58 = d47;
 }
 v58 += p58;
 }
-}
-if(rc.onTheMap(l13)){
-info = rc.senseMapInfo(l13);
-if(robot.nav.isPassableBFS(info)){
-p13 = info.isWater() ? 3.0 : 1.0;
+if(p13 != 0){
 v13 -= p13;
 if(v13 > v24){
 v13 = v24;
@@ -12584,11 +10925,7 @@ d13 = d14;
 }
 v13 += p13;
 }
-}
-if(rc.onTheMap(l15)){
-info = rc.senseMapInfo(l15);
-if(robot.nav.isPassableBFS(info)){
-p15 = info.isWater() ? 3.0 : 1.0;
+if(p15 != 0){
 v15 -= p15;
 if(v15 > v24){
 v15 = v24;
@@ -12608,11 +10945,7 @@ d15 = d14;
 }
 v15 += p15;
 }
-}
-if(rc.onTheMap(l93)){
-info = rc.senseMapInfo(l93);
-if(robot.nav.isPassableBFS(info)){
-p93 = info.isWater() ? 3.0 : 1.0;
+if(p93 != 0){
 v93 -= p93;
 if(v93 > v84){
 v93 = v84;
@@ -12632,11 +10965,7 @@ d93 = d94;
 }
 v93 += p93;
 }
-}
-if(rc.onTheMap(l40)){
-info = rc.senseMapInfo(l40);
-if(robot.nav.isPassableBFS(info)){
-p40 = info.isWater() ? 3.0 : 1.0;
+if(p40 != 0){
 v40 -= p40;
 if(v40 > v51){
 v40 = v51;
@@ -12656,11 +10985,7 @@ d40 = d50;
 }
 v40 += p40;
 }
-}
-if(rc.onTheMap(l48)){
-info = rc.senseMapInfo(l48);
-if(robot.nav.isPassableBFS(info)){
-p48 = info.isWater() ? 3.0 : 1.0;
+if(p48 != 0){
 v48 -= p48;
 if(v48 > v57){
 v48 = v57;
@@ -12680,11 +11005,7 @@ d48 = d58;
 }
 v48 += p48;
 }
-}
-if(rc.onTheMap(l60)){
-info = rc.senseMapInfo(l60);
-if(robot.nav.isPassableBFS(info)){
-p60 = info.isWater() ? 3.0 : 1.0;
+if(p60 != 0){
 v60 -= p60;
 if(v60 > v51){
 v60 = v51;
@@ -12704,11 +11025,7 @@ d60 = d50;
 }
 v60 += p60;
 }
-}
-if(rc.onTheMap(l12)){
-info = rc.senseMapInfo(l12);
-if(robot.nav.isPassableBFS(info)){
-p12 = info.isWater() ? 3.0 : 1.0;
+if(p12 != 0){
 v12 -= p12;
 if(v12 > v23){
 v12 = v23;
@@ -12728,11 +11045,7 @@ d12 = d21;
 }
 v12 += p12;
 }
-}
-if(rc.onTheMap(l16)){
-info = rc.senseMapInfo(l16);
-if(robot.nav.isPassableBFS(info)){
-p16 = info.isWater() ? 3.0 : 1.0;
+if(p16 != 0){
 v16 -= p16;
 if(v16 > v25){
 v16 = v25;
@@ -12752,11 +11065,7 @@ d16 = d27;
 }
 v16 += p16;
 }
-}
-if(rc.onTheMap(l92)){
-info = rc.senseMapInfo(l92);
-if(robot.nav.isPassableBFS(info)){
-p92 = info.isWater() ? 3.0 : 1.0;
+if(p92 != 0){
 v92 -= p92;
 if(v92 > v83){
 v92 = v83;
@@ -12776,11 +11085,7 @@ d92 = d81;
 }
 v92 += p92;
 }
-}
-if(rc.onTheMap(l30)){
-info = rc.senseMapInfo(l30);
-if(robot.nav.isPassableBFS(info)){
-p30 = info.isWater() ? 3.0 : 1.0;
+if(p30 != 0){
 v30 -= p30;
 if(v30 > v41){
 v30 = v41;
@@ -12800,11 +11105,7 @@ d30 = d21;
 }
 v30 += p30;
 }
-}
-if(rc.onTheMap(l38)){
-info = rc.senseMapInfo(l38);
-if(robot.nav.isPassableBFS(info)){
-p38 = info.isWater() ? 3.0 : 1.0;
+if(p38 != 0){
 v38 -= p38;
 if(v38 > v47){
 v38 = v47;
@@ -12824,11 +11125,7 @@ d38 = d27;
 }
 v38 += p38;
 }
-}
-if(rc.onTheMap(l70)){
-info = rc.senseMapInfo(l70);
-if(robot.nav.isPassableBFS(info)){
-p70 = info.isWater() ? 3.0 : 1.0;
+if(p70 != 0){
 v70 -= p70;
 if(v70 > v61){
 v70 = v61;
@@ -12847,7 +11144,6 @@ v70 = v81;
 d70 = d81;
 }
 v70 += p70;
-}
 }
 System.out.println("Ran BFS: " + Clock.getBytecodesLeft());
 int dx = target.x - l54.x;
@@ -13181,10 +11477,10 @@ e.printStackTrace();
 }return null;
 }
 
-    public Direction getBestDir(MapLocation target) throws GameActionException {
+    public Direction getBestDir(MapLocation target, int[][] heuristicMap) throws GameActionException {
         Direction targetDir = robot.myLoc.directionTo(target);
         if(!this.vars_are_reset){
-            resetVars();
+            resetVars(heuristicMap);
         }
         System.out.println("Running getBestDir: " + Clock.getBytecodesLeft());
         Direction output = null;

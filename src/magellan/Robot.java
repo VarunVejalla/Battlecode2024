@@ -267,7 +267,9 @@ public class Robot {
 //                Util.tryMove(bestBFSDir);
 //                nav.bugNav.resetBug2(rc.getLocation(), new MapLocation(1, 1));
 //            }
+            nav.passableBFSBytecode = 0;
             nav.pathBF(new MapLocation(1, 1), 0);
+            Util.log("PASSABLE BYTECODE: " + nav.passableBFSBytecode);
 //            nav.bugNav.goToBug0(new MapLocation(1, 1), 100000);
         }
         rc.setIndicatorString(indicatorString);
