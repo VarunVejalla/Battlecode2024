@@ -49,7 +49,7 @@ public class DamScout {
 
         // If you haven't visited the damn yet, go towards it.
         if(adjDir == null){
-            nav.bugNav.goToBug0(centerLoc, 0);
+            nav.pathBF(centerLoc, 100);
             // Check if I'm currently adjacent to the damn.
             adjDir = getDamAdjDir();
         }

@@ -838,8 +838,8 @@ this.vars_are_reset = true;
 Direction runBFSNorth(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -848,8 +848,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -858,8 +858,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -876,8 +876,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -894,8 +894,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -912,8 +912,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -930,8 +930,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -948,8 +948,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -2128,8 +2128,8 @@ e.printStackTrace();
 Direction runBFSSouth(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -2138,8 +2138,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -2148,8 +2148,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -2166,8 +2166,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -2184,8 +2184,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -2202,8 +2202,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -2220,8 +2220,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -2238,8 +2238,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -3418,8 +3418,8 @@ e.printStackTrace();
 Direction runBFSEast(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -3428,8 +3428,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -3438,8 +3438,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -3456,8 +3456,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -3474,8 +3474,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -3492,8 +3492,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -3510,8 +3510,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -3528,8 +3528,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -4700,8 +4700,8 @@ e.printStackTrace();
 Direction runBFSWest(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -4710,8 +4710,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -4720,8 +4720,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -4738,8 +4738,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -4756,8 +4756,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -4774,8 +4774,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -4792,8 +4792,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -4810,8 +4810,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -5982,8 +5982,8 @@ e.printStackTrace();
 Direction runBFSNortheast(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -5992,8 +5992,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -6002,8 +6002,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -6020,8 +6020,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -6038,8 +6038,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -6056,8 +6056,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -6074,8 +6074,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -6092,8 +6092,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -7350,8 +7350,8 @@ e.printStackTrace();
 Direction runBFSNorthwest(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -7360,8 +7360,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -7370,8 +7370,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -7388,8 +7388,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -7406,8 +7406,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -7424,8 +7424,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -7442,8 +7442,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -7460,8 +7460,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -8718,8 +8718,8 @@ e.printStackTrace();
 Direction runBFSSoutheast(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -8728,8 +8728,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -8738,8 +8738,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -8756,8 +8756,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -8774,8 +8774,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -8792,8 +8792,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -8810,8 +8810,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -8828,8 +8828,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;
@@ -10086,8 +10086,8 @@ e.printStackTrace();
 Direction runBFSSouthwest(MapLocation target) throws GameActionException{
 try{ 
 	double sum;
-if(!rc.isLocationOccupied(l44)){
 if(p44 != 0){
+if(!rc.isLocationOccupied(l44)){
 v44 -= p44;
 if(v44 > v54){
 v44 = v54;
@@ -10096,8 +10096,8 @@ d44 = Direction.WEST;
 v44 += p44;
 }
 }
-if(!rc.isLocationOccupied(l64)){
 if(p64 != 0){
+if(!rc.isLocationOccupied(l64)){
 v64 -= p64;
 if(v64 > v54){
 v64 = v54;
@@ -10106,8 +10106,8 @@ d64 = Direction.EAST;
 v64 += p64;
 }
 }
-if(!rc.isLocationOccupied(l53)){
 if(p53 != 0){
+if(!rc.isLocationOccupied(l53)){
 v53 -= p53;
 if(v53 > v54){
 v53 = v54;
@@ -10124,8 +10124,8 @@ d53 = d64;
 v53 += p53;
 }
 }
-if(!rc.isLocationOccupied(l55)){
 if(p55 != 0){
+if(!rc.isLocationOccupied(l55)){
 v55 -= p55;
 if(v55 > v54){
 v55 = v54;
@@ -10142,8 +10142,8 @@ d55 = d64;
 v55 += p55;
 }
 }
-if(!rc.isLocationOccupied(l43)){
 if(p43 != 0){
+if(!rc.isLocationOccupied(l43)){
 v43 -= p43;
 if(v43 > v54){
 v43 = v54;
@@ -10160,8 +10160,8 @@ d43 = d53;
 v43 += p43;
 }
 }
-if(!rc.isLocationOccupied(l45)){
 if(p45 != 0){
+if(!rc.isLocationOccupied(l45)){
 v45 -= p45;
 if(v45 > v54){
 v45 = v54;
@@ -10178,8 +10178,8 @@ d45 = d44;
 v45 += p45;
 }
 }
-if(!rc.isLocationOccupied(l63)){
 if(p63 != 0){
+if(!rc.isLocationOccupied(l63)){
 v63 -= p63;
 if(v63 > v54){
 v63 = v54;
@@ -10196,8 +10196,8 @@ d63 = d64;
 v63 += p63;
 }
 }
-if(!rc.isLocationOccupied(l65)){
 if(p65 != 0){
+if(!rc.isLocationOccupied(l65)){
 v65 -= p65;
 if(v65 > v54){
 v65 = v54;

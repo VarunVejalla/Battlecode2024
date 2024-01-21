@@ -215,7 +215,10 @@ public class DefenseModule {
             nav.circle(flagDefaultLoc, 2, 5, 0);
         }
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
-            nav.bugNav.goToBug0(trapPlacementTarget, 0);
+            nav.pathBF(trapPlacementTarget, 0);
+            if(rc.isMovementReady()){
+                nav.fuzzyNav.goTo(trapPlacementTarget, 0);
+            }
             return;
         }
         else{
@@ -265,7 +268,7 @@ public class DefenseModule {
         if(sharedDefensiveTarget != null){
             Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
             Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
-            nav.fuzzyNav.goTo(sharedDefensiveTarget, 0);
+            nav.pathBF(sharedDefensiveTarget, 0);
         }
         else if(comms.getHomeFlagTakenStatus(defendingFlagIdx) == false){ // If our home flag is still there, circle that.
             Util.addToIndicatorString("FL");
@@ -286,7 +289,7 @@ public class DefenseModule {
         else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
             Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
-            nav.bugNav.goToBug0(robot.offenseModule.sharedOffensiveTarget, 0);
+            nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
         }
     }
 

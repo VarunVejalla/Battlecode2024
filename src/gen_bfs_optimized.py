@@ -150,6 +150,7 @@ def gen_code(f, methodname, target_dir):
     for i in range(1, len(order)):
         x, y = order[i]
         # f.write("if(rc.onTheMap(l{}{})){{\n".format(x, y))
+        f.write("if(p{}{} != 0){{\n".format(x, y))
         if start_loc in get_neighbor_locs((x, y)):
             # if True:
             f.write("if(!rc.isLocationOccupied(l{}{})){{\n".format(x, y))
@@ -159,7 +160,7 @@ def gen_code(f, methodname, target_dir):
         # f.write("info = rc.senseMapInfo(l{}{});\n".format(x, y))
         # f.write("if(info.isPassable()){\n")
         # f.write("if(robot.nav.isPassableBFS(info)){\n")
-        f.write("if(p{}{} != 0){{\n".format(x, y))
+        # f.write("if(p{}{} != 0){{\n".format(x, y)) # NOTE: Moving this up so that isLocationOccupied doesn't throw an out of map bounds exception.
         # f.write("p{}{} = info.isWater() ? 3.0 : 1.0;\n".format(x, y, x, y))
         f.write("v{}{} -= p{}{};\n".format(x, y, x, y))
 

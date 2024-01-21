@@ -46,7 +46,6 @@ public class Robot {
     FlagMover flagMover;
     boolean potentialFlagMover = true;
     MapLocation myLoc; //current loc of robot
-    MapLocation prevLoc;
     MapInfo myLocInfo;
     int mapWidth, mapHeight;
     final Random rng;
@@ -57,7 +56,6 @@ public class Robot {
     Team myTeam;
     Team oppTeam;
     MapLocation centerLoc;
-
 
     // array containing enemy flag locations (updated every round using comms)
     MapLocation[] approximateOppFlagLocations;
@@ -240,44 +238,9 @@ public class Robot {
         }
     }
 
+    // this is the main run method that is called every turn
     public void run() throws GameActionException {
         indicatorString = "";
-        // this is the main run method that is called every turn
-        // TODO(SG): REMOVE
-        if(comms.getBotCount(Mode.OFFENSE) + comms.getBotCount(Mode.STATIONARY_DEFENSE) + comms.getBotCount(Mode.MOBILE_DEFENSE) == 1){
-//            rc.spawn(new MapLocation(55, 3));
-            rc.spawn(new MapLocation(31, 51));
-        }
-        if(rc.isSpawned()){
-            this.myLoc = rc.getLocation();
-            if(rc.getRoundNum() < 200){
-                return;
-            }
-//            nav.fuzzyNav.goTo(new MapLocation(3, 38), 0);
-//            nav.bugNav.goToBug0(new MapLocation(3, 38), 0);
-//            nav.bugNav.goToBug2(new MapLocation(3, 38), 0);
-//            nav.bugNav.goToBug2(new MapLocation(1, 1), 10000);
-//            Util.tryMove(nav.bfs.getBestDir(new MapLocation(3, 38)));
-//            Util.tryMove(nav.bfs.getBestDir(new MapLocation(1, 1)));
-//            Direction bestBFSDir = nav.bfs.getBestDir(new MapLocation(1, 1));
-//            if(bestBFSDir == null){
-//                nav.bugNav.goToBug2(new MapLocation(1, 1), 10000);
-//            }
-//            else{
-//                Util.tryMove(bestBFSDir);
-//                nav.bugNav.resetBug2(rc.getLocation(), new MapLocation(1, 1));
-//            }
-            nav.passableBFSBytecode = 0;
-            nav.pathBF(new MapLocation(1, 1), 0);
-            Util.log("PASSABLE BYTECODE: " + nav.passableBFSBytecode);
-//            nav.bugNav.goToBug0(new MapLocation(1, 1), 100000);
-        }
-        rc.setIndicatorString(indicatorString);
-        this.prevLoc = this.myLoc;
-
-        if(true){
-            return;
-        }
 
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
