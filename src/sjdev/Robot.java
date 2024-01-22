@@ -1,6 +1,7 @@
 package sjdev;
 
 import battlecode.common.*;
+import jdk.nashorn.internal.objects.Global;
 
 import java.util.Random;
 
@@ -99,6 +100,8 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
+    GlobalUpgrade[] myTeamGlobalUpgrades = new GlobalUpgrade[0]; // global upgrades acquired by my team
+    GlobalUpgrade[] oppTeamGlobalUpgrades = new GlobalUpgrade[0]; // global upgrades acquired by opp team
 
     MapLocation[] defaultOppFlagLocs;
     int idOfFlagImCarrying = -1;
@@ -181,13 +184,30 @@ public class Robot {
         // TODO: make the upgrades dynamic based on how the game is going?
         // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
         // we run the canBuyGlobal() method so we don't waste bytecode
-        if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
-            rc.buyGlobal(GlobalUpgrade.CAPTURING);
-        }
 
-        else if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
+        // buy action as the first global upgrade
+        if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
             rc.buyGlobal(GlobalUpgrade.ACTION);
         }
+
+        // buy healing as the second global upgrade
+        else if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
+            rc.buyGlobal(GlobalUpgrade.HEALING);
+        }
+
+
+    }
+
+
+    public void readGlobalUpgrades() throws GameActionException{
+        // this method reads the global upgrades acquired by both teams
+        // 20 bytecode (10 bytecode each)
+            if(myTeamGlobalUpgrades.length < 2) {
+                myTeamGlobalUpgrades = rc.getGlobalUpgrades(myTeam);
+            }
+            if(oppTeamGlobalUpgrades.length < 2) {
+                oppTeamGlobalUpgrades = rc.getGlobalUpgrades(oppTeam);
+            }
     }
 
 
@@ -343,7 +363,8 @@ public class Robot {
             spawn();
         }
         else {
-            tryGlobalUpgrade();
+            tryGlobalUpgrade(); // try to buy global upgrades
+            readGlobalUpgrades(); // read global upgrades acquired by both teams
 
             myLoc = rc.getLocation();
             scanSurroundings();
