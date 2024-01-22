@@ -197,4 +197,10 @@ public class Constants {
     public static final int DEFAULT_OPP_FLAG_Y_MASK = 0b111111;
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
+
+    // ------------------- crumbs shit ------------------------
+    public static final int CRUMB_SENSE_RADIUS = 10;
+    public static final int CRUMB_REMEMBER_COUNT = 10;
+    public static final int CRUMB_GIVE_UP_STEPS = 50;
+    public static final int SCOUT_LINE_UP_DAM_ROUND = 160;
 }

@@ -1,7 +1,7 @@
 package genghis_filler_crumbs;
 
 import battlecode.common.*;
-import genghis_nav.utils.FixedSizeQueue;
+import genghis_filler_crumbs.utils.FixedSizeQueue;
 
 
 
