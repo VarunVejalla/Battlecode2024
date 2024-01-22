@@ -184,7 +184,7 @@ public class DefenseModule {
             if(info.getTrapType() != TrapType.NONE){
                 continue;
             }
-            if(info.isWater() || info.isWall() || info.isDam() || !info.isPassable()){
+            if(!info.isPassable()){
                 continue;
             }
             if(info.getMapLocation().equals(flagDefaultLoc)){
@@ -232,6 +232,8 @@ public class DefenseModule {
     // TODO: This method takes up so much ducking bytecode T_T.
     public void runStationaryDefense() throws GameActionException {
         // If your flag was taken, run the mobile defense code.
+        Util.addToIndicatorString("FI:" + defendingFlagIdx);
+        Util.addToIndicatorString("FL: " + flagDefaultLoc + ", NFL: " + comms.getDefaultHomeFlagLoc(defendingFlagIdx) + ", ADL: " + allFlagDefaultLocs[defendingFlagIdx]);
         if(comms.getHomeFlagTakenStatus(defendingFlagIdx)){
             Util.addToIndicatorString("RMD");
             runMobileDefense();

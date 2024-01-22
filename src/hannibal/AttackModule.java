@@ -29,7 +29,7 @@ class AttackHeuristic {
         double myTurnsNeeded = enemyHP / friendlyDamage;
         double enemyTurnsNeeded = friendlyHP / enemyDamage;
 
-        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
+//        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
 
         if(hasFlag){
             return myTurnsNeeded <= enemyTurnsNeeded;
@@ -552,8 +552,8 @@ public class AttackModule {
         double myAttackDamage = Util.getAttackDamage(myRobotInfo);
         friendlyDamage += myAttackDamage / Util.getAttackCooldown(myRobotInfo);
         friendlyHP += myRobotInfo.getHealth();
-        Util.addToIndicatorString("FD:" + (int) friendlyDamage + ",ED:" + (int) enemyDamage);
-        Util.addToIndicatorString("FHP:" + (int) friendlyHP + ",EHP:" + (int) enemyHP);
+//        Util.addToIndicatorString("FD:" + (int) friendlyDamage + ",ED:" + (int) enemyDamage);
+//        Util.addToIndicatorString("FHP:" + (int) friendlyHP + ",EHP:" + (int) enemyHP);
 
         return new AttackHeuristic(friendlyHP, friendlyDamage, enemyHP, enemyDamage, hasFlag, safetyMultiplier);
     }

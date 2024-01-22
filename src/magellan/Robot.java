@@ -486,7 +486,7 @@ public class Robot {
             if (flagInfo.getTeam() == myTeam) continue;
 
             if(rc.getLocation().equals(flagInfo.getLocation())){
-                System.out.println("CARRYING FLAG WITH LOC " + flagInfo.getLocation() + " AND ID " + flagInfo.getID());
+//                System.out.println("CARRYING FLAG WITH LOC " + flagInfo.getLocation() + " AND ID " + flagInfo.getID());
                 idOfFlagImCarrying = flagInfo.getID();
             }
 

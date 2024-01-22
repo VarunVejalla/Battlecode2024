@@ -34,6 +34,20 @@ public class FlagMover {
             }
         }
 
+        // If it's almost the last round, just place down the flag. It'll get placed down automatically, but this way you can at least log the exact location.
+        if(rc.getRoundNum() >= Constants.SETUP_ROUNDS - 2){
+            MapLocation currLoc = rc.getLocation();
+            rc.dropFlag(currLoc);
+            placedFlag = true;
+            if(flagIdx == -1){
+                System.out.println("UNKNOWN FLAG IDX SO RESIGNING");
+                Util.resign();
+            }
+            System.out.println("Setting new default flag loc for " + flagIdx + " to " + currLoc);
+            comms.writeDefaultHomeFlagLocs(flagIdx, currLoc);
+            comms.writeOurFlagNewHomeStatus(flagIdx, true);
+        }
+
         MapInfo[] infos = rc.senseNearbyMapInfos(GameConstants.VISION_RADIUS_SQUARED);
         for(MapInfo info : infos){
             MapLocation loc = info.getMapLocation();
