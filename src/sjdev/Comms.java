@@ -516,83 +516,292 @@ public class Comms {
 
     //---------------------------------------------------------
     //////////////////////////////////////////////////////////////////////////////////////////
-    // methods for reading and writing soldier type ratios and
+    // methods for reading and writing soldier type counts and ratios
 
-    public int getBotCount(Mode mode) throws GameActionException {
+    public int getPreviousRoundBotCount(Mode mode) throws GameActionException {
+        saveBotCountToPreviousRoundIfNeeded(mode);
+
         if(mode == Mode.OFFENSE){
             return extractVal(
-                    Constants.OFFENSIVE_COUNT_INDEX,
-                    Constants.OFFENSIVE_COUNT_MASK,
-                    Constants.OFFENSIVE_COUNT_SHIFT);
+                    Constants.OFFENSIVE_PREV_COUNT_INDEX,
+                    Constants.OFFENSIVE_PREV_COUNT_MASK,
+                    Constants.OFFENSIVE_PREV_COUNT_SHIFT);
         }
 
         if(mode == Mode.MOBILE_DEFENSE){
             return extractVal(
-                    Constants.MOBILE_DEFENDER_COUNT_INDEX,
-                    Constants.MOBILE_DEFENDER_COUNT_MASK,
-                    Constants.MOBILE_DEFENDER_COUNT_SHIFT);
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_SHIFT);
         }
 
         else if(mode == Mode.STATIONARY_DEFENSE){
             return extractVal(
-                    Constants.STATIONARY_DEFENDER_COUNT_INDEX,
-                    Constants.STATIONARY_DEFENDER_COUNT_MASK,
-                    Constants.STATIONARY_DEFENDER_COUNT_SHIFT);
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_SHIFT);
         }
 
         else if(mode == Mode.TRAPPING){
             return extractVal(
-                    Constants.TRAPPER_COUNT_INDEX,
-                    Constants.TRAPPER_COUNT_MASK,
-                    Constants.TRAPPER_COUNT_SHIFT);
+                    Constants.TRAPPER_PREV_COUNT_INDEX,
+                    Constants.TRAPPER_PREV_COUNT_MASK,
+                    Constants.TRAPPER_PREV_COUNT_SHIFT);
         }
 
-        return -1;
+        return 0;
     }
 
 
-    public void writeBotCount(Mode mode, int count) throws GameActionException {
+    public void writePreviousRoundBotCount(Mode mode, int count) throws GameActionException {
         if(mode == Mode.OFFENSE){
             insertVal(
-                    Constants.OFFENSIVE_COUNT_INDEX,
-                    Constants.OFFENSIVE_COUNT_MASK,
-                    Constants.OFFENSIVE_COUNT_SHIFT,
+                    Constants.OFFENSIVE_PREV_COUNT_INDEX,
+                    Constants.OFFENSIVE_PREV_COUNT_MASK,
+                    Constants.OFFENSIVE_PREV_COUNT_SHIFT,
                     count);
         }
 
         else if(mode == Mode.MOBILE_DEFENSE){
             insertVal(
-                    Constants.MOBILE_DEFENDER_COUNT_INDEX,
-                    Constants.MOBILE_DEFENDER_COUNT_MASK,
-                    Constants.MOBILE_DEFENDER_COUNT_SHIFT,
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_PREV_COUNT_SHIFT,
                     count);
         }
 
         else if(mode == Mode.STATIONARY_DEFENSE){
             insertVal(
-                    Constants.STATIONARY_DEFENDER_COUNT_INDEX,
-                    Constants.STATIONARY_DEFENDER_COUNT_MASK,
-                    Constants.STATIONARY_DEFENDER_COUNT_SHIFT,
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_PREV_COUNT_SHIFT,
                     count);
         }
 
         else if(mode == Mode.TRAPPING){
             insertVal(
-                    Constants.TRAPPER_COUNT_INDEX,
-                    Constants.TRAPPER_COUNT_MASK,
-                    Constants.TRAPPER_COUNT_SHIFT,
+                    Constants.TRAPPER_PREV_COUNT_INDEX,
+                    Constants.TRAPPER_PREV_COUNT_MASK,
+                    Constants.TRAPPER_PREV_COUNT_SHIFT,
                     count);
         }
     }
 
-    public void incrementBotCount(Mode mode) throws GameActionException{
-        int count = getBotCount(mode);
-        writeBotCount(mode, count+1);
+
+    private int getCurrentBotCount_internal(Mode mode) throws GameActionException{
+        // same as getCurrentBotCount, but doesn't check if we need to save the current round bot count to the previous round bot count
+        // this is to prevent infinite recursion
+
+        if(mode == Mode.OFFENSE){
+            return extractVal(
+                    Constants.OFFENSIVE_CURR_COUNT_INDEX,
+                    Constants.OFFENSIVE_CURR_COUNT_MASK,
+                    Constants.OFFENSIVE_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            return extractVal(
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            return extractVal(
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            return extractVal(
+                    Constants.TRAPPER_CURR_COUNT_INDEX,
+                    Constants.TRAPPER_CURR_COUNT_MASK,
+                    Constants.TRAPPER_CURR_COUNT_SHIFT);
+        }
+        return 0;
     }
 
-    public void decrementBotCount(Mode mode) throws GameActionException {
-        int count = getBotCount(mode);
-        writeBotCount(mode, count-1);
+    public int getCurrentBotCount(Mode mode) throws GameActionException{
+        // this method returns the value of an updating counter keep
+        // keeping track of bots of a given type that are alive in the current round
+
+        if(mode == Mode.OFFENSE){
+            return extractVal(
+                    Constants.OFFENSIVE_CURR_COUNT_INDEX,
+                    Constants.OFFENSIVE_CURR_COUNT_MASK,
+                    Constants.OFFENSIVE_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            return extractVal(
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            return extractVal(
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_SHIFT);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            return extractVal(
+                    Constants.TRAPPER_CURR_COUNT_INDEX,
+                    Constants.TRAPPER_CURR_COUNT_MASK,
+                    Constants.TRAPPER_CURR_COUNT_SHIFT);
+        }
+        return 0;
+    }
+
+
+    public int getPrevRound_CountModulo(Mode mode) throws GameActionException{
+        // this method returns the modulo of the round number that the previous round bot count currently holds
+        // this is used to determine if we need to save the current round bot count to the previous round bot count
+        if(mode == Mode.OFFENSE){
+            return extractVal(
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_SHIFT);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            return extractVal(
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            return extractVal(
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            return extractVal(
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_SHIFT);
+        }
+        return 0;
+    }
+
+
+    public void setPrevRound_CountModulo(int currRound, Mode mode) throws GameActionException{
+        // this method sets the modulo of the round number that the previous round bot count currently holds
+        // this is used to determine if we need to save the current round bot count to the previous round bot count
+        if(mode == Mode.OFFENSE){
+            insertVal(
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.OFFENSIVE_COUNT_PREV_UPDATED_ROUND_SHIFT,
+                    currRound % 3);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            insertVal(
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT,
+                    currRound % 3);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            insertVal(
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT,
+                    currRound % 3);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            insertVal(
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_INDEX,
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_MASK,
+                    Constants.TRAPPER_COUNT_PREV_UPDATED_ROUND_SHIFT,
+                    currRound % 3);
+        }
+    }
+
+    public boolean saveBotCountToPreviousRoundIfNeeded(Mode mode) throws GameActionException{
+        // this method checks if we need to save the current round bot counts
+        // to the previous round bot counts
+        // returns true if update occurred, false otherwise
+
+        // check to see if the round has been updated
+        int currRoundMod3 = rc.getRoundNum() % 3;
+        int prevRound = getPrevRound_CountModulo(mode);
+
+
+        if(prevRound % 3 != currRoundMod3){
+
+            // first put the current count into the previous count
+            int currCount = getCurrentBotCount_internal(mode);
+            writePreviousRoundBotCount(mode, currCount);
+
+            // set the current round bot count to 0
+            writeCurrentRoundBotCount(mode, 0);
+
+            // set the previous round updated to the current round
+            setPrevRound_CountModulo(currRoundMod3, mode);
+
+            return true;
+        }
+        return false;
+    }
+
+    public void writeCurrentRoundBotCount(Mode mode, int count) throws GameActionException{
+        // this method writes the value of an updating counter keep
+        // keeping track of bots of a given type that are alive in the current round
+
+        // assumes we have already chekced if we needed to save the previous round bot counts
+        // a call is made to
+
+        if(mode == Mode.OFFENSE){
+            insertVal(
+                    Constants.OFFENSIVE_CURR_COUNT_INDEX,
+                    Constants.OFFENSIVE_CURR_COUNT_MASK,
+                    Constants.OFFENSIVE_CURR_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.MOBILE_DEFENSE){
+            insertVal(
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_MASK,
+                    Constants.MOBILE_DEFENDER_CURR_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.STATIONARY_DEFENSE){
+            insertVal(
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_INDEX,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_MASK,
+                    Constants.STATIONARY_DEFENDER_CURR_COUNT_SHIFT,
+                    count);
+        }
+
+        else if(mode == Mode.TRAPPING){
+            insertVal(
+                    Constants.TRAPPER_CURR_COUNT_INDEX,
+                    Constants.TRAPPER_CURR_COUNT_MASK,
+                    Constants.TRAPPER_CURR_COUNT_SHIFT,
+                    count);
+        }
+    }
+
+
+    public void incrementCurrentRoundBotCount(Mode mode) throws GameActionException{
+        if(rc.getRoundNum() > Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            saveBotCountToPreviousRoundIfNeeded(mode);
+        }
+        int count = getCurrentBotCount(mode);
+        writeCurrentRoundBotCount(mode, count+1);
+
     }
 
 

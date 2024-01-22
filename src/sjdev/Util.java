@@ -302,4 +302,15 @@ public class Util {
         // TODO: implement this method to take into account attack specializations
         return 20.0;
     }
+
+
+    public static double getPotentialDamage(RobotInfo[] info) throws GameActionException{
+        double potentialDamage = 0.0;
+        for(int i=info.length; --i>=0;){
+            if(info[i].getTeam() == robot.myTeam){
+                info[i] = null;
+            }
+        }
+        return potentialDamage;
+    }
 }
