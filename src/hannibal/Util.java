@@ -18,6 +18,10 @@ public class Util {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
+    public static MapLocation getRandomLocation(){
+        return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
+    }
+
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
         if(rc.getCrumbs() >= minCrumbsToFill && rc.canFill(rc.adjacentLocation(dir))) {
             rc.fill(rc.adjacentLocation(dir));

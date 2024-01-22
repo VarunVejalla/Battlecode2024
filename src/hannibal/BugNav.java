@@ -184,6 +184,8 @@ public class BugNav {
 
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
+
+        // TODO: Remove this??
         if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
             return true;
         }

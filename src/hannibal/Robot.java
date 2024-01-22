@@ -67,6 +67,7 @@ public class Robot {
     MapLocation homeLocWhenCarryingFlag = null;
     FlagInfo[] sensedNearbyFlags;
     MapInfo[] sensedNearbyMapInfos;
+    MapLocation[] sensedNearbyCrumbs;
     RobotInfo[] nearbyFriendlies; // friendly bots within vision radius of bot
     RobotInfo[] nearbyActionFriendlies; // friendly bots within action radius of bot
     RobotInfo[] nearbyActionEnemies; // enemy bots within action radius of bot
@@ -642,6 +643,7 @@ public class Robot {
         // this method scans the surroundings of the bot and updates comms if needed
         sensedNearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
         sensedNearbyMapInfos = rc.senseNearbyMapInfos();
+        sensedNearbyCrumbs = rc.senseNearbyCrumbs(Constants.CRUMB_SENSE_RADIUS); // senseNearbyCrumbs() is 0 bytecode??? https://releases.battlecode.org/javadoc/battlecode24/2.0.1/index.html
 
         nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, myTeam);
         nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, myTeam);
