@@ -107,7 +107,8 @@ public class DefenseModule {
     public void spawnStationary() throws GameActionException {
         if(defendingFlagIdx == -1){
             Util.log("SETUP NOT YET CALLED??");
-            rc.resign();
+            System.out.println("SETUP NOT YET CALLED??");
+            Util.resign();
         }
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
@@ -132,7 +133,7 @@ public class DefenseModule {
     public void spawnMobile() throws GameActionException {
         if(defendingFlagIdx == -1){
             Util.log("SETUP NOT YET CALLED??");
-            rc.resign();
+            Util.resign();
         }
         if(sharedDefensiveTarget == null){
             spawnStationary();

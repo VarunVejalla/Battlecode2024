@@ -6,6 +6,11 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
+    static boolean LOGGING_ALLOWED = true;
+
+    public static void resign(){
+        rc.resign(); // TODO: COMMENT THIS OUT.
+    }
 
     public static int minMovesToReach(MapLocation a, MapLocation b){
         int dx = a.x - b.x;
@@ -93,6 +98,17 @@ public class Util {
         return -1;
     }
 
+    public static int getItemIndexInArray(int item, int[] array){
+        // helper method to get the index of an item in an array
+        for(int i = 0; i < array.length; i++){
+            int arrayItem = array[i];
+            if(arrayItem == item){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     public static <T> boolean checkIfItemInArray(T item, T[] array){
         return getItemIndexInArray(item, array) != -1;
@@ -100,6 +116,9 @@ public class Util {
 
 
     public static <T> void logArray(String name, T[] array){
+        if(!LOGGING_ALLOWED){
+            return;
+        }
         // helper method to display array of any type to the logs
         String out = "";
         out += name + ": ";
@@ -115,6 +134,18 @@ public class Util {
             }
         }
         System.out.println(out);
+    }
+
+    public static void logArray(String name, int[] arr){
+        logArray(name, intToIntegerArray(arr));
+    }
+
+    public static Integer[] intToIntegerArray(int[] arr){
+        Integer[] ret = new Integer[arr.length];
+        for(int i = 0; i < ret.length; i++){
+            ret[i] = arr[i];
+        }
+        return ret;
     }
 
     public static void fillTrue(boolean[][] arr, MapLocation center, int radiusSquared) {
@@ -267,15 +298,17 @@ public class Util {
         }
 
         if(spawnCenterIdx < 3){
-            Util.log("Not all spawn centers found in getSpawnLocCenters");
-            rc.resign();
+            System.out.println("Not all spawn centers found in getSpawnLocCenters");
+            Util.resign();
         }
 
         return spawnCenters;
     }
 
     public static void log(String str){
-        System.out.println(str);
+        if(LOGGING_ALLOWED){
+            System.out.println(str);
+        }
     }
 
     public static void logBytecode(String str){

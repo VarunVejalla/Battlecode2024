@@ -184,7 +184,7 @@ public class OffenseModule {
                 robot.homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(robot.myLoc);
             }
             robot.myLoc = rc.getLocation();
-            comms.removeKnownOppFlagLoc(robot.myLoc);
+            comms.removeKnownOppFlagLocFromId(robot.idOfFlagImCarrying);
             nav.pathBF(robot.homeLocWhenCarryingFlag, 0);
             Util.addToIndicatorString("HL: " + robot.homeLocWhenCarryingFlag);
             if(sharedOffensiveTarget.equals(robot.myLoc)){
@@ -192,7 +192,7 @@ public class OffenseModule {
                 comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
             }
             robot.myLoc = rc.getLocation();
-            comms.writeKnownOppFlagLoc(robot.myLoc, true);
+            comms.writeKnownOppFlagLocFromFlagID(robot.myLoc, true, robot.idOfFlagImCarrying);
         } else if (sharedOffensiveTarget == null) {
             nav.moveRandom();
             Util.addToIndicatorString("RND");

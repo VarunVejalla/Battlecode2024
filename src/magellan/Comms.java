@@ -186,24 +186,10 @@ public class Comms {
     }
 
 
-    public void writeKnownOppFlagLoc(MapLocation newFlagLoc, boolean carried) throws GameActionException{
-        for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = getKnownOppFlag(i);
-            if(knownFlagLoc != null && knownFlagLoc.equals(newFlagLoc)){
-                writeCarriedStatus_KnownOppFlag(i, carried);
-                return;
-            }
-        }
-
-        // if we get here, then we didn't find the flag in the broadcast
-        // so we need to add it
-        for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = getKnownOppFlag(i);
-            if(knownFlagLoc == null){
-                writeKnownOppFlagLoc(newFlagLoc, carried, i);
-                return;
-            }
-        }
+    public void writeKnownOppFlagLocFromFlagID(MapLocation newFlagLoc, boolean carried, int flagID) throws GameActionException{
+        int flagIdx = Util.getItemIndexInArray(flagID, getOppFlagIDArray());
+        assert(flagIdx != -1);
+        writeKnownOppFlagLoc(newFlagLoc, carried, flagIdx);
     }
 
 
@@ -244,19 +230,27 @@ public class Comms {
         return getKnownOppFlags(false);
     }
 
-
-
-    public void removeKnownOppFlagLoc(MapLocation flagLoc) throws GameActionException{
+    public void removeKnownOppFlagLocFromIdx(int flagIdx) throws GameActionException{
         // this method removes a known opponent flag location from the broadcast
         // used if we notice a flag is no longer there
-        for(int i=0; i<constants.KNOWN_OPP_FLAG_INDICES.length; i++){
-            MapLocation knownFlagLoc = getKnownOppFlag(i);
-            if(knownFlagLoc != null && knownFlagLoc.equals(flagLoc)){
-                    writeKnownOppFlagLoc(null, false, i);
-            }
-        }
+        writeKnownOppFlagLoc(null, false, flagIdx);
     }
 
+    public void removeKnownOppFlagLocFromId(int flagId) throws GameActionException{
+        // this method removes a known opponent flag location from the broadcast
+        // used if we notice a flag is no longer there
+        int flagIdx = Util.getItemIndexInArray(flagId, getOppFlagIDArray());
+        if(flagIdx == -1){
+            Util.LOGGING_ALLOWED = true;
+            robot.testLog();
+            Util.logArray("Comms opp flag array:", getOppFlagIDArray());
+            Util.log("Flag ID:" + flagId);
+            System.out.println("Failed while removing flag ID: " + flagId);
+            Util.resign();
+        }
+        assert(flagIdx != -1);
+        writeKnownOppFlagLoc(null, false, flagIdx);
+    }
 
     public void setKnownOppFlagsToNull() throws GameActionException{
         // this method sets all known opponent flag locations to null (at the beginning of the game)
@@ -786,6 +780,8 @@ public class Comms {
             if(currFlagId == flagID) return;    // we've already seen this flagID, so we should already have its default location
             else if(currFlagId == Constants.NULL_FLAG_ID_VAL && firstNullIndex == -1) firstNullIndex = i;
         }
+
+        System.out.println("First time flag " + flagID + " was spotted at location " + defaultFlagLoc);
 
         // if we get here, then we haven't seen this flagID before, so we need to add it
         if(firstNullIndex != -1){

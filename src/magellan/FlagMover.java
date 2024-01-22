@@ -58,7 +58,8 @@ public class FlagMover {
                 rc.dropFlag(loc);
                 placedFlag = true;
                 if(flagIdx == -1){
-                    rc.resign();
+                    System.out.println("UNKNOWN FLAG IDX SO RESIGNING");
+                    Util.resign();
                 }
                 System.out.println("Setting new default flag loc for " + flagIdx + " to " + loc);
                 comms.writeDefaultHomeFlagLocs(flagIdx, loc);
@@ -119,7 +120,7 @@ public class FlagMover {
                 flagIdx = Util.getItemIndexInArray(flagLoc, robot.spawnCenters);
                 if(flagIdx == -1){
                     Util.log("Flag is not at its center???");
-                    rc.resign();
+                    Util.resign();
                 }
                 rc.pickupFlag(flagLoc);
                 return true;

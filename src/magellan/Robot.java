@@ -2,7 +2,6 @@ package magellan;
 
 import battlecode.common.*;
 
-import java.util.Map;
 import java.util.Random;
 
 enum SymmetryType {
@@ -61,6 +60,8 @@ public class Robot {
     MapLocation[] approximateOppFlagLocations;
     MapLocation[] knownDroppedOppFlags;
     MapLocation[] knownCarriedOppFlags;
+    int[] knownOppFlagIDs;
+    MapLocation[] defaultOppFlagLocs;
     MapLocation[] knownTakenAllyFlags;
 
     MapLocation homeLocWhenCarryingFlag = null;
@@ -74,7 +75,6 @@ public class Robot {
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
 
-    MapLocation[] defaultOppFlagLocs;
     int idOfFlagImCarrying = -1;
 
     Mode mode;
@@ -114,6 +114,7 @@ public class Robot {
         if(rc.getRoundNum() < 200 && defaultOppFlagLocs != null){
             comms.setAllDefaultOppFlagLocsToNull();
         }
+        knownOppFlagIDs = comms.getOppFlagIDArray();
 
         if(!comms.defaultFlagLocationsWritten()) {
             comms.writeDefaultHomeFlagLocs(0, spawnCenters[0]);
@@ -136,7 +137,7 @@ public class Robot {
         }
         else{
             Util.log("UNKNOWN MODE: " + mode);
-            rc.resign();
+            Util.resign();
         }
 
         if(rc.getRoundNum() == 1){
@@ -233,8 +234,8 @@ public class Robot {
             offenseModule.spawn();
         }
         else{
-            Util.log("ROBOT IS UNKNOWN MODE: " + mode);
-            rc.resign();
+            System.out.println("ROBOT IS UNKNOWN MODE: " + mode);
+            Util.resign();
         }
     }
 
@@ -248,9 +249,6 @@ public class Robot {
         Util.addToIndicatorString("Mode:" + mode.toShortString());
 
         readComms(); // update opp flags and the shared target loc index
-//        if(rc.getRoundNum() > Constants.SETUP_ROUNDS && (mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE)){
-//            testLog();
-//        }
 
         if (!rc.isSpawned()){
             spawn();
@@ -287,13 +285,13 @@ public class Robot {
 
                     // update shared array
                     attackModule.runUnsafeStrategy();
-                    comms.removeKnownOppFlagLoc(myLoc);
+                    comms.removeKnownOppFlagLocFromId(idOfFlagImCarrying);
 
                     if(offenseModule.sharedOffensiveTarget.equals(myLoc)){
                         offenseModule.sharedOffensiveTarget = rc.getLocation();
                         comms.writeSharedOffensiveTarget(offenseModule.sharedOffensiveTarget);
                     }
-                    comms.writeKnownOppFlagLoc(offenseModule.sharedOffensiveTarget, true);
+                    comms.writeKnownOppFlagLocFromFlagID(rc.getLocation(), true, idOfFlagImCarrying);
                 }
             }
             else{
@@ -319,13 +317,19 @@ public class Robot {
                 && Util.locIsASpawnLoc(rc.getLocation())){
             comms.setOppFlagToCaptured(idOfFlagImCarrying);
         }
+
+//        if(rc.getRoundNum() % 50 == 0){
+//            testLog();
+//        }
     }
 
 
     public void testLog() throws GameActionException {
-//        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
-//        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
-//        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
+        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
+        Util.logArray("knownOppFlagIDs: ", knownOppFlagIDs);
+        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
+        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
+        Util.logArray("knownDefaultOppFlagLocations: ", defaultOppFlagLocs);
 //        Util.logArray("knownTakenAllyFlagLocations: ", knownTakenAllyFlags);
 //        Util.logArray("flagBroadcasts: ", rc.senseBroadcastFlagLocations());
 //        if(defaultHomeFlagLocs != null){
@@ -336,14 +340,17 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(0),
 //                        comms.getHomeFlagTakenStatus(1),
 //                        comms.getHomeFlagTakenStatus(2)});
-//        Util.log("Shared offensive target: " + sharedOffensiveTarget);
-//        Util.log("Shared offensive target type: " + sharedOffensiveTargetType);
-//
-//        Util.log("--------------------------------");
+        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
+        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
+
+        Util.log("--------------------------------");
     }
 
 
     public void readComms() throws GameActionException {
+        // read opp flag IDs
+        knownOppFlagIDs = comms.getOppFlagIDArray();
+
         // read approximate flag locations
         approximateOppFlagLocations = comms.getAllApproxOppFlags();
 
@@ -375,7 +382,6 @@ public class Robot {
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
 
         defaultOppFlagLocs = comms.getDefaultOppFlagLocations();
-
     }
 
 
@@ -429,17 +435,20 @@ public class Robot {
                     boolean flagIsStillValid = false;
                     // check to see if we sensed the flag at the location in sensedNearbyFlags
                     // if we did, and it's being carried, it's valid
+//                    Util.log("Checking if " + knownCarriedOppFlags[i] + " still contains flag");
                     for (FlagInfo flagInfo : sensedNearbyFlags) {
                         if (flagInfo.getLocation().equals(knownCarriedOppFlags[i])) {
-                            if (flagInfo.isPickedUp()) {
+                            if (flagInfo.isPickedUp() && flagInfo.getTeam() == oppTeam) {
+                                Util.log("It is! " + flagInfo.getLocation() + ", " + flagInfo.getTeam() + ", " + flagInfo.getID());
                                 flagIsStillValid = true;
                             }
                         }
                     }
                     if (!flagIsStillValid) {
+//                        Util.log("It's not! Removing " + knownCarriedOppFlags[i] + " from comms");
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
-                        comms.removeKnownOppFlagLoc(knownCarriedOppFlags[i]);
+                        comms.removeKnownOppFlagLocFromIdx(i);
                         knownCarriedOppFlags[i] = null;
                     }
                 }
@@ -463,8 +472,8 @@ public class Robot {
                     if (!flagIsStillValid) {
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
-                        comms.removeKnownOppFlagLoc(knownDroppedOppFlags[i]);
-                        knownCarriedOppFlags[i] = null;
+                        comms.removeKnownOppFlagLocFromIdx(i);
+                        knownDroppedOppFlags[i] = null;
                     }
                 }
             }
@@ -477,34 +486,21 @@ public class Robot {
             if (flagInfo.getTeam() == myTeam) continue;
 
             if(rc.getLocation().equals(flagInfo.getLocation())){
+                System.out.println("CARRYING FLAG WITH LOC " + flagInfo.getLocation() + " AND ID " + flagInfo.getID());
                 idOfFlagImCarrying = flagInfo.getID();
             }
 
+            comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
+            knownOppFlagIDs = comms.getOppFlagIDArray();
             if (isOppFlagKnown(flagInfo)) continue;
             if (flagInfo.isPickedUp()) {
                 // Update comms.
-                comms.writeKnownOppFlagLoc(flagInfo.getLocation(), true);
-
-                // Update self.
-                for(int i = 0; i< Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
-                    if(knownCarriedOppFlags[i] == null){
-                        knownCarriedOppFlags[i] = flagInfo.getLocation();
-                        break;
-                    }
-                }
-                comms.writeDefaultOppFlagLocationIfNotSeenBefore(flagInfo.getLocation(), flagInfo.getID());
-
+                comms.writeKnownOppFlagLocFromFlagID(flagInfo.getLocation(), true, flagInfo.getID());
+                knownCarriedOppFlags = comms.getCarriedOppFlags();
             } else {
                 // Update comms.
-                comms.writeKnownOppFlagLoc(flagInfo.getLocation(), false);
-
-                // Update self.
-                for(int i = 0; i< Constants.KNOWN_OPP_FLAG_INDICES.length; i++) {
-                    if(knownDroppedOppFlags[i] == null){
-                        knownDroppedOppFlags[i] = flagInfo.getLocation();
-                        break;
-                    }
-                }
+                comms.writeKnownOppFlagLocFromFlagID(flagInfo.getLocation(), false, flagInfo.getID());
+                knownDroppedOppFlags = comms.getDroppedOppFlags();
             }
         }
     }
@@ -636,7 +632,8 @@ public class Robot {
 
             if (oppFlagLoc != null && rc.canPickupFlag(oppFlagLoc)) {
                 rc.pickupFlag(oppFlagLoc);
-                comms.writeKnownOppFlagLoc(oppFlagLoc, true);
+                comms.writeKnownOppFlagLocFromFlagID(oppFlagLoc, true, flagInfo.getID());
+                idOfFlagImCarrying = flagInfo.getID();
             }
         }
     }
@@ -651,4 +648,18 @@ public class Robot {
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
     }
+
+    public int getOppFlagIdx(int flagID){
+        if(knownOppFlagIDs[0] == flagID){
+            return 0;
+        }
+        if(knownOppFlagIDs[1] == flagID){
+            return 1;
+        }
+        if(knownOppFlagIDs[2] == flagID){
+            return 2;
+        }
+        return -1;
+    }
+
 }

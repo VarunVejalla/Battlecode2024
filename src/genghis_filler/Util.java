@@ -6,6 +6,7 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
+    static boolean LOGGING_ALLOWED = false;
 
     public static int minMovesToReach(MapLocation a, MapLocation b){
         int dx = a.x - b.x;
@@ -63,6 +64,9 @@ public class Util {
 
 
     public static <T> void logArray(String name, T[] array){
+        if(!LOGGING_ALLOWED){
+            return;
+        }
         // helper method to display array of any type to the logs
         String out = "";
         out += name + ": ";
@@ -233,6 +237,9 @@ public class Util {
     }
 
     public static void log(String str){
+        if(!LOGGING_ALLOWED){
+            return;
+        }
         System.out.println(str);
     }
 

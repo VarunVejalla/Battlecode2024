@@ -128,24 +128,20 @@ public class Bug2Nav {
                 return true;
             }
         }
-        System.out.println("On line: " + checkOnLine(rc.getLocation()));
-        System.out.println(line_m + ", " + line_b);
-        System.out.println(rc.getLocation().x + ", " + rc.getLocation().y);
+//        System.out.println("On line: " + checkOnLine(rc.getLocation()));
+//        System.out.println(line_m + ", " + line_b);
+//        System.out.println(rc.getLocation().x + ", " + rc.getLocation().y);
 
         // Otherwise, follow the wall?
         if(currWallLocation == null){
             Direction towardsTarget = robot.myLoc.directionTo(target);
-            System.out.println("My loc " + robot.myLoc + ", target " + target + ", towards target " + towardsTarget);
             currWallLocation = robot.myLoc.add(towardsTarget);
         }
 
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
-        System.out.println("Wall loc: " + currWallLocation);
         for(int i = 0; i < 8; i++){
-            System.out.println("Testing target dir " + targetDir + " on iteration " + i);
             if(Util.tryMove(targetDir, minCrumbsForNavigation)){
-                System.out.println("Going with target dir " + targetDir + " on iteration " + i);
                 Direction oneOffOfTargetDir = bugFollowRight ? targetDir.rotateLeft() : targetDir.rotateRight();
                 currWallLocation = locBeforeMoving.add(oneOffOfTargetDir);
                 if(checkOnLine(rc.getLocation())){
