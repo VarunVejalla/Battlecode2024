@@ -15,6 +15,7 @@ public class DamScout {
     int[] distsToSpawnCenters;
     MapLocation targetLoc = null;
     Direction adjDir = null;
+    boolean moveRandomLoc = true;
 
     FixedSizeQueue<MapLocation> crumbs = new FixedSizeQueue<MapLocation>(Constants.CRUMB_REMEMBER_COUNT);
     int movingToCrumbStepCount = 0;
@@ -51,6 +52,30 @@ public class DamScout {
         return null;
     }
 
+    public void setCrumbTargetLoc() {
+        // Reset Target
+        if (movingToCrumbStepCount >= Constants.CRUMB_GIVE_UP_STEPS) {
+            movingToCrumbStepCount = 0;
+            if (moveRandomLoc) {
+                targetLoc = Util.getRandomLocation();
+            } else {
+                targetLoc = null;
+            }
+            moveRandomLoc = !moveRandomLoc;
+            // targetLoc = Util.getRandomLocation();
+        }
+        
+        // Get a new targetLoc
+        if (targetLoc == null) {
+            if (crumbs.size() > 0) {
+                targetLoc = crumbs.poll();
+            } else {
+                targetLoc = Util.getRandomLocation();
+            }    
+            // targetLoc = Util.getRandomLocation();            
+        }
+    }
+
     public void runScout() throws GameActionException {
         distsToSpawnCenters = comms.readDistsToSpawnCenters();
 
@@ -59,15 +84,15 @@ public class DamScout {
         for (MapLocation crumb : nearbyCrumbs) {
             crumbs.add(crumb);
         }
-
-        if (rc.getRoundNum() <= Constants.NEW_FLAG_LOC_DECIDED_ROUND + 5 ) {
+        int roundNum = rc.getRoundNum();
+        if (roundNum <= Constants.NEW_FLAG_LOC_DECIDED_ROUND || roundNum >= Constants.SCOUT_LINE_UP_DAM_ROUND ) {
             // If you haven't visited the damn yet, go towards it.
             if(adjDir == null){
                 nav.goToBug(centerLoc, 0);
                 // Check if I'm currently adjacent to the damn.
                 adjDir = getDamAdjDir();
             }
-            // Otherwise, follow it, either left or right.
+            // Otherwise, follow it, either left or right.      rc.senseMapInfo(MapLocation loc)
             else{
                 MapLocation locBeforeMoving = rc.getLocation();
                 Direction moveDir = adjDir;
@@ -96,30 +121,67 @@ public class DamScout {
             scanForNearbyDamnLocation();
             comms.writeDistsToSpawnCenters(distsToSpawnCenters);
         } else {        // Grab the crumbs
+            adjDir = null;
             movingToCrumbStepCount += 1;
 
-            if (movingToCrumbStepCount >= Constants.CRUMB_GIVE_UP_STEPS) {
-                movingToCrumbStepCount = 0;
-                // TODO Get a new target
-                targetLoc = null;
-            }
-            
-            // Get a new target
-            if (targetLoc == null && crumbs.size() > 0) {
-                targetLoc = crumbs.poll();
-            }
+            setCrumbTargetLoc();
             
             // If we have a target
             if (targetLoc != null) {
-                nav.goToBug(targetLoc, 0);
+                
+                boolean isDam = true;
+                robot.myLoc = rc.getLocation();
+                
+                while (isDam) {
+                    isDam = false;
+                    Direction togo = robot.myLoc.directionTo(targetLoc);
+                    if (!rc.canMove(togo)) {    
+                        // Get new targetLoc if Dam is encountered
+                        if (rc.senseMapInfo(rc.adjacentLocation(togo)).isDam()) {
+                            targetLoc = null;
+                            setCrumbTargetLoc();
+                            isDam = true;
+                        } 
+                    }
+                }
+  
+                nav.goToBug(targetLoc, 0);  // Unrolled bellow
+
+                // nav.resetBugNav();
+                // while (rc.isMovementReady()) {
+                    
+                //     // Move in Direction of target
+                //     robot.myLoc = rc.getLocation();
+                //     Direction togo = robot.myLoc.directionTo(targetLoc);
+                //     Direction bug_nav_togo = nav.bugNav(targetLoc);
+
+                //     if (!rc.canMove(togo)) {    
+                //         // Get new targetLoc if Dam is encountered
+                //         if (rc.senseMapInfo(rc.adjacentLocation(togo)).isDam()) {
+                //             targetLoc = null;
+                //             setCrumbTargetLoc();
+                //         } 
+                //         // else {
+                //         //     togo = null;
+                //         //     togo = nav.bugNav(targetLoc);
+                //         // }
+                //     }
+                //     if (bug_nav_togo != null) {
+                //         Util.tryMove(bug_nav_togo);
+                //     }
+                //     if (robot.myLoc.equals(targetLoc)) {
+                //         break;
+                //     }
+                // }
 
                 // Reset target location once reached
-                MapLocation curLocation = rc.getLocation();
-                if (curLocation.equals(targetLoc)) {
+                robot.myLoc = rc.getLocation();
+                if (robot.myLoc.equals(targetLoc)) {
                     targetLoc = null;
                 }
-            } else { // Can't Do anything
+            } else { // Can't Do anything, should never happen
                 nav.moveRandom();
+                Util.log("HELLOOOOOOOOOOOOOO");
             }
         }
     }
