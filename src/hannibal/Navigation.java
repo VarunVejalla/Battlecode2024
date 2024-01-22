@@ -18,6 +18,19 @@ public class Navigation {
             Direction.NORTHWEST,
     };
 
+    // array containing all directions
+    static final Direction[] allDirections = {
+            Direction.NORTH,
+            Direction.NORTHEAST,
+            Direction.EAST,
+            Direction.SOUTHEAST,
+            Direction.SOUTH,
+            Direction.SOUTHWEST,
+            Direction.WEST,
+            Direction.NORTHWEST,
+            Direction.CENTER
+    };
+
     static final int BFS_CENTER_X = 5;
     static final int BFS_CENTER_Y = 4;
 
