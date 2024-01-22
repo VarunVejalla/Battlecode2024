@@ -1,4 +1,4 @@
-package magellan;
+package navtesting;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -12,7 +12,7 @@ public class FuzzyNav {
     Robot robot;
 
     MapLocation prevTarget = null;
-    final int RECENTLY_VISITED_LENGTH = 15;
+    final int RECENTLY_VISITED_LENGTH = 5;
     MapLocation[] recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH];
     int recentlyVisitedIdx = 0;
     int lastUpdatedRoundNum = 0;

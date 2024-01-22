@@ -1,4 +1,4 @@
-package magellan;
+package navtesting;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -185,7 +185,7 @@ public class OffenseModule {
             }
             robot.myLoc = rc.getLocation();
             comms.removeKnownOppFlagLoc(robot.myLoc);
-            nav.pathBF(robot.homeLocWhenCarryingFlag, 0);
+            nav.bugNav.goToBug0(robot.homeLocWhenCarryingFlag, 0);
             Util.addToIndicatorString("HL: " + robot.homeLocWhenCarryingFlag);
             if(sharedOffensiveTarget.equals(robot.myLoc)){
                 sharedOffensiveTarget = rc.getLocation();
@@ -203,7 +203,7 @@ public class OffenseModule {
             }
             else{
                 Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
-                nav.pathBF(sharedOffensiveTarget, 100);
+                nav.bugNav.goToBug0(sharedOffensiveTarget, 0);
             }
         }
     }

@@ -1,4 +1,4 @@
-package magellan;
+package navtesting;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
@@ -44,6 +44,9 @@ public strictfp class RobotPlayer {
         while (true) {
             startTurn = rc.getRoundNum();
 
+            if (rc.getRoundNum() > 800){
+                rc.resign();
+            }
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){

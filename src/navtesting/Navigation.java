@@ -1,4 +1,4 @@
-package magellan;
+package navtesting;
 
 import battlecode.common.*;
 
@@ -28,7 +28,10 @@ public class Navigation {
     FuzzyNav fuzzyNav;
     BugNav bugNav;
     BFS bfs;
+    int closestBugDist = Integer.MAX_VALUE;
 
+    int passableBFSBytecode = 0;
+    int checkInVisitedBytecode = 0;
     int[][] heuristicMap;
     int lastRoundHeuristicMapCalculated = 0;
 
@@ -66,6 +69,10 @@ public class Navigation {
             bugNav.resetBug0(target, waterFillingAllowed);
         }
         bugNav.closestDistBug0 = Math.min(bugNav.closestDistBug0, rc.getLocation().distanceSquaredTo(target));
+        Util.log("Closest bug dist 2: " + bugNav.closestDistBug0);
+        Util.log("Curr dist: " + rc.getLocation().distanceSquaredTo(target));
+        Util.log("Curr wall loc: " + bugNav.currWallLocation);
+        Util.log("Running bug? " + wasRunningBug);
         if(rc.getRoundNum() > bugNav.lastUpdatedRoundNum){
             bugNav.updateBug0CurrLocation(robot.myLoc);
             bugNav.lastUpdatedRoundNum = rc.getRoundNum();
@@ -73,61 +80,61 @@ public class Navigation {
         if(wasRunningBug && bugNav.currWallLocation == null) { // If we were previously going towards target.
             // Try running BFS
             Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            Util.addToIndicatorString("SW_BFS");
             if(moveDir != null){
                 Util.tryMove(moveDir);
                 recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
                 recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
                 wasRunningBug = false;
-                Util.addToIndicatorString("SW_BFS");
                 return;
             }
             else { // If that doesn't work, try going towards target.
+                Util.addToIndicatorString("CT_MCTG");
                 wasRunningBug = true;
                 if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
-                    Util.addToIndicatorString("CT_MCTG");
                     return;
                 }
                 // If that doesn't work, try going around obstacle.
+                Util.addToIndicatorString("SW_BUG");
                 bugNav.needToChooseBugDirection = true;
                 bugNav.tryGoingAroundWall(target, waterFillingAllowed);
-                Util.addToIndicatorString("SW_BUG");
                 return;
             }
         }
         else if(wasRunningBug && bugNav.currWallLocation != null) { // If we were previously going around an obstacle.
             wasRunningBug = true;
             // Try moving closer to goal.
+            Util.addToIndicatorString("SW_MCTG");
             if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
-                Util.addToIndicatorString("SW_MCTG");
                 return;
             }
 
             // If that fails, go around obstacle.
-            bugNav.tryGoingAroundWall(target, waterFillingAllowed);
             Util.addToIndicatorString("CT_BUG");
+            bugNav.tryGoingAroundWall(target, waterFillingAllowed);
             return;
         }
         else { // If was previously running BFS.
             // Try continuing BFS.
             Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            Util.addToIndicatorString("CT_BFS");
             if(moveDir != null){
                 Util.tryMove(moveDir);
                 recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
                 recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
                 wasRunningBug = false;
-                Util.addToIndicatorString("CT_BFS");
             }
             else { // If that doesn't work, try going towards target.
                 wasRunningBug = true;
                 resetBFS();
+                Util.addToIndicatorString("SW_MCTG");
                 if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
-                    Util.addToIndicatorString("SW_MCTG");
                     return;
                 }
                 // If that doesn't work, try going around obstacle.
+                Util.addToIndicatorString("SW_BUG");
                 bugNav.needToChooseBugDirection = true;
                 bugNav.tryGoingAroundWall(target, waterFillingAllowed);
-                Util.addToIndicatorString("SW_BUG");
                 return;
             }
         }
@@ -146,6 +153,22 @@ public class Navigation {
                 return;
             }
         }
+    }
+
+    public boolean isPassableBFS(MapInfo info) throws GameActionException {
+        int startPassable = Clock.getBytecodeNum();
+        MapLocation loc = info.getMapLocation();
+        if(Util.checkIfItemInArray(loc, recentlyVisited)){
+            passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
+            return false;
+        }
+        if(info.isWater() && waterFillingAllowed){
+            passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
+            return true;
+        }
+        boolean ret = info.isPassable();
+        passableBFSBytecode += (Clock.getBytecodeNum() - startPassable);
+        return ret;
     }
 
     public int[][] getHeuristicMapBFS() throws GameActionException {
@@ -207,10 +230,6 @@ public class Navigation {
         MapLocation myLoc = robot.myLoc;
         if(Util.minMovesToReach(myLoc, center) > maxDist){
 //            Util.log("Moving closer!");
-            pathBF(center, minCrumbsForNavigation);
-            if(!rc.isMovementReady()){
-                return true;
-            }
             return fuzzyNav.goTo(center, minCrumbsForNavigation);
         }
         if(Util.minMovesToReach(myLoc, center) < minDist){
