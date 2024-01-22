@@ -407,6 +407,11 @@ public class Robot {
 
         if(rc.isSpawned() && rc.getRoundNum() > Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
             comms.incrementCurrentRoundBotCount(mode);
+
+            if(mode == Mode.OFFENSE){
+                comms.addToCurrOffensiveLocationSum(rc.getLocation());
+
+            }
         }
     }
 
@@ -417,6 +422,7 @@ public class Robot {
         Util.log("SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
         Util.log("MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
         Util.log("OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+        Util.log("Offensive COM: " + comms.getPreviousOffensiveCOM().toString());
 
 //        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
 //        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);

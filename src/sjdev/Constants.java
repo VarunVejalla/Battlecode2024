@@ -231,5 +231,18 @@ public class Constants {
 
     ////--------------------------------------------------------------
     public static final int NUM_ROUNDS_TO_RETREAT_FOR = 3;
+    // ----------------------------------------------------------
+    // constants for reading/writing offensive troop COM
+    // constants related to offensive troop COM
+    public static final int PREV_OFFENSIVE_COM_ROUND_IDX = 19;
+    public static final int PREV_OFFENSIVE_COM_ROUND_MASK = 0b11000000000000;
+    public static final int PREV_OFFENSIVE_COM_ROUND_SHIFT = 12;
+    public static final int PREV_OFFENSIVE_XSUM_IDX = 19;
+    public static final int OFFENSIVE_LOC_SUM_MASK = 0b111111111111;
+    public static final int OFFENSIVE_LOC_SUM_SHIFT = 0;
+    public static final int PREV_OFFENSIVE_YSUM_IDX = 20;
+    public static final int CURR_OFFENSIVE_XSUM_IDX = 21;
+    public static final int CURR_OFFENSIVE_YSUM_IDX = 22;
+    //--------------------------------------------------------------
 
 }

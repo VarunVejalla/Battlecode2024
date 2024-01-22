@@ -1068,5 +1068,101 @@ public class Comms {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // comms for offensiveCOM //
+    public void resetOffensiveSumIfNeeded() throws GameActionException{
+        // read the round number
+        int prevRoundVal = extractVal(
+                Constants.PREV_OFFENSIVE_COM_ROUND_IDX,
+                Constants.PREV_OFFENSIVE_COM_ROUND_MASK,
+                Constants.PREV_OFFENSIVE_COM_ROUND_SHIFT);
 
+        int currRoundMod = rc.getRoundNum() % 3;
+
+        if(prevRoundVal == currRoundMod) return; // don't need to do anything
+
+        // read the values from the previous round
+        int currXSum = extractVal(
+                Constants.CURR_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+
+        int currYSum = extractVal(
+                Constants.CURR_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+
+        // write the values to the prev round field
+        insertVal(
+                Constants.PREV_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, currXSum);
+
+        insertVal(
+                Constants.PREV_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, currYSum);
+
+        // set the values of currSum to 0
+        insertVal(
+                Constants.CURR_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, 0);
+
+        insertVal(
+                Constants.CURR_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, 0);
+
+
+        // increment round modulo val
+        insertVal(
+                Constants.PREV_OFFENSIVE_COM_ROUND_IDX,
+                Constants.PREV_OFFENSIVE_COM_ROUND_MASK,
+                Constants.PREV_OFFENSIVE_COM_ROUND_SHIFT,
+                currRoundMod);
+    }
+
+
+    public void addToCurrOffensiveLocationSum(MapLocation loc) throws GameActionException {
+        if(loc == null) return;
+
+        // write currSum to prevSum if needed
+        resetOffensiveSumIfNeeded();
+
+        int currXSum = extractVal(Constants.CURR_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+        currXSum += loc.x;
+
+        int currYSum = extractVal(Constants.CURR_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+        currYSum += loc.y;
+
+        insertVal(Constants.CURR_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, currXSum);
+
+        insertVal(Constants.CURR_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT, currYSum);
+    }
+
+    public MapLocation getPreviousOffensiveCOM() throws GameActionException{
+        // read the xSum
+        int x = extractVal(Constants.PREV_OFFENSIVE_XSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+
+        // read the ySum
+        int y = extractVal(Constants.PREV_OFFENSIVE_YSUM_IDX,
+                Constants.OFFENSIVE_LOC_SUM_MASK,
+                Constants.OFFENSIVE_LOC_SUM_SHIFT);
+
+        // divide both by number of offensiveTroops
+        int numOffensiveTroops = getPreviousRoundBotCount(Mode.OFFENSE);
+        if(numOffensiveTroops == 0) return null;
+
+        return new MapLocation(x/numOffensiveTroops, y/numOffensiveTroops);
+    }
 }
