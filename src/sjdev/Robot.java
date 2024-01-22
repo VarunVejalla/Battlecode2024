@@ -1,7 +1,6 @@
 package sjdev;
 
 import battlecode.common.*;
-import jdk.nashorn.internal.objects.Global;
 
 import java.util.Random;
 
