@@ -244,5 +244,6 @@ public class Constants {
     public static final int CURR_OFFENSIVE_XSUM_IDX = 21;
     public static final int CURR_OFFENSIVE_YSUM_IDX = 22;
     //--------------------------------------------------------------
+    public static final int ROUND_NUM_TO_START_LINING_UP = 170;
 
 }

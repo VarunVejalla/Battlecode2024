@@ -315,10 +315,14 @@ public class Robot {
     public void run() throws GameActionException {
         // this is the main run method that is called every turn
 
+//        if(rc.getRoundNum() > 220){
+//            rc.resign();
+//        }
+
 //        Util.log("------------ testLog ----------------");
-        if(rc.getRoundNum() % 50 == 0){
-            testLog();
-        }
+//        if(rc.getRoundNum() % 50 == 0){
+//            testLog();
+//        }
 //        Util.log("------------ end testLog ----------------");
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
@@ -346,20 +350,29 @@ public class Robot {
             updateComms();
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
-                // Scout the dam.
 
-                if(potentialFlagMover){
-                    potentialFlagMover = flagMover.runFlagMover();
-                }
-                else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
-                    defenseModule.runStationaryDefense();
-                }
-                else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
-                    defenseModule.runMobileDefense();
-                }
-                else{
-                    scout.runScout();
-                }
+                    // try to pick up the flag and move it if you can
+                    if (potentialFlagMover) {
+                        potentialFlagMover = flagMover.runFlagMover();
+                    } else if (mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                        defenseModule.runStationaryDefense();
+                    } else if (mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                        defenseModule.runMobileDefense();
+                    } else {
+
+                        // TODO: scale the constant based on the map size if we start exploring widely?
+                        if(rc.getRoundNum() >= Constants.ROUND_NUM_TO_START_LINING_UP){
+                            // check to see if you can see any dam locations at the moment
+                            scout.runLineUpMovement();
+                            indicatorString += "LINING UP";
+                        }
+
+                        else {
+                            // scout the dam
+                            scout.runScout();
+                        }
+                    }
+
             }
             else if(rc.hasFlag()){
                 attackModule.runSetup();
