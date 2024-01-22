@@ -299,7 +299,8 @@ public class Robot {
                 homeLocWhenCarryingFlag = null;
                 attackModule.runSetup();
                 attackModule.runStrategy();
-                if(mode == Mode.OFFENSE){
+                nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+                if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
                 }
                 else if(mode == Mode.STATIONARY_DEFENSE){
