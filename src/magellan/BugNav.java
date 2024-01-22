@@ -132,6 +132,35 @@ public class BugNav {
         addToVisited(loc);
     }
 
+    public void chooseWallFollowingDirection(MapLocation target, MapLocation locBeforeMoving, Direction targetDir, boolean isWater) throws GameActionException {
+        Direction oneOffOfTargetDir = bugFollowRight ? targetDir.rotateLeft() : targetDir.rotateRight();
+        currWallLocation = locBeforeMoving.add(oneOffOfTargetDir);
+
+        if(isWater){
+            closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
+        }
+
+        if(rc.canSenseLocation(currWallLocation) && rc.sensePassability(currWallLocation)){
+            Direction potWallDir = rc.getLocation().directionTo(currWallLocation);
+            MapLocation potWallLoc = rc.getLocation().add(potWallDir);
+            for(int j = 0; j < 8; j++){
+                if(rc.sensePassability(potWallLoc) || checkInVisited(potWallLoc)){
+                    potWallDir = bugFollowRight ? potWallDir.rotateRight() : potWallDir.rotateLeft();
+                }
+            }
+            if(potWallDir == rc.getLocation().directionTo(currWallLocation)){
+                closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
+                currWallLocation = null;
+                resetVisited();
+            }
+            else{
+                closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
+                currWallLocation = rc.getLocation().add(potWallDir);
+                resetVisited();
+            }
+        }
+    }
+
     public boolean tryGoingAroundWall(MapLocation target, boolean waterFillingAllowed) throws GameActionException {
         if(needToChooseBugDirection){
             chooseBugDirection(target, waterFillingAllowed);
@@ -156,6 +185,7 @@ public class BugNav {
             return true;
         }
         targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
+        Direction worstCaseDir = null;
         for(int i = 0; i < 8; i++){
             // Only cut into the water if it'll help you get there faster, otherwise just go around it.
             MapLocation adjLoc = rc.getLocation().add(targetDir);
@@ -171,41 +201,28 @@ public class BugNav {
 //            else if(rc.onTheMap(adjLoc) && rc.canSenseLocation(adjLoc) && rc.isLocationOccupied(adjLoc)){
 //                return true;
 //            }
+            else if(!Util.tryMove(targetDir, waterFillingAllowed)) {
+                // Can't move there.
+            }
             else if(checkInVisited(adjLoc)){
                 // Don't move to a visited location.
+                if(worstCaseDir == null){
+                    worstCaseDir = targetDir;
+                }
             }
-            else if(Util.tryMove(targetDir, waterFillingAllowed)){
-                Direction oneOffOfTargetDir = bugFollowRight ? targetDir.rotateLeft() : targetDir.rotateRight();
-                currWallLocation = locBeforeMoving.add(oneOffOfTargetDir);
-
-                if(isWater){
-                    closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
-                }
-
-                if(rc.canSenseLocation(currWallLocation) && rc.sensePassability(currWallLocation)){
-                    Direction potWallDir = rc.getLocation().directionTo(currWallLocation);
-                    MapLocation potWallLoc = rc.getLocation().add(potWallDir);
-                    for(int j = 0; j < 8; j++){
-                        if(rc.sensePassability(potWallLoc) || checkInVisited(potWallLoc)){
-                            potWallDir = bugFollowRight ? potWallDir.rotateRight() : potWallDir.rotateLeft();
-                        }
-                    }
-                    if(potWallDir == rc.getLocation().directionTo(currWallLocation)){
-                        closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
-                        currWallLocation = null;
-                        resetVisited();
-                    }
-                    else{
-                        closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
-                        currWallLocation = rc.getLocation().add(potWallDir);
-                        resetVisited();
-                    }
-                }
+            else{
+                chooseWallFollowingDirection(target, locBeforeMoving, targetDir, isWater);
                 return true;
             }
             targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         }
-        return false;
+        // If no other direction works, then just go back in the direction you came from.
+        System.out.println("Moving in worst case direction: " + worstCaseDir);
+        Util.addToIndicatorString("WCD: " + worstCaseDir);
+        MapLocation adjLoc = rc.getLocation().add(worstCaseDir);
+        boolean isWater = rc.canSenseLocation(adjLoc) && rc.senseMapInfo(adjLoc).isWater();
+        chooseWallFollowingDirection(target, locBeforeMoving, worstCaseDir, isWater);
+        return true;
     }
 
     public boolean goToBug0(MapLocation target, int minCrumbsForNavigation) throws GameActionException {
