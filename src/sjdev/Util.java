@@ -291,15 +291,94 @@ public class Util {
         return null;
     }
 
-    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
-        // TODO: implement this method to take into account attack specializations
+
+    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException {
         // this method returns the attack damage of the robot given its specialization
-        return 150.0;
+        // and also considers the global upgrade selected by the other team
+        if (robotInfo == null) return 0;
+
+        GlobalUpgrade[] globalUpgrades = (robotInfo.getTeam().equals(robot.myTeam))
+                ? robot.myTeamGlobalUpgrades
+                : robot.oppTeamGlobalUpgrades;
+
+        boolean isGlobalUpgradeAttack = Util.checkIfItemInArray(GlobalUpgrade.ATTACK, globalUpgrades);
+        int attackLevelSpecialization = robotInfo.getAttackLevel();
+
+        switch (attackLevelSpecialization) {
+            case 0: // 0% damage boost for attack specialization level 0
+                // 225 = (150 + 75)
+                // 150 =  base attack
+                return isGlobalUpgradeAttack ? 225.0 : 150.0;
+
+            case 1: // 5% damage boost for attack specialization level 1
+                // 236.25 = (150 + 75) * 1.05
+                // 157.5 = 150 * 1.05
+                return isGlobalUpgradeAttack ? 236.25 : 157.5;
+
+            case 2: // 7% damage boost for attack specialization level 2
+                // 240.75 = (150 + 75) * 1.07
+                // 160.5 = 150 * 1.07
+                return isGlobalUpgradeAttack ? 240.75 : 160.5;
+
+            case 3: // 10% damage boost for attack specialization level 3
+                // 247.5 = (150 + 75) * 1.10
+                // 165.0 = 150 * 1.10
+                return isGlobalUpgradeAttack ? 247.5 : 165.0;
+
+            case 4: // 30% damage boost for attack specialization level 4
+                // 292.5 = (150 + 75) * 1.30
+                // 195.0 = 150 *  1.30
+                return isGlobalUpgradeAttack ? 292.5 : 195.0;
+
+            case 5: // 35% damage boost for attack specialization level 5
+                // 303.75 = (150 + 75) * 1.35
+                // 202.5 = 150 * 1.35
+                return isGlobalUpgradeAttack ? 303.75 : 202.5;
+
+            case 6: // 60% damage boost for attack specialization level 6
+                // 360 = (150 + 75) * 1.60
+                // 240 = 150 * 1.60
+                return isGlobalUpgradeAttack ? 360 : 240;
+
+            default:
+                return 150.0;
+        }
     }
 
 
     public static double getAttackCooldown(RobotInfo robotInfo) throws GameActionException{
-        // TODO: implement this method to take into account attack specializations
+        // this method returns the attack
+        if (robotInfo == null) return 0;
+        int attackLevelSpecialization = robotInfo.getAttackLevel();
+        switch(attackLevelSpecialization){
+            case 0:
+                // 0% reduction in cooldown
+                return 20.0;
+
+            case 1:
+                // 5% reduction in cooldwon
+                return 19.0;
+
+            case 2:
+                // 7% reduction in cooldown
+                return 18.6;
+
+            case 3:
+                // 10% reduction in cooldown
+                return 18.0;
+
+            case 4:
+                // 20% reduction in cooldown
+                return 16.0;
+
+            case 5:
+                // 35% reduction in cooldown
+                return 13.0;
+
+            case 6:
+                // 60% reduction in cooldown
+                return 8.0;
+        }
         return 20.0;
     }
 }

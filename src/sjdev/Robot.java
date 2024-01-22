@@ -99,6 +99,8 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
+    GlobalUpgrade[] myTeamGlobalUpgrades = new GlobalUpgrade[0]; // global upgrades acquired by my team
+    GlobalUpgrade[] oppTeamGlobalUpgrades = new GlobalUpgrade[0]; // global upgrades acquired by opp team
 
     MapLocation[] defaultOppFlagLocs;
     int idOfFlagImCarrying = -1;
@@ -153,7 +155,10 @@ public class Robot {
         comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
 
         mode = determineRobotTypeToSpawn();
-        comms.incrementBotCount(mode);
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+        }
+
         if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){
             defenseModule.setup();
         }
@@ -178,13 +183,30 @@ public class Robot {
         // TODO: make the upgrades dynamic based on how the game is going?
         // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
         // we run the canBuyGlobal() method so we don't waste bytecode
-        if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
-            rc.buyGlobal(GlobalUpgrade.CAPTURING);
-        }
 
-        else if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
+        // buy action as the first global upgrade
+        if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
             rc.buyGlobal(GlobalUpgrade.ACTION);
         }
+
+        // buy healing as the second global upgrade
+        else if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
+            rc.buyGlobal(GlobalUpgrade.HEALING);
+        }
+
+
+    }
+
+
+    public void readGlobalUpgrades() throws GameActionException{
+        // this method reads the global upgrades acquired by both teams
+        // 20 bytecode (10 bytecode each)
+            if(myTeamGlobalUpgrades.length < 2) {
+                myTeamGlobalUpgrades = rc.getGlobalUpgrades(myTeam);
+            }
+            if(oppTeamGlobalUpgrades.length < 2) {
+                oppTeamGlobalUpgrades = rc.getGlobalUpgrades(oppTeam);
+            }
     }
 
 
@@ -192,12 +214,48 @@ public class Robot {
         // this method determines what type a newly spawned robot should assume
         // considering the desiredRatios and currentTroop counts in comms
 
-        // get the counts
-        int numTrappers = comms.getBotCount(Mode.TRAPPING);
-        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
-        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
-        int numOffensive = comms.getBotCount(Mode.OFFENSE);
+        int numTrappers, numStationaryDefenders, numMobileDefenders, numOffensive;
+
+
+        // the logic for the conditional statement below is:
+        // in the beginning of the game, we do a mass spawn of troops on each round
+        // when one troop spawns, we want it to have the most up to date information about the current troop counts
+        // (even troops that spawned on that same round)
+        // so we read the current troop counts from the shared array (instead of using the previous round's counts)
+
+        // the variable NUM_ROUNDS_WITH_MASS_SPAWNING is set to 10. It could be prolly be set to 200
+        // but i was thinking there might be a map where you could fight across the dam even before 200 if
+        // the dam is skinny enough???
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            numTrappers = comms.getCurrentBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getCurrentBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getCurrentBotCount(Mode.OFFENSE);
+        }
+
+
+        // we read from previous rounds counts after round 10 because people will start dying after the setup period
+        // instead of using the current count, we use the previous round's count. This will contain stats of
+        // the bots that were alive in the previous round and is prolly gonna be more accurate that trying to have a
+        // live tracker of the current counts
+        else {
+            // get the counts
+            numTrappers = comms.getPreviousRoundBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getPreviousRoundBotCount(Mode.OFFENSE);
+        }
+
         int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
+
+
+//        Util.log("------------- begin spawn -----------------");
+//        Util.log("numTrappers: " + numTrappers);
+//        Util.log("numStationaryDefenders: " + numStationaryDefenders);
+//        Util.log("numMobileDefenders: " + numMobileDefenders);
+//        Util.log("numOffensive: " + numOffensive);
+//        Util.log("------------- end spawn ------------------");
+
 
         // Always have at least 3 stationary defenders.
         if(numStationaryDefenders < MIN_NUM_OF_SD){
@@ -226,6 +284,13 @@ public class Robot {
         int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
         int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
 
+
+//        Util.log("TRAPPER DIFF: " + trapperDiff);
+//        Util.log("STATIONARY DEFENDER DIFF: " + stationaryDefenderDiff);
+//        Util.log("MOBILE DEFENDER DIFF: " + mobileDefenderDiff);
+//        Util.log("OFFENSE DIFF: " + offenseDiff);
+
+
         if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
                 && offenseDiff >= mobileDefenderDiff){
             return Mode.OFFENSE;
@@ -251,9 +316,11 @@ public class Robot {
     public void spawn() throws GameActionException {
         if(mode == Mode.STATIONARY_DEFENSE){
             defenseModule.spawnStationary();
+
         }
         else if(mode == Mode.MOBILE_DEFENSE){
             defenseModule.spawnMobile();
+
         }
         else if(mode == Mode.OFFENSE){
             offenseModule.spawn();
@@ -267,6 +334,15 @@ public class Robot {
     public void run() throws GameActionException {
         // this is the main run method that is called every turn
 
+//        if(rc.getRoundNum() > 220){
+//            rc.resign();
+//        }
+
+//        Util.log("------------ testLog ----------------");
+//        if(rc.getRoundNum() % 50 == 0){
+//            testLog();
+//        }
+//        Util.log("------------ end testLog ----------------");
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
 
@@ -278,31 +354,45 @@ public class Robot {
 //            testLog();
 //        }
 
+//        if(rc.getRoundNum() % 50 == 0){
+//            testLog();
+//        }
+
         if (!rc.isSpawned()){
             spawn();
         }
         else {
-            tryGlobalUpgrade();
+            tryGlobalUpgrade(); // try to buy global upgrades
+            readGlobalUpgrades(); // read global upgrades acquired by both teams
 
             myLoc = rc.getLocation();
             scanSurroundings();
             updateComms();
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
-                // Scout the dam.
 
-                if(potentialFlagMover){
-                    potentialFlagMover = flagMover.runFlagMover();
-                }
-                else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
-                    defenseModule.runStationaryDefense();
-                }
-                else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
-                    defenseModule.runMobileDefense();
-                }
-                else{
-                    scout.runScout();
-                }
+                    // try to pick up the flag and move it if you can
+                    if (potentialFlagMover) {
+                        potentialFlagMover = flagMover.runFlagMover();
+                    } else if (mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                        defenseModule.runStationaryDefense();
+                    } else if (mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                        defenseModule.runMobileDefense();
+                    } else {
+
+                        // TODO: scale the constant based on the map size if we start exploring widely?
+                        if(rc.getRoundNum() >= Constants.ROUND_NUM_TO_START_LINING_UP){
+                            // check to see if you can see any dam locations at the moment
+                            scout.runLineUpMovement();
+                            indicatorString += "LINING UP";
+                        }
+
+                        else {
+                            // scout the dam
+                            scout.runScout();
+                        }
+                    }
+
             }
             else if(rc.hasFlag()){
                 attackModule.runSetup();
@@ -347,10 +437,26 @@ public class Robot {
                 && Util.locIsASpawnLoc(rc.getLocation())){
             comms.setOppFlagToCaptured(idOfFlagImCarrying);
         }
+
+        if(rc.isSpawned() && rc.getRoundNum() > Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+
+            if(mode == Mode.OFFENSE){
+                comms.addToCurrOffensiveLocationSum(rc.getLocation());
+
+            }
+        }
     }
 
 
     public void testLog() throws GameActionException {
+        Util.log("Current bot counts: ");
+        Util.log("TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
+        Util.log("SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
+        Util.log("MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
+        Util.log("OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+        Util.log("Offensive COM: " + comms.getPreviousOffensiveCOM().toString());
+
 //        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
 //        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
 //        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);

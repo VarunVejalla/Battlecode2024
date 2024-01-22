@@ -201,5 +201,6 @@ public class Constants {
     // ------------------- crumbs shit ------------------------
     public static final int CRUMB_SENSE_RADIUS = 10;
     public static final int CRUMB_REMEMBER_COUNT = 10;
-    public static final int CRUMB_GIVE_UP_STEPS = 20;
+    public static final int CRUMB_GIVE_UP_STEPS = 50;
+    public static final int SCOUT_LINE_UP_DAM_ROUND = 160;
 }

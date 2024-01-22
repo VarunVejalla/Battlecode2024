@@ -270,5 +270,10 @@ public class Util {
         }
         return false;
     }
-
+    
+    public static MapLocation getRandomLocation() {
+        int xLoc = robot.rng.nextInt(robot.mapWidth);
+        int yLoc = robot.rng.nextInt(robot.mapHeight);
+        return new MapLocation(xLoc, yLoc);
+    }
 }
