@@ -217,12 +217,14 @@ public class BugNav {
             targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         }
         // If no other direction works, then just go back in the direction you came from.
-        System.out.println("Moving in worst case direction: " + worstCaseDir);
-        Util.addToIndicatorString("WCD: " + worstCaseDir);
-        MapLocation adjLoc = rc.getLocation().add(worstCaseDir);
-        boolean isWater = rc.canSenseLocation(adjLoc) && rc.senseMapInfo(adjLoc).isWater();
-        chooseWallFollowingDirection(target, locBeforeMoving, worstCaseDir, isWater);
-        return true;
+        if(worstCaseDir != null){
+            Util.addToIndicatorString("WCD: " + worstCaseDir);
+            MapLocation adjLoc = rc.getLocation().add(worstCaseDir);
+            boolean isWater = rc.canSenseLocation(adjLoc) && rc.senseMapInfo(adjLoc).isWater();
+            chooseWallFollowingDirection(target, locBeforeMoving, worstCaseDir, isWater);
+            return true;
+        }
+        return false;
     }
 
     public boolean goToBug0(MapLocation target, int minCrumbsForNavigation) throws GameActionException {
