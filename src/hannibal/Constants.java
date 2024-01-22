@@ -10,6 +10,7 @@ public class Constants {
     // Round number constants
     public static final int NEW_FLAG_LOC_DECIDED_ROUND = 70;
     public static final int SETUP_ROUNDS = GameConstants.SETUP_ROUNDS;
+    // TODO: scale the constant based on the map size if we start exploring widely?
     public static final int SCOUT_LINE_UP_DAM_ROUND = 160;
 
     // Threshold constants
@@ -25,8 +26,7 @@ public class Constants {
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
 
     // ------------------- crumbs shit ------------------------
-    public static final int CRUMB_SENSE_RADIUS = 10;
-    public static final int CRUMB_REMEMBER_COUNT = 10;
+    public static final int CRUMB_REMEMBER_COUNT = 20;
     public static final int CRUMB_GIVE_UP_STEPS = 50;
     public static final int CRUMB_SWITCH_DISTANCE_THRESHOLD = 5;
 

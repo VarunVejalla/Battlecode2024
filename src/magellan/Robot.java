@@ -439,7 +439,7 @@ public class Robot {
                     for (FlagInfo flagInfo : sensedNearbyFlags) {
                         if (flagInfo.getLocation().equals(knownCarriedOppFlags[i])) {
                             if (flagInfo.isPickedUp() && flagInfo.getTeam() == oppTeam) {
-                                Util.log("It is! " + flagInfo.getLocation() + ", " + flagInfo.getTeam() + ", " + flagInfo.getID());
+//                                Util.log("It is! " + flagInfo.getLocation() + ", " + flagInfo.getTeam() + ", " + flagInfo.getID());
                                 flagIsStillValid = true;
                             }
                         }

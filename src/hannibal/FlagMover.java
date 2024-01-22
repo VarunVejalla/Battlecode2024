@@ -69,6 +69,8 @@ public class FlagMover {
     }
 
     public void chooseTargetLoc() throws GameActionException {
+        // this method chooses the best spawn center
+        // the best spawn center is the one that has the greatest distance to the nearest dam
         int[] distsToSpawnCenters = comms.readDistsToSpawnCenters();
         int bestIdx = 0;
         for(int i = 1; i < robot.spawnCenters.length; i++){
@@ -80,11 +82,13 @@ public class FlagMover {
     }
 
     public boolean runFlagMover() throws GameActionException {
+        // this method is the main entry point for the flag mover
         if(rc.hasFlag()){
+            // if you have the flag
             if(rc.getRoundNum() > Constants.NEW_FLAG_LOC_DECIDED_ROUND){
                 targetLoc = comms.readNewHomeFlagCenter();
                 if(targetLoc == null){
-                    chooseTargetLoc();
+                    chooseTargetLoc(); // gets the spawn center with the greatest distance to the nearest dam
                     comms.writeNewHomeFlagCenter(targetLoc);
                 }
                 Util.addToIndicatorString("CT: " + targetLoc.toString());
@@ -104,7 +108,7 @@ public class FlagMover {
             return true;
         }
         else if(!placedFlag){
-            // Search for nearby flags.
+            // If you don't have the flag, search for nearby flags.
             FlagInfo[] nearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
             for(int i = 0; i < nearbyFlags.length; i++){
                 if(nearbyFlags[i].isPickedUp()){
