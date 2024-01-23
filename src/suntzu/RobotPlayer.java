@@ -1,4 +1,4 @@
-package magellan;
+package suntzu;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
@@ -35,6 +35,8 @@ public strictfp class RobotPlayer {
      **/
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
+        Util.LOGGING_ALLOWED = false;
+
         int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);
         if(rc.getRoundNum() != startTurn){
@@ -44,15 +46,11 @@ public strictfp class RobotPlayer {
         while (true) {
             startTurn = rc.getRoundNum();
 
-//            if(rc.getRoundNum() > 300){
-//                Util.resign();
-//            }
-
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
-                    System.out.println("BYTECODE EXCEEDED");
-//                    Util.resign();
+                    System.out.println("BYTECODE EXCEEDED " + robot.mode);
+                    Util.resign();
                 }
             }
             catch (Exception e) {
