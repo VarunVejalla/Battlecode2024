@@ -164,9 +164,9 @@ public class BugNav {
 
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
-        if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
-            return true;
-        }
+//        if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
+//            return true;
+//        }
         targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         for(int i = 0; i < 8; i++){
             // Only cut into the water if it'll help you get there faster, otherwise just go around it.

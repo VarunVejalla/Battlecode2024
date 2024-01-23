@@ -78,6 +78,7 @@ public class AttackModule {
         if (bestAttackVictim != null) {
             MapLocation toAttack = bestAttackVictim.location;
             rc.attack(toAttack);
+            Util.addToIndicatorString("ATK");
             return true;
         }
         return false;
@@ -152,6 +153,7 @@ public class AttackModule {
     public RobotInfo getBestAttackVictim() throws GameActionException {
         // this method loops over all enemies in action radius and finds the best one to attack
         // see compareAttackVictims() for how we compare two victims
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
         int toAttackIndex = -1;
         for (int i = 0; i < robot.nearbyActionEnemies.length; i++) {
             if (rc.canAttack(robot.nearbyActionEnemies[i].location)) {
@@ -251,7 +253,9 @@ public class AttackModule {
         }
 
         if (bestDirToMove != null && bestDirToMove != Direction.CENTER) {
+            Util.addToIndicatorString("MV");
             rc.move(bestDirToMove);
+            robot.myLoc = rc.getLocation();
         }
     }
 
@@ -296,8 +300,8 @@ public class AttackModule {
                     robot.nav.fuzzyNav.goTo(robot.myLoc.add(awayFromEnemyCOM).add(awayFromEnemyCOM).add(awayFromEnemyCOM), 0);
                     return;
                 } else {
-                    Util.log("No one nearby, but enemyCOM is null");
-                    rc.resign();
+                    System.out.println("No one nearby, but enemyCOM is null");
+                    Util.resign();
                 }
             }
         }
@@ -348,7 +352,9 @@ public class AttackModule {
 
 
         if (bestDirToMove != null && bestDirToMove != Direction.CENTER) {
+            Util.addToIndicatorString("MV");
             rc.move(bestDirToMove);
+            robot.myLoc = rc.getLocation();
         }
     }
 
@@ -429,6 +435,7 @@ public class AttackModule {
             MapLocation weakestPatientLoc = findBestHealPatient();
             if (weakestPatientLoc != null) {
                 // heal the boi that needs most help
+                Util.addToIndicatorString("HL");
                 rc.heal(weakestPatientLoc);
                 return true;
             }
@@ -519,16 +526,18 @@ public class AttackModule {
         double enemyDamage = 0.0;
         double friendlyHP = 0.0;
         double enemyHP = 0.0;
-//        double totalEnemyDamage = 0.0; // enemyDamage without cooldown information
 
         RobotInfo nearestEnemy = getClosestBot(visionEnemies);
+//        RobotInfo nearestEnemy = getBestAttackVictim();
+        if(nearestEnemy == null){
+            nearestEnemy = getClosestBot(visionEnemies);
+        }
 
         for (int i = nearbyEnemies.length; --i >= 0; ) {
             RobotInfo enemy = nearbyEnemies[i];
             double attackDamage = Util.getAttackDamage(enemy);
             enemyDamage += attackDamage / Util.getAttackCooldown(enemy);
             enemyHP += enemy.getHealth();
-//            totalEnemyDamage += attackDamage;
         }
 
 
@@ -546,6 +555,11 @@ public class AttackModule {
             friendlyDamage += attackDamage / Util.getAttackCooldown(friendly);
             friendlyHP += friendly.getHealth();
         }
+
+        if(nearestEnemy != null){
+            enemyHP = nearestEnemy.getHealth();
+        }
+//        friendlyHP = rc.getHealth();
 
         RobotInfo myRobotInfo = rc.senseRobot(rc.getID());
         // factor in the damage that you can do

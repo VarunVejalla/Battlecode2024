@@ -137,7 +137,7 @@ public class Robot {
             offenseModule.setup();
         }
         else{
-            Util.log("UNKNOWN MODE: " + mode);
+            System.out.println("UNKNOWN MODE: " + mode);
             Util.resign();
         }
 
@@ -297,8 +297,11 @@ public class Robot {
             }
             else{
                 homeLocWhenCarryingFlag = null;
+                Util.logBytecode("Before attack module setup");
                 attackModule.runSetup();
+                Util.logBytecode("Before attack module strategy");
                 attackModule.runStrategy();
+                Util.logBytecode("After attack module strategy");
                 nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
                 if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();

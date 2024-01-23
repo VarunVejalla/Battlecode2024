@@ -62,6 +62,7 @@ public class Navigation {
             return;
         }
 
+        Util.logBytecode("Before running path BF");
         waterFillingAllowed = rc.getCrumbs() >= minCrumbsForNavigation;
 
         if(!target.equals(bugNav.prevTarget)){

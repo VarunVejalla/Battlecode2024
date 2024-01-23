@@ -137,7 +137,7 @@ public class FlagMover {
                 // Determine the index of the flag.
                 flagIdx = Util.getItemIndexInArray(flagLoc, robot.spawnCenters);
                 if(flagIdx == -1){
-                    Util.log("Flag is not at its center???");
+                    System.out.println("Flag is not at its center???");
                     Util.resign();
                 }
                 rc.pickupFlag(flagLoc);

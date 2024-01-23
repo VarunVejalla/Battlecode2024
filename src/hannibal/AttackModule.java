@@ -153,6 +153,7 @@ public class AttackModule {
         // this method loops over all enemies in action radius and finds the best one to attack
         // see compareAttackVictims() for how we compare two victims
         int toAttackIndex = -1;
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
         for (int i = 0; i < robot.nearbyActionEnemies.length; i++) {
             if (rc.canAttack(robot.nearbyActionEnemies[i].location)) {
                 if (toAttackIndex == -1 ||

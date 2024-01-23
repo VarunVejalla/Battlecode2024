@@ -323,11 +323,11 @@ public class Util {
     }
 
     public static void logBytecode(String str){
-        System.out.println(str + ": " + Clock.getBytecodesLeft());
+        Util.log(str + ": " + Clock.getBytecodesLeft());
     }
 
     public static void logBytecodeUsed(String str){
-        System.out.println(str + ": " + Clock.getBytecodeNum());
+        Util.log(str + ": " + Clock.getBytecodeNum());
     }
 
 

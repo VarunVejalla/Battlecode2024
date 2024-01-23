@@ -44,9 +44,9 @@ public strictfp class RobotPlayer {
         while (true) {
             startTurn = rc.getRoundNum();
 
-            if(rc.getRoundNum() > 300){
-                Util.resign();
-            }
+//            if(rc.getRoundNum() > 300){
+//                Util.resign();
+//            }
 
             try{
                 robot.run();

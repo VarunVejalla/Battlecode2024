@@ -99,7 +99,8 @@ public class AttackModule {
     }
 
 
-    public RobotInfo getBestAttackVictim(){
+    public RobotInfo getBestAttackVictim() throws GameActionException {
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
         int toAttackIndex = -1;
         for(int i=0; i < robot.nearbyActionEnemies.length; i++){
             if(rc.canAttack(robot.nearbyActionEnemies[i].location)){

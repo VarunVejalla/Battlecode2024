@@ -106,7 +106,6 @@ public class DefenseModule {
 
     public void spawnStationary() throws GameActionException {
         if(defendingFlagIdx == -1){
-            Util.log("SETUP NOT YET CALLED??");
             System.out.println("SETUP NOT YET CALLED??");
             Util.resign();
         }
@@ -132,7 +131,7 @@ public class DefenseModule {
 
     public void spawnMobile() throws GameActionException {
         if(defendingFlagIdx == -1){
-            Util.log("SETUP NOT YET CALLED??");
+            System.out.println("SETUP NOT YET CALLED??");
             Util.resign();
         }
         if(sharedDefensiveTarget == null){
@@ -206,34 +205,34 @@ public class DefenseModule {
     // Movement methods
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
+        Util.logBytecode("After updating best placement target");
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
 
         // If you don't have enough crumbs for a trap, just circle.
         boolean isOurTurnToTrap = checkIfLowestTrapCount();
+        Util.logBytecode("After checking if lowest trap count");
         if((trapPlacementTarget == null) || (rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost) || !isOurTurnToTrap){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
+            Util.logBytecode("After circling");
         }
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
-            if(rc.isMovementReady()){
-                nav.fuzzyNav.goTo(trapPlacementTarget, 0);
-            }
-            return;
+            Util.logBytecode("After path BF");
         }
         else{
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
+            Util.logBytecode("After build");
         }
     }
 
     // TODO: This method takes up so much ducking bytecode T_T.
     public void runStationaryDefense() throws GameActionException {
         // If your flag was taken, run the mobile defense code.
-        Util.addToIndicatorString("FI:" + defendingFlagIdx);
-        Util.addToIndicatorString("FL: " + flagDefaultLoc + ", NFL: " + comms.getDefaultHomeFlagLoc(defendingFlagIdx) + ", ADL: " + allFlagDefaultLocs[defendingFlagIdx]);
+        Util.logBytecode("Beginning of stationary defense");
         if(comms.getHomeFlagTakenStatus(defendingFlagIdx)){
             Util.addToIndicatorString("RMD");
             runMobileDefense();
@@ -245,16 +244,21 @@ public class DefenseModule {
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
 
         assert(defendingFlagIdx != -1);
-        Util.addToIndicatorString("FL: " + flagDefaultLoc);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
+        Util.addToIndicatorString("FL: " + flagDefaultLoc);
+        Util.logBytecode("Before checking target valid");
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
+        Util.logBytecode("Before updating target");
         targetChanged |= updateSharedDefensiveTarget();
+        Util.logBytecode("After updating target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
         updateTrapCountValue();
+        Util.logBytecode("After updating trap count");
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
+        Util.logBytecode("After placing traps");
     }
 
     public void runMobileDefense() throws GameActionException {

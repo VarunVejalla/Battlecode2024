@@ -202,6 +202,7 @@ public class OffenseModule {
             }
             else{
                 Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
+                Util.logBytecode("Beginning of pathBF");
                 nav.pathBF(sharedOffensiveTarget, 100);
             }
         }
@@ -209,9 +210,11 @@ public class OffenseModule {
 
     public void runMovement() throws GameActionException {
         // if you can pick up a flag, pick it up (and update comms)
+        Util.logBytecode("Beginning of run movement");
         robot.tryPickingUpOppFlag();
 
         if (rc.isMovementReady()) {
+            Util.logBytecode("Beginning move to target");
             moveToTarget();
         }
     }
