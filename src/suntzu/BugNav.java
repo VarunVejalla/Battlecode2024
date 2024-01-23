@@ -21,6 +21,7 @@ public class BugNav {
     MapLocation[] visitedList = new MapLocation[100];
     int visitedStart = 0;
     int visitedEnd = 0;
+    Direction[] disallowedDirs = new Direction[8];
 
     public BugNav(RobotController rc, Comms comms, Robot robot) throws GameActionException {
         this.rc = rc;
@@ -29,6 +30,10 @@ public class BugNav {
     }
 
     public int firstFreeSpotIdx(MapLocation wallLoc, MapLocation target, boolean checkRight, boolean waterFillingAllowed) throws GameActionException {
+        if(rc.getRoundNum() > lastUpdatedRoundNum){
+            updateBug0CurrLocation();
+            lastUpdatedRoundNum = rc.getRoundNum();
+        }
         Direction targetDir = rc.getLocation().directionTo(wallLoc);
         targetDir = checkRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         for(int i = 0; i < 8; i++){
@@ -41,14 +46,12 @@ public class BugNav {
             else if(!rc.onTheMap(adjLoc)){
                 // Not on map
             }
-            else if(checkInVisited(adjLoc)){
+            else if(checkDirInVisited(targetDir)){
+//            else if(checkLocInVisited(adjLoc)){
                 // In visited
             }
             else if(Util.canMove(targetDir, waterFillingAllowed)){
                 return i;
-            }
-            else{
-                // Can't move there.
             }
             targetDir = checkRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         }
@@ -78,6 +81,7 @@ public class BugNav {
         currWallLocation = null;
         closestDistBug0 = Integer.MAX_VALUE;
         resetVisited();
+        updateBug0CurrLocation();
         chooseBugDirection(target, waterFillingAllowed);
     }
 
@@ -94,13 +98,27 @@ public class BugNav {
         }
     }
 
-    public boolean checkInVisited(MapLocation loc){
+    public boolean checkLocInVisited(MapLocation loc){
         for(int i = visitedStart; i < visitedEnd; i++){
             if(loc.equals(visitedList[i])){
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean checkDirInVisited(Direction dir){
+//        boolean a = Util.checkIfItemInArray(dir, disallowedDirs);
+//        if(a != checkLocInVisited(robot.myLoc.add(dir))){
+//            System.out.println(rc.getLocation());
+//            System.out.println(robot.myLoc);
+//            Util.logArray("DD", disallowedDirs);
+//            Util.logArray("VL", visitedList);
+//            System.out.println("A: " + a + " did not match " + !a);
+//            rc.resign();
+//        }
+//        return a;
+        return checkLocInVisited(robot.myLoc.add(dir));
     }
 
     public boolean tryMovingCloserToGoal(MapLocation target, boolean waterFillingAllowed) throws GameActionException {
@@ -131,8 +149,24 @@ public class BugNav {
         return false;
     }
 
-    public void updateBug0CurrLocation(MapLocation loc){
-        addToVisited(loc);
+    public void updateBug0CurrLocation(){
+            addToVisited(robot.myLoc);
+//        if(!checkLocInVisited(robot.myLoc)){
+//        if(visitedEnd == visitedStart || !robot.myLoc.equals(visitedList[visitedEnd - 1])){
+//            addToVisited(robot.myLoc);
+//        }
+//        disallowedDirs = new Direction[9];
+//        int disallowedIdx = 0;
+//        for(int i = visitedStart; i < visitedEnd; i++){
+//            if(robot.myLoc.isAdjacentTo(visitedList[i])){
+//                System.out.println(robot.myLoc + ", " + visitedList[i] + ", " + robot.myLoc.directionTo(visitedList[i]));
+//                if(disallowedIdx >= 9){
+//                    Util.resign();
+//                }
+//                disallowedDirs[disallowedIdx] = robot.myLoc.directionTo(visitedList[i]);
+//                disallowedIdx++;
+//            }
+//        }
     }
 
     public void chooseWallFollowingDirection(MapLocation target, MapLocation locBeforeMoving, Direction targetDir, boolean isWater) throws GameActionException {
@@ -144,10 +178,11 @@ public class BugNav {
         }
 
         if(rc.canSenseLocation(currWallLocation) && rc.sensePassability(currWallLocation)){
-            Direction potWallDir = rc.getLocation().directionTo(currWallLocation);
-            MapLocation potWallLoc = rc.getLocation().add(potWallDir);
+            Direction potWallDir = robot.myLoc.directionTo(currWallLocation);
+            MapLocation potWallLoc = robot.myLoc.add(potWallDir);
             for(int j = 0; j < 8; j++){
-                if(rc.sensePassability(potWallLoc) || checkInVisited(potWallLoc)){
+                if(rc.sensePassability(potWallLoc) || checkDirInVisited(potWallDir)){
+//                if(rc.sensePassability(potWallLoc) || checkLocInVisited(potWallLoc)){
                     potWallDir = bugFollowRight ? potWallDir.rotateRight() : potWallDir.rotateLeft();
                 }
             }
@@ -165,6 +200,14 @@ public class BugNav {
     }
 
     public boolean tryGoingAroundWall(MapLocation target, boolean waterFillingAllowed) throws GameActionException {
+        if(!rc.isMovementReady()){
+            return false;
+        }
+        if(rc.getRoundNum() > lastUpdatedRoundNum){
+            updateBug0CurrLocation();
+            lastUpdatedRoundNum = rc.getRoundNum();
+        }
+
         if(needToChooseBugDirection){
             chooseBugDirection(target, waterFillingAllowed);
             needToChooseBugDirection = false;
@@ -185,10 +228,6 @@ public class BugNav {
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
 
-        // TODO: Remove this??
-        if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
-            return true;
-        }
         targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         Direction worstCaseDir = null;
         for(int i = 0; i < 8; i++){
@@ -206,10 +245,11 @@ public class BugNav {
 //            else if(rc.onTheMap(adjLoc) && rc.canSenseLocation(adjLoc) && rc.isLocationOccupied(adjLoc)){
 //                return true;
 //            }
-            else if(!Util.tryMove(targetDir, waterFillingAllowed)) {
+            else if(!Util.canMove(targetDir, waterFillingAllowed)) {
                 // Can't move there.
             }
-            else if(checkInVisited(adjLoc)){
+//            else if(checkDirInVisited(targetDir)){
+            else if(checkLocInVisited(adjLoc)){
                 // Don't move to a visited location.
                 if(worstCaseDir == null){
                     worstCaseDir = targetDir;
@@ -244,7 +284,7 @@ public class BugNav {
         }
 
         if(rc.getRoundNum() > lastUpdatedRoundNum){
-            updateBug0CurrLocation(robot.myLoc);
+            updateBug0CurrLocation();
             lastUpdatedRoundNum = rc.getRoundNum();
         }
 

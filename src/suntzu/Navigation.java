@@ -80,40 +80,47 @@ public class Navigation {
         }
         bugNav.closestDistBug0 = Math.min(bugNav.closestDistBug0, rc.getLocation().distanceSquaredTo(target));
         if(rc.getRoundNum() > bugNav.lastUpdatedRoundNum){
-            bugNav.updateBug0CurrLocation(robot.myLoc);
+            bugNav.updateBug0CurrLocation();
             bugNav.lastUpdatedRoundNum = rc.getRoundNum();
         }
+        Util.logBytecode("After update");
         if(wasRunningBug && bugNav.currWallLocation == null) { // If we were previously going towards target.
             // Try running BFS
             Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            Util.addToIndicatorString("SW_BFS");
+            Util.logBytecode("SW BFS");
             if(moveDir != null){
                 Util.tryMove(moveDir);
                 recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
                 recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
                 wasRunningBug = false;
-                Util.addToIndicatorString("SW_BFS");
                 return;
             }
             else { // If that doesn't work, try going towards target.
                 wasRunningBug = true;
                 if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
                     Util.addToIndicatorString("CT_MCTG");
+                    Util.logBytecode("After MCTG");
                     return;
                 }
+                Util.logBytecode("After MCTG");
                 // If that doesn't work, try going around obstacle.
                 bugNav.needToChooseBugDirection = true;
                 bugNav.tryGoingAroundWall(target, waterFillingAllowed);
-                Util.addToIndicatorString("SW_BUG");
+                Util.addToIndicatorString("SW_M_TBUG");
+                Util.logBytecode("SW BUG");
                 return;
             }
         }
         else if(wasRunningBug && bugNav.currWallLocation != null) { // If we were previously going around an obstacle.
             wasRunningBug = true;
             // Try moving closer to goal.
+            Util.addToIndicatorString("SW_MCTG");
             if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
-                Util.addToIndicatorString("SW_MCTG");
+                Util.logBytecode("After MCTG");
                 return;
             }
+            Util.logBytecode("After MCTG");
 
             // If that fails, go around obstacle.
             bugNav.tryGoingAroundWall(target, waterFillingAllowed);
@@ -123,24 +130,31 @@ public class Navigation {
         else { // If was previously running BFS.
             // Try continuing BFS.
             Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            Util.logBytecode("BFS");
+            Util.addToIndicatorString("CT_BFS");
+            Util.log("" + rc.getLocation());
             if(moveDir != null){
                 Util.tryMove(moveDir);
                 recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
                 recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
                 wasRunningBug = false;
-                Util.addToIndicatorString("CT_BFS");
             }
             else { // If that doesn't work, try going towards target.
                 wasRunningBug = true;
                 resetBFS();
                 if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
                     Util.addToIndicatorString("SW_MCTG");
+                    Util.logBytecode("SW_MCTG");
                     return;
                 }
+                Util.logBytecode("SW_MCTG");
+                Util.log("" + rc.getLocation());
                 // If that doesn't work, try going around obstacle.
                 bugNav.needToChooseBugDirection = true;
                 bugNav.tryGoingAroundWall(target, waterFillingAllowed);
                 Util.addToIndicatorString("SW_BUG");
+                Util.logBytecode("SW_BUG");
+                Util.log("" + rc.getLocation());
                 return;
             }
         }
@@ -284,6 +298,7 @@ public class Navigation {
         }
         if(bestDirection != null){
             rc.move(bestDirection);
+            robot.myLoc = rc.getLocation();
             recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
             recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
             return true;
