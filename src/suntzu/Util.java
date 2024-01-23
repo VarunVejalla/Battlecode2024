@@ -7,9 +7,18 @@ public class Util {
     static RobotController rc;
     static Robot robot;
     static boolean LOGGING_ALLOWED = true;
+    static boolean SUBMISSION_MODE = false; // TODO: Set this to true when submitting.
 
     public static void resign(){
-        rc.resign(); // TODO: COMMENT THIS OUT.
+        if(!SUBMISSION_MODE){
+            rc.resign();
+        }
+    }
+
+    public static void assert_wrapper(boolean bool){
+        if(!SUBMISSION_MODE){
+            assert(bool);
+        }
     }
 
     public static int minMovesToReach(MapLocation a, MapLocation b){

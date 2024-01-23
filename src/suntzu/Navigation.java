@@ -202,19 +202,6 @@ public class Navigation {
 
 
     public boolean circle(MapLocation center, int minDist, int maxDist, int minCrumbsForNavigation) throws GameActionException {
-//        Util.log("Tryna circle CCW? " + prevCircleDir);
-        if(circle(center, minDist, maxDist, prevCircleDir, minCrumbsForNavigation)){
-            return true;
-        }
-//        Util.log("Tryna circle CW");
-        if(circle(center, minDist, maxDist, !prevCircleDir, minCrumbsForNavigation)){
-            return true;
-        }
-        return false;
-    }
-
-    // from: https://github.com/srikarg89/Battlecode2022/blob/main/src/cracked4BuildOrder/Navigation.java
-    public boolean circle(MapLocation center, int minDist, int maxDist, boolean ccw, int minCrumbsForNavigation) throws GameActionException {
         if(!rc.isMovementReady()){
             return false;
         }
@@ -222,10 +209,7 @@ public class Navigation {
         if(Util.minMovesToReach(myLoc, center) > maxDist){
 //            Util.log("Moving closer!");
             pathBF(center, minCrumbsForNavigation);
-            if(!rc.isMovementReady()){
-                return true;
-            }
-            return fuzzyNav.goTo(center, minCrumbsForNavigation);
+            return true;
         }
         if(Util.minMovesToReach(myLoc, center) < minDist){
 //            Util.log("Moving away!");
@@ -240,11 +224,30 @@ public class Navigation {
             return fuzzyNav.goTo(target, minCrumbsForNavigation);
         }
 
+//        Util.log("Tryna circle CCW? " + prevCircleDir);
+        if(circle(center, minDist, maxDist, prevCircleDir)){
+            return true;
+        }
+//        Util.log("Tryna circle CW");
+        if(circle(center, minDist, maxDist, !prevCircleDir)){
+            return true;
+        }
+        return false;
+    }
+
+    // from: https://github.com/srikarg89/Battlecode2022/blob/main/src/cracked4BuildOrder/Navigation.java
+    public boolean circle(MapLocation center, int minDist, int maxDist, boolean ccw) throws GameActionException {
+        if(!rc.isMovementReady()){
+            return false;
+        }
+        Util.addToIndicatorString("CRC" + ccw);
+
         if(ccw != prevCircleDir){
             recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH];
             prevCircleDir = ccw;
         }
 
+        MapLocation myLoc = robot.myLoc;
         int dx = myLoc.x - center.x;
         int dy = myLoc.y - center.y;
         double theta = Math.atan2(dy, dx);

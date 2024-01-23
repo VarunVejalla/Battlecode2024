@@ -188,7 +188,7 @@ public class Comms {
 
     public void writeKnownOppFlagLocFromFlagID(MapLocation newFlagLoc, boolean carried, int flagID) throws GameActionException{
         int flagIdx = Util.getItemIndexInArray(flagID, getOppFlagIDArray());
-        assert(flagIdx != -1);
+        Util.assert_wrapper(flagIdx != -1);
         writeKnownOppFlagLoc(newFlagLoc, carried, flagIdx);
     }
 
@@ -248,7 +248,7 @@ public class Comms {
             System.out.println("Failed while removing flag ID: " + flagId);
             Util.resign();
         }
-        assert(flagIdx != -1);
+        Util.assert_wrapper(flagIdx != -1);
         writeKnownOppFlagLoc(null, false, flagIdx);
     }
 

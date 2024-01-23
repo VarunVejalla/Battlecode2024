@@ -15,7 +15,7 @@ public class DefenseModule {
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
     MapLocation[] trapsList = new MapLocation[100];
-    boolean[][] trapsMap;
+//    boolean[][] trapsMap;
     int trapCount = 0;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
 
@@ -24,90 +24,89 @@ public class DefenseModule {
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
-        trapsMap = new boolean[rc.getMapWidth()][rc.getMapHeight()];
+//        trapsMap = new boolean[rc.getMapWidth()][rc.getMapHeight()];
     }
 
     // Helper methods to manage trap count.
-    public void updateTrapInfo(MapInfo info){
-        MapLocation infoLoc = info.getMapLocation();
-        if(info.getTrapType() == TrapType.NONE){ // If there's actually no trap at that location.
-            if(trapsMap[infoLoc.x][infoLoc.y]){
-                // We think there's a trap there, but there really isn't one.
-                trapsMap[infoLoc.x][infoLoc.y] = false;
-                for(int i = 0; i < trapsList.length; i++){
-                    if(infoLoc.equals(trapsList[i])){
-                        trapsList[i] = null;
-                        trapCount -= 1;
-                        return;
-                    }
-                }
-            }
-        }
-        else{ // If there actually is a trap at that location.
-            if(!trapsMap[infoLoc.x][infoLoc.y]){
-                // We think there's no trap but there actually is one.
-                for(int i = 0; i < trapsList.length; i++){
-                    if(trapsList[i] == null){
-                        trapsMap[infoLoc.x][infoLoc.y] = true;
-                        trapsList[i] = infoLoc;
-                        trapCount += 1;
-                        return;
-                    }
-                }
-            }
-        }
-    }
+//    public void updateTrapInfo(MapInfo info){
+//        MapLocation infoLoc = info.getMapLocation();
+//        if(info.getTrapType() == TrapType.NONE){ // If there's actually no trap at that location.
+//            if(trapsMap[infoLoc.x][infoLoc.y]){
+//                // We think there's a trap there, but there really isn't one.
+//                trapsMap[infoLoc.x][infoLoc.y] = false;
+//                for(int i = 0; i < trapsList.length; i++){
+//                    if(infoLoc.equals(trapsList[i])){
+//                        trapsList[i] = null;
+//                        trapCount -= 1;
+//                        return;
+//                    }
+//                }
+//            }
+//        }
+//        else{ // If there actually is a trap at that location.
+//            if(!trapsMap[infoLoc.x][infoLoc.y]){
+//                // We think there's no trap but there actually is one.
+//                for(int i = 0; i < trapsList.length; i++){
+//                    if(trapsList[i] == null){
+//                        trapsMap[infoLoc.x][infoLoc.y] = true;
+//                        trapsList[i] = infoLoc;
+//                        trapCount += 1;
+//                        return;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public void updateTrapCountValue() throws GameActionException {
-        for(MapInfo info : robot.sensedNearbyMapInfos){
-            MapLocation infoLoc = info.getMapLocation();
-            // We alr know about this trap.
-            if(trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() != TrapType.NONE){
-                continue;
-            }
-
-            // We alr know that there's no trap.
-            if(!trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() == TrapType.NONE){
-                continue;
-            }
-
-            // Check if our flag is closest to the location compared to other flags.
-            int ourFlagDist = flagDefaultLoc.distanceSquaredTo(info.getMapLocation());
-            int minDist = Math.min(Math.min(allFlagDefaultLocs[0].distanceSquaredTo(info.getMapLocation()),
-                    allFlagDefaultLocs[1].distanceSquaredTo(info.getMapLocation())),
-                    allFlagDefaultLocs[2].distanceSquaredTo(info.getMapLocation()));
-
-            if(minDist != ourFlagDist){
-                continue;
-            }
-
-            // Only count the location if it's closest to us.
-            updateTrapInfo(info);
-        }
-//        for(int i = 0; i < trapsList.length; i++){
-//            if(trapsList[i] == null){
+//        for(MapInfo info : robot.sensedNearbyMapInfos){
+//            MapLocation infoLoc = info.getMapLocation();
+//            // We alr know about this trap.
+//            if(trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() != TrapType.NONE){
 //                continue;
 //            }
-//            MapLocation infoLoc = trapsList[i];
-//            if(!rc.canSenseLocation(infoLoc)){
-//                continue;
-//            }
-//            MapInfo info = rc.senseMapInfo(infoLoc);
-//            // Check if trap still exists.
-//            if(info.getTrapType() == TrapType.NONE){
-////                trapsMap[infoLoc.x][infoLoc.y] = false;
-//                trapsList[i] = null;
-//                trapCount -= 1;
-//            }
-//        }
 //
-//        // Check if trap placement target is still available.
-//        if(trapPlacementTarget != null && rc.canSenseLocation(trapPlacementTarget)){
-//            if(rc.senseMapInfo(trapPlacementTarget).getTrapType() != TrapType.NONE){
-//                trapPlacementTarget = null;
-//                trapPlacementHeuristic = Integer.MAX_VALUE;
+//            // We alr know that there's no trap.
+//            if(!trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() == TrapType.NONE){
+//                continue;
 //            }
+//
+//            // Check if our flag is closest to the location compared to other flags.
+//            int ourFlagDist = flagDefaultLoc.distanceSquaredTo(info.getMapLocation());
+//            int minDist = Math.min(Math.min(allFlagDefaultLocs[0].distanceSquaredTo(info.getMapLocation()),
+//                    allFlagDefaultLocs[1].distanceSquaredTo(info.getMapLocation())),
+//                    allFlagDefaultLocs[2].distanceSquaredTo(info.getMapLocation()));
+//
+//            if(minDist != ourFlagDist){
+//                continue;
+//            }
+//
+//            // Only count the location if it's closest to us.
+//            updateTrapInfo(info);
 //        }
+        for(int i = 0; i < trapsList.length; i++){
+            if(trapsList[i] == null){
+                continue;
+            }
+            MapLocation infoLoc = trapsList[i];
+            if(!rc.canSenseLocation(infoLoc)){
+                continue;
+            }
+            MapInfo info = rc.senseMapInfo(infoLoc);
+            // Check if trap still exists.
+            if(info.getTrapType() == TrapType.NONE){
+                trapsList[i] = null;
+                trapCount -= 1;
+            }
+        }
+
+        // Check if trap placement target is still available.
+        if(trapPlacementTarget != null && rc.canSenseLocation(trapPlacementTarget)){
+            if(rc.senseMapInfo(trapPlacementTarget).getTrapType() != TrapType.NONE){
+                trapPlacementTarget = null;
+                trapPlacementHeuristic = Integer.MAX_VALUE;
+            }
+        }
     }
 
     public int getNumHomiesWithLowerTrapCount() throws GameActionException {
@@ -199,7 +198,6 @@ public class DefenseModule {
         comms.incrementNumDefendersForFlag(defendingFlagIdx);
     }
 
-    // TODO: Make this more bytecode efficient.
     public void updateBestTrapPlacementTarget(){
         int bestHeuristic = trapPlacementHeuristic;
         MapLocation bestTrapLoc = trapPlacementTarget;
@@ -231,43 +229,39 @@ public class DefenseModule {
     // Movement methods
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
-        Util.logBytecode("After updating best placement target");
+        Util.logBytecode("After updating TPT");
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
 
         // If you don't have enough crumbs for a trap, just circle.
-//        boolean isOurTurnToTrap = checkIfLowestTrapCount();
         int numHomies = getNumHomiesWithLowerTrapCount();
+        Util.logBytecode("After computing # of homies");
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
-        Util.logBytecode("After checking if lowest trap count");
         if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
-            Util.logBytecode("After circling");
+            Util.logBytecode("After circling location");
         }
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
-            Util.logBytecode("After path BF");
+            Util.logBytecode("After going towards TPT");
         }
         else{
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
-//            for(int i = 0; i < trapsList.length; i++){
-//                if(trapsList[i] == null){
-//                    trapsList[i] = trapPlacementTarget;
-//                    trapCount += 1;
-//                    break;
-//                }
-//            }
+            for(int i = 0; i < trapsList.length; i++){
+                if(trapsList[i] == null){
+                    trapsList[i] = trapPlacementTarget;
+                    trapCount += 1;
+                    break;
+                }
+            }
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
-            Util.logBytecode("After build");
         }
     }
 
-    // TODO: This method takes up so much ducking bytecode T_T.
     public void runStationaryDefense() throws GameActionException {
         // If your flag was taken, run the mobile defense code.
-        Util.logBytecode("Beginning of stationary defense");
         if(comms.getHomeFlagTakenStatus(defendingFlagIdx)){
             Util.addToIndicatorString("RMD");
             runMobileDefense();
@@ -278,14 +272,14 @@ public class DefenseModule {
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
 
-        assert(defendingFlagIdx != -1);
+        Util.assert_wrapper(defendingFlagIdx != -1);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         Util.addToIndicatorString("FL: " + flagDefaultLoc);
-        Util.logBytecode("Before checking target valid");
+        Util.logBytecode("Start of stationary defense method");
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecode("Before updating target");
+        Util.logBytecode("After checking defensive target still valid");
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecode("After updating target");
+        Util.logBytecode("After updating defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
@@ -293,17 +287,20 @@ public class DefenseModule {
         Util.logBytecode("After updating trap count");
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
-        Util.logBytecode("After placing traps");
+        Util.logBytecode("After placing traps around flag");
     }
 
     public void runMobileDefense() throws GameActionException {
+        Util.logBytecode("Beginning of mobile defense");
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
 
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
+        Util.logBytecode("Checked if defensive target still valid");
         targetChanged |= updateSharedDefensiveTarget();
+        Util.logBytecode("Updated shared defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }

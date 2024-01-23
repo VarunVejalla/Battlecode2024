@@ -135,7 +135,9 @@ public class BugNav {
         addToVisited(loc);
     }
 
-    public void chooseWallFollowingDirection(MapLocation target, MapLocation locBeforeMoving, Direction targetDir, boolean isWater) throws GameActionException {
+    public void followWall(MapLocation target, MapLocation locBeforeMoving, Direction targetDir, boolean isWater) throws GameActionException {
+        boolean couldMove = Util.tryMove(targetDir, /* waterFillingAllowed = */ true);
+        Util.assert_wrapper(couldMove);
         Direction oneOffOfTargetDir = bugFollowRight ? targetDir.rotateLeft() : targetDir.rotateRight();
         currWallLocation = locBeforeMoving.add(oneOffOfTargetDir);
 
@@ -182,6 +184,8 @@ public class BugNav {
             currWallLocation = robot.myLoc.add(towardsTarget);
         }
 
+        Util.addToIndicatorString("CW:" + currWallLocation);
+
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
 
@@ -216,7 +220,8 @@ public class BugNav {
                 }
             }
             else{
-                chooseWallFollowingDirection(target, locBeforeMoving, targetDir, isWater);
+                Util.addToIndicatorString("CWFD: " + targetDir + " " + target);
+                followWall(target, locBeforeMoving, targetDir, isWater);
                 return true;
             }
             targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
@@ -226,7 +231,7 @@ public class BugNav {
             Util.addToIndicatorString("WCD: " + worstCaseDir);
             MapLocation adjLoc = rc.getLocation().add(worstCaseDir);
             boolean isWater = rc.canSenseLocation(adjLoc) && rc.senseMapInfo(adjLoc).isWater();
-            chooseWallFollowingDirection(target, locBeforeMoving, worstCaseDir, isWater);
+            followWall(target, locBeforeMoving, worstCaseDir, isWater);
             return true;
         }
         return false;

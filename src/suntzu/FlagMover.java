@@ -12,7 +12,6 @@ public class FlagMover {
     Navigation nav;
     MapLocation targetLoc;
     boolean placedFlag = false;
-    boolean circleCCW = false;
     int flagIdx = -1;
     MapLocation[] alreadyPlacedFlags = new MapLocation[3];
 
@@ -106,17 +105,7 @@ public class FlagMover {
                     comms.writeNewHomeFlagCenter(targetLoc);
                 }
                 Util.addToIndicatorString("CT: " + targetLoc.toString());
-                Util.addToIndicatorString("CW: " + circleCCW);
-                boolean circled = nav.circle(targetLoc, 4, 8, circleCCW, 0);
-                if(rc.isMovementReady() && !circled){
-                    circleCCW = !circleCCW;
-                    nav.recentlyVisited = new MapLocation[10];
-                    circled = nav.circle(targetLoc, 4, 8, circleCCW, 0);
-                    if(!circled){
-                        circleCCW = !circleCCW;
-                        nav.recentlyVisited = new MapLocation[10];
-                    }
-                }
+                nav.circle(targetLoc, 4, 8, 0);
                 tryPlacingFlag();
             }
             return true;

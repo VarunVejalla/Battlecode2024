@@ -36,6 +36,7 @@ public strictfp class RobotPlayer {
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
         int startTurn = rc.getRoundNum();
+        Util.LOGGING_ALLOWED = false;
         Robot robot = new Robot(rc);
         if(rc.getRoundNum() != startTurn){
             System.out.println("BYTECODE EXCEEDED");
