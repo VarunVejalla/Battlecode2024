@@ -322,6 +322,19 @@ public class Util {
         }
     }
 
+
+    public static void logTroopCounts() throws GameActionException {
+        // this method logs the troops of each type
+        if(LOGGING_ALLOWED) {
+
+            System.out.println(
+                    "OF: " + robot.comms.getCurrentBotCount(Mode.OFFENSE) +
+                            "; MD: " + robot.comms.getCurrentBotCount(Mode.MOBILE_DEFENSE) +
+                            "; SD: " + robot.comms.getCurrentBotCount(Mode.STATIONARY_DEFENSE) +
+                            "; TR: " + robot.comms.getCurrentBotCount(Mode.TRAPPING));
+        }
+    }
+
     public static void logBytecode(String str){
         Util.log(str + ": " + Clock.getBytecodesLeft());
     }

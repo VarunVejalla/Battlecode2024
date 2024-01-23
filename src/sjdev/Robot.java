@@ -129,7 +129,10 @@ public class Robot {
         comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
 
         mode = determineRobotTypeToSpawn();
-        comms.incrementBotCount(mode);
+//        comms.incrementBotCount(mode);
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+        }
         if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){
             defenseModule.setup();
         }
@@ -169,10 +172,39 @@ public class Robot {
         // considering the desiredRatios and currentTroop counts in comms
 
         // get the counts
-        int numTrappers = comms.getBotCount(Mode.TRAPPING);
-        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
-        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
-        int numOffensive = comms.getBotCount(Mode.OFFENSE);
+        int numTrappers, numStationaryDefenders, numMobileDefenders, numOffensive;
+
+
+        // the logic for the conditional statement below is:
+        // in the beginning of the game, we do a mass spawn of troops on each round
+        // when one troop spawns, we want it to have the most up to date information about the current troop counts
+        // (even troops that spawned on that same round)
+        // so we read the current troop counts from the shared array (instead of using the previous round's counts)
+
+        // the variable NUM_ROUNDS_WITH_MASS_SPAWNING is set to 10. It could be prolly be set to 200
+        // but i was thinking there might be a map where you could fight across the dam even before 200 if
+        // the dam is skinny enough???
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            numTrappers = comms.getCurrentBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getCurrentBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getCurrentBotCount(Mode.OFFENSE);
+        }
+
+
+        // we read from previous rounds counts after round 10 because people will start dying after the setup period
+        // instead of using the current count, we use the previous round's count. This will contain stats of
+        // the bots that were alive in the previous round and is prolly gonna be more accurate that trying to have a
+        // live tracker of the current counts
+        else {
+            // get the counts
+            numTrappers = comms.getPreviousRoundBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getPreviousRoundBotCount(Mode.OFFENSE);
+        }
+
+
         int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
 
         // Always have at least 3 stationary defenders.
@@ -319,19 +351,37 @@ public class Robot {
                 && Util.locIsASpawnLoc(rc.getLocation())){
             comms.setOppFlagToCaptured(idOfFlagImCarrying);
         }
+        if(rc.isSpawned() && rc.getRoundNum() > Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+        }
 
-//        if(rc.getRoundNum() % 50 == 0){
-//            testLog();
-//        }
+        if(mode == Mode.OFFENSE){
+            comms.addToCurrOffensiveLocationSum(rc.getLocation());
+
+        }
+
+        if(rc.getRoundNum() % 50 == 0){
+            testLog();
+        }
+        if(rc.getRoundNum() > 400){
+            rc.resign();
+        }
     }
 
 
     public void testLog() throws GameActionException {
-        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
-        Util.logArray("knownOppFlagIDs: ", knownOppFlagIDs);
-        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
-        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
-        Util.logArray("knownDefaultOppFlagLocations: ", defaultOppFlagLocs);
+        Util.LOGGING_ALLOWED = true;
+        Util.logTroopCounts();
+        Util.log("offensiveCOM: " + comms.getPreviousOffensiveCOM());
+        Util.log("hello");
+//        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
+//        Util.logArray("knownOppFlagIDs: ", knownOppFlagIDs);
+//        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
+//        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
+//        Util.logArray("knownDefaultOppFlagLocations: ", defaultOppFlagLocs);
+
+
+
 //        Util.logArray("knownTakenAllyFlagLocations: ", knownTakenAllyFlags);
 //        Util.logArray("flagBroadcasts: ", rc.senseBroadcastFlagLocations());
 //        if(defaultHomeFlagLocs != null){
