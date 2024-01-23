@@ -10,6 +10,8 @@ public class Constants {
     // Round number constants
     public static final int NEW_FLAG_LOC_DECIDED_ROUND = 70;
     public static final int SETUP_ROUNDS = GameConstants.SETUP_ROUNDS;
+    // TODO: scale the constant based on the map size if we start exploring widely?
+    public static final int SCOUT_LINE_UP_DAM_ROUND = 160;
 
     // Threshold constants
     public static final int BOT_THRESHOLD_TO_MARK_TARGET_AS_COMPLETE = 7;
@@ -22,6 +24,14 @@ public class Constants {
     // Comms constants
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
+
+    // Trap counts
+    public static final int MAX_NUM_OF_TRAPS_COMMABLE = 31;
+
+    // ------------------- crumbs shit ------------------------
+    public static final int CRUMB_REMEMBER_COUNT = 20;
+    public static final int CRUMB_GIVE_UP_STEPS = 50;
+    public static final int CRUMB_SWITCH_DISTANCE_THRESHOLD = 5;
 
     // ------------ approximate flag indices from broadcast -------------------
     public static final int APPROX_OPP_FLAG_1_IDX = 0;
@@ -113,56 +123,25 @@ public class Constants {
     public static final int TRAPPER_RATIO_MASK = 61440; // 1111 0000 0000 0000
     public static final int TRAPPER_RATIO_SHIFT = 12;
 
-
-    // ---------------------------------------------------------------------------------------------
     // BOT count-related constants
     // offensive soldier counts
-    public static final int OFFENSIVE_PREV_COUNT_INDEX = 12;
-    public static final int OFFENSIVE_PREV_COUNT_MASK = 0b111111; // 111111
-    public static final int OFFENSIVE_PREV_COUNT_SHIFT = 0;
-    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
-    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
-    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
+    public static final int OFFENSIVE_COUNT_INDEX = 12;
+    public static final int OFFENSIVE_COUNT_MASK = 0b111111; // 111111
+    public static final int OFFENSIVE_COUNT_SHIFT = 0;
 
     // mobile defender counts
-    public static final int MOBILE_DEFENDER_PREV_COUNT_INDEX = 12;
-    public static final int MOBILE_DEFENDER_PREV_COUNT_MASK = 0b111111000000; // 111111 000000
-    public static final int MOBILE_DEFENDER_PREV_COUNT_SHIFT = 6;
-    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
-    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
-    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
+    public static final int MOBILE_DEFENDER_COUNT_INDEX = 12;
+    public static final int MOBILE_DEFENDER_COUNT_MASK = 0b111111000000; // 111111 000000
+    public static final int MOBILE_DEFENDER_COUNT_SHIFT = 6;
 
     // stationary defender counts
-    public static final int STATIONARY_DEFENDER_PREV_COUNT_INDEX = 13;
-    public static final int STATIONARY_DEFENDER_PREV_COUNT_MASK = 0b111111;
-    public static final int STATIONARY_DEFENDER_PREV_COUNT_SHIFT = 0;
-    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
-    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
-    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
+    public static final int STATIONARY_DEFENDER_COUNT_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_COUNT_SHIFT = 0;
 
-    public static final int TRAPPER_PREV_COUNT_INDEX = 13;
-    public static final int TRAPPER_PREV_COUNT_MASK = 0b111111000000;
-    public static final int TRAPPER_PREV_COUNT_SHIFT = 6;
-    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
-    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
-    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
-
-    public static final int OFFENSIVE_CURR_COUNT_INDEX = 44;
-    public static final int OFFENSIVE_CURR_COUNT_MASK = 0b111111;
-    public static final int OFFENSIVE_CURR_COUNT_SHIFT = 0;
-
-    public static final int MOBILE_DEFENDER_CURR_COUNT_INDEX = 44;
-    public static final int MOBILE_DEFENDER_CURR_COUNT_MASK = 0b111111000000;
-    public static final int MOBILE_DEFENDER_CURR_COUNT_SHIFT = 6;
-
-    public static final int STATIONARY_DEFENDER_CURR_COUNT_INDEX = 45;
-    public static final int STATIONARY_DEFENDER_CURR_COUNT_MASK = 0b111111;
-    public static final int STATIONARY_DEFENDER_CURR_COUNT_SHIFT = 0;
-
-    public static final int TRAPPER_CURR_COUNT_INDEX = 45;
-    public static final int TRAPPER_CURR_COUNT_MASK = 0b111111000000;
-    public static final int TRAPPER_CURR_COUNT_SHIFT = 6;
-    public static final int NUM_ROUNDS_WITH_MASS_SPAWNING = 10;
+    public static final int TRAPPER_COUNT_INDEX = 13;
+    public static final int TRAPPER_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_COUNT_SHIFT = 6;
 
     //--------------------------------------------------------------------------------------------
     public static final int SHARED_DEFENSIVE_TARGET_IDX = 17;
@@ -229,21 +208,6 @@ public class Constants {
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
 
-    ////--------------------------------------------------------------
+    //--------------
     public static final int NUM_ROUNDS_TO_RETREAT_FOR = 3;
-    // ----------------------------------------------------------
-    // constants for reading/writing offensive troop COM
-    // constants related to offensive troop COM
-    public static final int PREV_OFFENSIVE_COM_ROUND_IDX = 19;
-    public static final int PREV_OFFENSIVE_COM_ROUND_MASK = 0b11000000000000;
-    public static final int PREV_OFFENSIVE_COM_ROUND_SHIFT = 12;
-    public static final int PREV_OFFENSIVE_XSUM_IDX = 19;
-    public static final int OFFENSIVE_LOC_SUM_MASK = 0b111111111111;
-    public static final int OFFENSIVE_LOC_SUM_SHIFT = 0;
-    public static final int PREV_OFFENSIVE_YSUM_IDX = 20;
-    public static final int CURR_OFFENSIVE_XSUM_IDX = 21;
-    public static final int CURR_OFFENSIVE_YSUM_IDX = 22;
-    //--------------------------------------------------------------
-    public static final int ROUND_NUM_TO_START_LINING_UP = 170;
-
 }

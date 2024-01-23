@@ -2,7 +2,6 @@ package sjdev;
 
 import battlecode.common.*;
 
-
 class AttackHeuristic {
     double friendlyHP;
     double friendlyDamage;
@@ -30,7 +29,7 @@ class AttackHeuristic {
         double myTurnsNeeded = enemyHP / friendlyDamage;
         double enemyTurnsNeeded = friendlyHP / enemyDamage;
 
-        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
+//        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
 
         if(hasFlag){
             return myTurnsNeeded <= enemyTurnsNeeded;
@@ -62,7 +61,7 @@ public class AttackModule {
 //    int turnsSinceChaseLocSet = 0;
 
 
-    public AttackModule(RobotController rc, Robot robot) throws GameActionException{
+    public AttackModule(RobotController rc, Robot robot) throws GameActionException {
         this.rc = rc;
         this.robot = robot;
     }
@@ -72,34 +71,35 @@ public class AttackModule {
         // note: I did not make a runAttackLoop() method that we had last year
         // because I don't think it's ever possible to get the attack cooldown low enough to be able to attack twice
 
-        if(!rc.isActionReady()){
+        if (!rc.isActionReady()) {
             return false;
         }
 
-        if(bestAttackVictim != null){
+        if (bestAttackVictim != null) {
             MapLocation toAttack = bestAttackVictim.location;
             rc.attack(toAttack);
+            Util.addToIndicatorString("ATK");
             return true;
         }
         return false;
     }
 
 
-    public MapLocation getCenterOfMass(RobotInfo[] nearbyEnemies){
-        if(nearbyEnemies.length == 0){
+    public MapLocation getCenterOfMass(RobotInfo[] nearbyEnemies) {
+        if (nearbyEnemies.length == 0) {
             return null;
         }
 
         int xSum = 0;
         int ySum = 0;
-        for(RobotInfo info: nearbyEnemies){
+        for (RobotInfo info : nearbyEnemies) {
             xSum += info.location.x;
             ySum += info.location.y;
         }
-        return new MapLocation(xSum/ nearbyEnemies.length,  ySum/ nearbyEnemies.length);
+        return new MapLocation(xSum / nearbyEnemies.length, ySum / nearbyEnemies.length);
     }
 
-    public static int getSpecializationHeuristic(RobotInfo robotInfo){
+    public static int getSpecializationHeuristic(RobotInfo robotInfo) {
         // this method returns a heuristic value for the specialization of the robot
         // a bot with a lower specialization should be prioritized in attack order
 
@@ -118,10 +118,9 @@ public class AttackModule {
         // prioritize specializations (attackers >> builders >> healers)
 
         // if one bot has a flag and the other doesn't, prioritize the one with the flag
-        if(x.hasFlag && !y.hasFlag){
+        if (x.hasFlag && !y.hasFlag) {
             return -1;
-        }
-        else if(!x.hasFlag && y.hasFlag){
+        } else if (!x.hasFlag && y.hasFlag) {
             return 1;
         }
 
@@ -131,10 +130,9 @@ public class AttackModule {
         boolean xCanKill = x.getHealth() <= Util.getAttackDamage(myRobotInfo);
         boolean yCanKill = y.getHealth() <= Util.getAttackDamage(myRobotInfo);
 
-        if(xCanKill && !yCanKill){
+        if (xCanKill && !yCanKill) {
             return -1;
-        }
-        else if(!xCanKill && yCanKill){
+        } else if (!xCanKill && yCanKill) {
             return 1;
         }
 
@@ -142,14 +140,11 @@ public class AttackModule {
         int xSpecializationHeuristic = getSpecializationHeuristic(x);
         int ySpecializationHeuristic = getSpecializationHeuristic(y);
 
-        if(xSpecializationHeuristic < ySpecializationHeuristic){
+        if (xSpecializationHeuristic < ySpecializationHeuristic) {
             return -1;
-        }
-        else if(xSpecializationHeuristic > ySpecializationHeuristic){
+        } else if (xSpecializationHeuristic > ySpecializationHeuristic) {
             return 1;
-        }
-
-        else{ // default to prioritizing the bot with the lowest health
+        } else { // default to prioritizing the bot with the lowest health
             return x.getHealth() - y.getHealth();
         }
     }
@@ -158,22 +153,22 @@ public class AttackModule {
     public RobotInfo getBestAttackVictim() throws GameActionException {
         // this method loops over all enemies in action radius and finds the best one to attack
         // see compareAttackVictims() for how we compare two victims
+        robot.nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.oppTeam);
         int toAttackIndex = -1;
-        for(int i=0; i < robot.nearbyActionEnemies.length; i++){
-            if(rc.canAttack(robot.nearbyActionEnemies[i].location)){
-                if(toAttackIndex == -1 ||
-                        compareAttackVictims(robot.nearbyActionEnemies[i], robot.nearbyActionEnemies[toAttackIndex])< 0){
+        for (int i = 0; i < robot.nearbyActionEnemies.length; i++) {
+            if (rc.canAttack(robot.nearbyActionEnemies[i].location)) {
+                if (toAttackIndex == -1 ||
+                        compareAttackVictims(robot.nearbyActionEnemies[i], robot.nearbyActionEnemies[toAttackIndex]) < 0) {
                     toAttackIndex = i;
                 }
             }
         }
-        if(toAttackIndex == -1) return null;
+        if (toAttackIndex == -1) return null;
         return robot.nearbyActionEnemies[toAttackIndex];
     }
 
 
-
-    public void moveToBestPushLocation() throws GameActionException{
+    public void moveToBestPushLocation() throws GameActionException {
         // TODO: maybe make decisions based on a heuristic ith constant multipliers instead of if-statements for blending constraints?
         // TODO: maybe consider filling water? not sure if this is a good idea though cuz of high incurred action cooldown
         // this method moves to the best push location to attack the enemy
@@ -192,9 +187,9 @@ public class AttackModule {
         MapLocation currentTarget = Util.getCurrentTarget();
 
 
-        for(int i=9; --i >= 0;){
-            Direction dir = robot.allDirections[i];
-            if(!rc.canMove(dir)) continue;  // if we can't move in this direction, don't consider it
+        for (int i = 9; --i >= 0; ) {
+            Direction dir = robot.nav.allDirections[i];
+            if (!rc.canMove(dir)) continue;  // if we can't move in this direction, don't consider it
 
             int currNumEnemies = 0;
             int currAvgDistanceToEnemies = 0;
@@ -202,22 +197,22 @@ public class AttackModule {
             int currDistanceToCurrTarget = 0;
             int currDistanceToClosestEnemy = Integer.MAX_VALUE;
 
-            if(currentTarget != null){
+            if (currentTarget != null) {
                 currDistanceToCurrTarget = robot.myLoc.distanceSquaredTo(currentTarget);
             }
 
             MapLocation newLoc = robot.myLoc.add(dir);
 
             // loop over all the enemies in our vision radius and check if they can attack this spot
-            for(int x = robot.nearbyVisionEnemies.length; --x >= 0;){
+            for (int x = robot.nearbyVisionEnemies.length; --x >= 0; ) {
                 RobotInfo enemy = robot.nearbyVisionEnemies[x];
                 int distanceToEnemy = enemy.location.distanceSquaredTo(newLoc);
 
-                if(distanceToEnemy <= GameConstants.ATTACK_RADIUS_SQUARED){
+                if (distanceToEnemy <= GameConstants.ATTACK_RADIUS_SQUARED) {
                     currNumEnemies++;
                     currAvgDistanceToEnemies += enemy.location.distanceSquaredTo(newLoc);
                 }
-                if(distanceToEnemy < currDistanceToClosestEnemy){
+                if (distanceToEnemy < currDistanceToClosestEnemy) {
                     currDistanceToClosestEnemy = distanceToEnemy;
                 }
             }
@@ -225,7 +220,7 @@ public class AttackModule {
 
             // if we haven't found a direction to move in yet that gets us into attack range of someone
             // but this direction minimizes the distance to the closest enemy, then this is the best direction
-            if(bestNumEnemies == 0 && currDistanceToClosestEnemy < minDistanceToClosestEnemy){
+            if (bestNumEnemies == 0 && currDistanceToClosestEnemy < minDistanceToClosestEnemy) {
                 bestNumEnemies = currNumEnemies;
                 minAvgDistanceToEnemies = currAvgDistanceToEnemies;
                 bestDirToMove = dir;
@@ -234,20 +229,19 @@ public class AttackModule {
                 minDistanceToClosestEnemy = currDistanceToClosestEnemy;
             }
 
-            if(currNumEnemies == 0){
+            if (currNumEnemies == 0) {
                 // if there are no enemies that can attack this spot, don't consider it
                 continue;
-            }
-            else{
+            } else {
                 // if there are enemies that can attack this spot, compute the average distance to them
                 currAvgDistanceToEnemies /= currNumEnemies;
             }
 
             // see if this is the best direction to move in
-            if((currNumEnemies < bestNumEnemies) ||    // if this direction gets us into fewer enemies that current best, but still more than 0, then this is the best direction
+            if ((currNumEnemies < bestNumEnemies) ||    // if this direction gets us into fewer enemies that current best, but still more than 0, then this is the best direction
                     (currNumEnemies == bestNumEnemies && currAvgDistanceToEnemies < minAvgDistanceToEnemies) || // if this direction gets us into the same number of enemies as the current best, but the average distance to them is less, then this is the best direction
                     (currNumEnemies == bestNumEnemies && currAvgDistanceToEnemies == minAvgDistanceToEnemies && currDirIsCardinal && !bestDirIsCardinal) || // prioritize horizontal/vertical movements to maintain troop formation
-                    (currNumEnemies == bestNumEnemies && currAvgDistanceToEnemies == minAvgDistanceToEnemies && (currDirIsCardinal == bestDirIsCardinal) && currDistanceToCurrTarget < minDistanceToCurrTarget)){
+                    (currNumEnemies == bestNumEnemies && currAvgDistanceToEnemies == minAvgDistanceToEnemies && (currDirIsCardinal == bestDirIsCardinal) && currDistanceToCurrTarget < minDistanceToCurrTarget)) {
 
                 bestNumEnemies = currNumEnemies;
                 minAvgDistanceToEnemies = currAvgDistanceToEnemies;
@@ -258,14 +252,15 @@ public class AttackModule {
             }
         }
 
-        if(bestDirToMove != null && bestDirToMove != Direction.CENTER){
+        if (bestDirToMove != null && bestDirToMove != Direction.CENTER) {
+            Util.addToIndicatorString("MV");
             rc.move(bestDirToMove);
+            robot.myLoc = rc.getLocation();
         }
     }
 
 
-
-    public void moveToSafestSpot() throws GameActionException{
+    public void moveToSafestSpot() throws GameActionException {
         // TODO: maybe make decisions based on a heuristic ith constant multipliers instead of if-statements for blending constraints?
         // TODO: consider filling up water when running away?
         // not sure if above is a good idea though, because you don't want to increase action cooldown if you're fighting?
@@ -284,30 +279,29 @@ public class AttackModule {
         // but there are friendlies in vision radius, go to the friendlies
         if (lastRetreatRound != -1 &&
                 (rc.getRoundNum() - lastRetreatRound) < Constants.NUM_ROUNDS_TO_RETREAT_FOR) { // If in retreating mode.
-            if(robot.nearbyVisionEnemies.length == 0){
+            if (robot.nearbyVisionEnemies.length == 0) {
                 if (robot.nearbyFriendlies.length > 0) { // If no enemies nearby, go to nearest friendly.
                     // find the closest friendly
                     RobotInfo nearestFriendly = getClosestBot(robot.nearbyFriendlies);
 
                     // fuzzy nav to the closest friendly
                     if (nearestFriendly != null) {
-                        robot.nav.goToFuzzy(nearestFriendly.location, 0);
+                        robot.nav.fuzzyNav.goTo(nearestFriendly.location, 0);
                     }
                     return;
                 }
 
                 // if we started retreating in the last x rounds and there are no enemies in
                 // vision radius and no friendlies in vision radius, move away from enemyCOM if that's not null
-                else if(enemyCOM != null) { // If no one nearby,
+                else if (enemyCOM != null) { // If no one nearby,
                     // fuzzy nav away from enemyCOM
                     Direction awayFromEnemyCOM = robot.myLoc.directionTo(enemyCOM).opposite();
 
-                    robot.nav.goToFuzzy(robot.myLoc.add(awayFromEnemyCOM).add(awayFromEnemyCOM).add(awayFromEnemyCOM), 0);
+                    robot.nav.fuzzyNav.goTo(robot.myLoc.add(awayFromEnemyCOM).add(awayFromEnemyCOM).add(awayFromEnemyCOM), 0);
                     return;
-                }
-                else {
-                    Util.log("No one nearby, but enemyCOM is null");
-                    rc.resign();
+                } else {
+                    System.out.println("No one nearby, but enemyCOM is null");
+                    Util.resign();
                 }
             }
         }
@@ -322,33 +316,33 @@ public class AttackModule {
         MapLocation currentTarget = Util.getCurrentTarget();    // the current target that the robot is going to (based on its mode)
 
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
-        for(int i=9; --i >= 0;){
-            Direction dir = robot.allDirections[i];
+        for (int i = 9; --i >= 0; ) {
+            Direction dir = robot.nav.allDirections[i];
             int currNumEnemiesThatCanAttack = 0;
             int currentDistanceToTarget = 0;
             boolean currDirIsCardinal = Util.checkIfDirIsCardinal(dir);
 
-            if(currentTarget != null){
+            if (currentTarget != null) {
                 currentDistanceToTarget = robot.myLoc.distanceSquaredTo(currentTarget);
             }
 
             // don't consider this direction if we can't move in it
-            if(!rc.canMove(dir)) continue;
+            if (!rc.canMove(dir)) continue;
             MapLocation loc = robot.myLoc.add(dir);
 
             // loop over all the enemies in our vision radius and check if they can attack this spot
-            for(int x = robot.nearbyVisionEnemies.length; --x >= 0;){
+            for (int x = robot.nearbyVisionEnemies.length; --x >= 0; ) {
                 RobotInfo enemy = robot.nearbyVisionEnemies[x];
-                if(enemy.location.distanceSquaredTo(loc) <= GameConstants.ATTACK_RADIUS_SQUARED){
+                if (enemy.location.distanceSquaredTo(loc) <= GameConstants.ATTACK_RADIUS_SQUARED) {
                     currNumEnemiesThatCanAttack++;
                 }
             }
 
             // see if this is the best direction to move in
-            if(     (currNumEnemiesThatCanAttack < minNumEnemiesThatCanAttack) ||   // minimies the number of enemies that can see you in the new location
-                    (currNumEnemiesThatCanAttack == minNumEnemiesThatCanAttack &&  currDirIsCardinal && !bestDirIsCardinal) ||  // prioritize movements that are in horizontal/vertical directions to keep formation
-                    (currNumEnemiesThatCanAttack == minNumEnemiesThatCanAttack &&  (currDirIsCardinal  == bestDirIsCardinal) && currentDistanceToTarget < minDistanceToCurrTarget)  // minimize distance to target
-            ){
+            if ((currNumEnemiesThatCanAttack < minNumEnemiesThatCanAttack) ||   // minimies the number of enemies that can see you in the new location
+                    (currNumEnemiesThatCanAttack == minNumEnemiesThatCanAttack && currDirIsCardinal && !bestDirIsCardinal) ||  // prioritize movements that are in horizontal/vertical directions to keep formation
+                    (currNumEnemiesThatCanAttack == minNumEnemiesThatCanAttack && (currDirIsCardinal == bestDirIsCardinal) && currentDistanceToTarget < minDistanceToCurrTarget)  // minimize distance to target
+            ) {
                 minNumEnemiesThatCanAttack = currNumEnemiesThatCanAttack;
                 bestDirToMove = dir;
                 bestDirIsCardinal = currDirIsCardinal;
@@ -357,13 +351,15 @@ public class AttackModule {
         }
 
 
-        if(bestDirToMove != null && bestDirToMove != Direction.CENTER){
+        if (bestDirToMove != null && bestDirToMove != Direction.CENTER) {
+            Util.addToIndicatorString("MV");
             rc.move(bestDirToMove);
+            robot.myLoc = rc.getLocation();
         }
     }
 
 
-    public void updateAllNearbyAttackInfo() throws GameActionException{
+    public void updateAllNearbyAttackInfo() throws GameActionException {
         robot.nearbyFriendlies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.myTeam);
         robot.nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         robot.nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, robot.oppTeam);
@@ -376,37 +372,35 @@ public class AttackModule {
 //        }
 //        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyActionCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         RobotInfo[] friendliesThatCanAttackEnemyActionCOM = new RobotInfo[0];
-        if(enemyCOM != null && rc.canSenseLocation(enemyCOM)){
+        if (enemyCOM != null && rc.canSenseLocation(enemyCOM)) {
             friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         }
         heuristic = getHeuristic(robot.nearbyFriendlies, robot.nearbyVisionEnemies, robot.nearbyActionFriendlies, robot.nearbyActionEnemies, rc.hasFlag());
     }
 
 
-
-    public void runUnsafeStrategy() throws GameActionException{
+    public void runUnsafeStrategy() throws GameActionException {
         // if we have been retreated in the last 3 rounds, either retreat again or move towards your enemies
 
         // made this it's own method in case we want to add more logic here
         moveToSafestSpot();
     }
 
-    public void runSafeStrategy() throws GameActionException{
+    public void runSafeStrategy() throws GameActionException {
         // TODO: should we consider chasing down enemies???
         // TODO: max attack specialization can attack twice in one round. We need to factor that in
         // maybe it's not worth since they just respawn
         // maybe something like chase enemies with the flag, but not otherwise?
 
-        if(robot.nearbyActionEnemies.length != 0 ){
-            if(rc.isMovementReady()){
+        robot.tryPickingUpOppFlag();
+        if (robot.nearbyActionEnemies.length != 0) {
+            if (rc.isMovementReady()) {
                 moveToSafestSpot();
             }
-        }
-        else if(robot.nearbyVisionEnemies.length != 0){
-            if(rc.isActionReady() && rc.isMovementReady()){
+        } else if (robot.nearbyVisionEnemies.length != 0) {
+            if (rc.isActionReady() && rc.isMovementReady()) {
                 moveToBestPushLocation();
-            }
-            else if(rc.isMovementReady()){
+            } else if (rc.isMovementReady()) {
                 moveToSafestSpot();
             }
         }
@@ -416,15 +410,15 @@ public class AttackModule {
         // this method finds the best patient to heal
         int worstHealth = GameConstants.DEFAULT_HEALTH;
         MapLocation weakestFriendlyLoc = null;
-        for(RobotInfo robot: robot.nearbyFriendlies){
+        for (RobotInfo robot : robot.nearbyFriendlies) {
             boolean canHeal = rc.canHeal(robot.getLocation());
 
             // if the bot carrying the flag is not at 100%, priortize that one
-            if(canHeal && robot.getHealth() < GameConstants.DEFAULT_HEALTH && robot.hasFlag()){
+            if (canHeal && robot.getHealth() < GameConstants.DEFAULT_HEALTH && robot.hasFlag()) {
                 return robot.getLocation();
             }
 
-            if(rc.canHeal(robot.location) && robot.getHealth() < worstHealth){
+            if (rc.canHeal(robot.location) && robot.getHealth() < worstHealth) {
                 worstHealth = rc.getHealth();
                 weakestFriendlyLoc = robot.getLocation();
             }
@@ -432,17 +426,17 @@ public class AttackModule {
         return weakestFriendlyLoc;
     }
 
-    public boolean runHealing() throws GameActionException{
+    public boolean runHealing() throws GameActionException {
         // note: if we got to this method, it means we didn't attack
         // this method returns true if it heals a bot, and false if it doesn't heal a bot
 
         // check to see if there are no opp in vision radius
-        if(robot.nearbyActionEnemies.length == 0 && robot.nearbyFriendlies.length > 0)
-        {
+        if (robot.nearbyActionEnemies.length == 0 && robot.nearbyFriendlies.length > 0) {
             // find the weakest friendly to heal
             MapLocation weakestPatientLoc = findBestHealPatient();
-            if(weakestPatientLoc != null){
+            if (weakestPatientLoc != null) {
                 // heal the boi that needs most help
+                Util.addToIndicatorString("HL");
                 rc.heal(weakestPatientLoc);
                 return true;
             }
@@ -465,18 +459,15 @@ public class AttackModule {
         // main entry point to this module, which will run any attacking strategy (attacking micro).
 
         // keep retreating if we started retreating in the last x rounds
-        if(heuristic.getSafe()){
+        if (heuristic.getSafe()) {
             // if we've been reatreating in the last x rounds, keep retreating
-            if(lastRetreatRound != -1 && (rc.getRoundNum() - lastRetreatRound) < Constants.NUM_ROUNDS_TO_RETREAT_FOR){
+            if (lastRetreatRound != -1 && (rc.getRoundNum() - lastRetreatRound) < Constants.NUM_ROUNDS_TO_RETREAT_FOR) {
                 moveToSafestSpot();
-            }
-            else{
+            } else {
                 lastRetreatRound = -1;
                 runSafeStrategy();
             }
-        }
-
-        else{
+        } else {
             lastRetreatRound = rc.getRoundNum(); // keep track of the round you started retreat in
             runUnsafeStrategy();
         }
@@ -486,8 +477,8 @@ public class AttackModule {
         runHealing(); // try healing
     }
 
-    public double getHeuristicSafetyMultiplier(){
-        switch(robot.mode){
+    public double getHeuristicSafetyMultiplier() {
+        switch (robot.mode) {
             case OFFENSE:
                 return Constants.OFFENSE_ATTACK_SAFETY_FACTOR;
             case STATIONARY_DEFENSE:
@@ -500,19 +491,19 @@ public class AttackModule {
     }
 
 
-    public RobotInfo getClosestBot(RobotInfo[] arr) throws GameActionException{
+    public RobotInfo getClosestBot(RobotInfo[] arr) throws GameActionException {
         // this method finds the closest enemy in the vision radius of the current bot
         int distanceToClosestBot = Integer.MAX_VALUE;
         RobotInfo closestBot = null;
 
-        if(robot.nearbyFriendlies.length == 0){
+        if (robot.nearbyFriendlies.length == 0) {
             return null;
         }
 
-        for(int i=robot.nearbyFriendlies.length; --i >= 0;){
+        for (int i = robot.nearbyFriendlies.length; --i >= 0; ) {
             RobotInfo enemy = robot.nearbyFriendlies[i];
             int distanceToEnemy = robot.myLoc.distanceSquaredTo(enemy.location);
-            if(distanceToEnemy < distanceToClosestBot){
+            if (distanceToEnemy < distanceToClosestBot) {
                 distanceToClosestBot = distanceToEnemy;
                 closestBot = enemy;
             }
@@ -521,14 +512,12 @@ public class AttackModule {
     }
 
 
-
-    public AttackHeuristic getHeuristic(RobotInfo[] visionFriendlies, RobotInfo[] visionEnemies, RobotInfo[] attackFriendlies, RobotInfo[] attackEnemies, boolean hasFlag) throws GameActionException{
+    public AttackHeuristic getHeuristic(RobotInfo[] visionFriendlies, RobotInfo[] visionEnemies, RobotInfo[] attackFriendlies, RobotInfo[] attackEnemies, boolean hasFlag) throws GameActionException {
         // TODO: we should calculate the legit damage values here according to bot specializations.
         //  Not sure if there's a way to that without hardcoding in values at the moment.
 
 
         RobotInfo[] nearbyEnemies = rc.senseNearbyRobots(9, robot.oppTeam);
-
 
         // factor in rounds to kill
         // factor in enemy HP
@@ -537,26 +526,29 @@ public class AttackModule {
         double enemyDamage = 0.0;
         double friendlyHP = 0.0;
         double enemyHP = 0.0;
-//        double totalEnemyDamage = 0.0; // enemyDamage without cooldown information
 
-        RobotInfo nearestEnemy = getClosestBot(visionEnemies);
+//        RobotInfo nearestEnemy = getClosestBot(visionEnemies);
+        RobotInfo nearestEnemy = getBestAttackVictim();
+        if(nearestEnemy == null){
+            nearestEnemy = getClosestBot(visionEnemies);
+        }
 
-        for(int i= nearbyEnemies.length; --i >= 0;){
+        for (int i = nearbyEnemies.length; --i >= 0; ) {
             RobotInfo enemy = nearbyEnemies[i];
             double attackDamage = Util.getAttackDamage(enemy);
             enemyDamage += attackDamage / Util.getAttackCooldown(enemy);
             enemyHP += enemy.getHealth();
-//            totalEnemyDamage += attackDamage;
         }
 
-
         // calculate friendlies attacking the enemy
-        for(int i=visionFriendlies.length ; --i >= 0;){
+        for (int i = visionFriendlies.length; --i >= 0; ) {
             RobotInfo friendly = visionFriendlies[i];
 
             // if this friendly can't attack the closest enemy to me, don't consider the friendly
-            if(nearestEnemy != null &&
-                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 4){
+//            if (nearestEnemy != null &&
+//                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
+            if (nearestEnemy != null &&
+                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
                 continue;
             }
 
@@ -565,13 +557,20 @@ public class AttackModule {
             friendlyHP += friendly.getHealth();
         }
 
+//        friendlyHP = 0.0;
+//        enemyHP = 0.0;
+
+        if(nearestEnemy != null){
+            enemyHP += nearestEnemy.getHealth();
+        }
+
         RobotInfo myRobotInfo = rc.senseRobot(rc.getID());
         // factor in the damage that you can do
         double myAttackDamage = Util.getAttackDamage(myRobotInfo);
         friendlyDamage += myAttackDamage / Util.getAttackCooldown(myRobotInfo);
         friendlyHP += myRobotInfo.getHealth();
-        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
-        Util.addToIndicatorString("FHP:" + (int)friendlyHP + ",EHP:" + (int)enemyHP);
+//        Util.addToIndicatorString("FD:" + (int) friendlyDamage + ",ED:" + (int) enemyDamage);
+//        Util.addToIndicatorString("FHP:" + (int) friendlyHP + ",EHP:" + (int) enemyHP);
 
         return new AttackHeuristic(friendlyHP, friendlyDamage, enemyHP, enemyDamage, hasFlag, safetyMultiplier);
     }

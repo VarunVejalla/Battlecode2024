@@ -24,7 +24,6 @@ public class FlagMover {
     }
 
     public void tryPlacingFlag() throws GameActionException {
-
         for(int i = 0; i < 3; i++){
             if(alreadyPlacedFlags[i] != null){
                 continue;
@@ -33,6 +32,20 @@ public class FlagMover {
                 alreadyPlacedFlags[i] = comms.getDefaultHomeFlagLoc(i);
                 Util.fillTrue(nav.locsToIgnore, alreadyPlacedFlags[i], 36);
             }
+        }
+
+        // If it's almost the last round, just place down the flag. It'll get placed down automatically, but this way you can at least log the exact location.
+        if(rc.getRoundNum() >= Constants.SETUP_ROUNDS - 2){
+            MapLocation currLoc = rc.getLocation();
+            rc.dropFlag(currLoc);
+            placedFlag = true;
+            if(flagIdx == -1){
+                System.out.println("UNKNOWN FLAG IDX SO RESIGNING");
+                Util.resign();
+            }
+            System.out.println("Setting new default flag loc for " + flagIdx + " to " + currLoc);
+            comms.writeDefaultHomeFlagLocs(flagIdx, currLoc);
+            comms.writeOurFlagNewHomeStatus(flagIdx, true);
         }
 
         MapInfo[] infos = rc.senseNearbyMapInfos(GameConstants.VISION_RADIUS_SQUARED);
@@ -59,7 +72,8 @@ public class FlagMover {
                 rc.dropFlag(loc);
                 placedFlag = true;
                 if(flagIdx == -1){
-                    rc.resign();
+                    System.out.println("UNKNOWN FLAG IDX SO RESIGNING");
+                    Util.resign();
                 }
                 System.out.println("Setting new default flag loc for " + flagIdx + " to " + loc);
                 comms.writeDefaultHomeFlagLocs(flagIdx, loc);
@@ -83,7 +97,6 @@ public class FlagMover {
 
     public boolean runFlagMover() throws GameActionException {
         // this method is the main entry point for the flag mover
-
         if(rc.hasFlag()){
             // if you have the flag
             if(rc.getRoundNum() > Constants.NEW_FLAG_LOC_DECIDED_ROUND){
@@ -94,11 +107,11 @@ public class FlagMover {
                 }
                 Util.addToIndicatorString("CT: " + targetLoc.toString());
                 Util.addToIndicatorString("CW: " + circleCCW);
-                boolean circled = nav.circle(targetLoc, 4, 8, circleCCW);
+                boolean circled = nav.circle(targetLoc, 4, 8, circleCCW, 0);
                 if(rc.isMovementReady() && !circled){
                     circleCCW = !circleCCW;
                     nav.recentlyVisited = new MapLocation[10];
-                    circled = nav.circle(targetLoc, 4, 8, circleCCW);
+                    circled = nav.circle(targetLoc, 4, 8, circleCCW, 0);
                     if(!circled){
                         circleCCW = !circleCCW;
                         nav.recentlyVisited = new MapLocation[10];
@@ -108,12 +121,8 @@ public class FlagMover {
             }
             return true;
         }
-
-
         else if(!placedFlag){
-            // if you don't have the flag
-
-            // Search for nearby flags.
+            // If you don't have the flag, search for nearby flags.
             FlagInfo[] nearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
             for(int i = 0; i < nearbyFlags.length; i++){
                 if(nearbyFlags[i].isPickedUp()){
@@ -122,14 +131,14 @@ public class FlagMover {
                 MapLocation flagLoc = nearbyFlags[i].getLocation();
                 if(!rc.canPickupFlag(flagLoc)){
                     Util.log("Why tf can i not pick it up");
-                    nav.goToFuzzy(flagLoc, 0);
+                    nav.fuzzyNav.goTo(flagLoc, 0);
                     return true;
                 }
                 // Determine the index of the flag.
                 flagIdx = Util.getItemIndexInArray(flagLoc, robot.spawnCenters);
                 if(flagIdx == -1){
-                    Util.log("Flag is not at its center???");
-                    rc.resign();
+                    System.out.println("Flag is not at its center???");
+                    Util.resign();
                 }
                 rc.pickupFlag(flagLoc);
                 return true;

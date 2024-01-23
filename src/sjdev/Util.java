@@ -6,6 +6,11 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
+    static boolean LOGGING_ALLOWED = true;
+
+    public static void resign(){
+        rc.resign(); // TODO: COMMENT THIS OUT.
+    }
 
     public static int minMovesToReach(MapLocation a, MapLocation b){
         int dx = a.x - b.x;
@@ -13,9 +18,12 @@ public class Util {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    
-    public static boolean tryMove(Direction dir) throws GameActionException{
-        if(rc.canFill(rc.adjacentLocation(dir))) {
+    public static MapLocation getRandomLocation(){
+        return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
+    }
+
+    public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
+        if(rc.getCrumbs() >= minCrumbsToFill && rc.canFill(rc.adjacentLocation(dir))) {
             rc.fill(rc.adjacentLocation(dir));
         }
         if(rc.canMove(dir)) {
@@ -25,6 +33,44 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    public static boolean tryMove(Direction dir, boolean waterFillingAllowed) throws GameActionException{
+        if(waterFillingAllowed && rc.canFill(rc.adjacentLocation(dir))) {
+            rc.fill(rc.adjacentLocation(dir));
+        }
+        if(rc.canMove(dir)) {
+            rc.move(dir);
+            robot.myLoc = rc.getLocation();
+            robot.myLocInfo = rc.senseMapInfo(robot.myLoc);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean canMove(Direction dir, boolean waterFillingAllowed) throws GameActionException{
+        MapLocation adjLoc = rc.getLocation().add(dir);
+        if(!rc.isMovementReady()){
+            return false;
+        }
+        if(!rc.canSenseLocation(adjLoc)){
+            return false;
+        }
+        if(rc.isLocationOccupied(adjLoc)){
+            return false;
+        }
+        MapInfo adjInfo = rc.senseMapInfo(adjLoc);
+        if(adjInfo.isWater() && waterFillingAllowed) {
+            return true;
+        }
+        if(adjInfo.isPassable()){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean tryMove(Direction dir) throws GameActionException{
+        return tryMove(dir, 0);
     }
 
     public static void addToIndicatorString(String str){
@@ -56,6 +102,17 @@ public class Util {
         return -1;
     }
 
+    public static int getItemIndexInArray(int item, int[] array){
+        // helper method to get the index of an item in an array
+        for(int i = 0; i < array.length; i++){
+            int arrayItem = array[i];
+            if(arrayItem == item){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     public static <T> boolean checkIfItemInArray(T item, T[] array){
         return getItemIndexInArray(item, array) != -1;
@@ -63,6 +120,9 @@ public class Util {
 
 
     public static <T> void logArray(String name, T[] array){
+        if(!LOGGING_ALLOWED){
+            return;
+        }
         // helper method to display array of any type to the logs
         String out = "";
         out += name + ": ";
@@ -78,6 +138,18 @@ public class Util {
             }
         }
         System.out.println(out);
+    }
+
+    public static void logArray(String name, int[] arr){
+        logArray(name, intToIntegerArray(arr));
+    }
+
+    public static Integer[] intToIntegerArray(int[] arr){
+        Integer[] ret = new Integer[arr.length];
+        for(int i = 0; i < ret.length; i++){
+            ret[i] = arr[i];
+        }
+        return ret;
     }
 
     public static void fillTrue(boolean[][] arr, MapLocation center, int radiusSquared) {
@@ -188,9 +260,21 @@ public class Util {
 
     // Assumes neither one is center.
     public static int directionDistance(Direction a, Direction b){
+        return Math.min(directionDistanceLeft(a, b), directionDistanceRight(a, b));
+    }
+
+    public static int directionDistanceLeft(Direction a, Direction b){
+        return 8 - directionDistanceRight(a, b);
+    }
+
+    public static int directionDistanceRight(Direction a, Direction b){
         int ai = directionToInt(a);
         int bi = directionToInt(b);
-        return Math.min(Math.min(Math.abs(ai - bi), Math.abs(ai - bi - 8)), Math.abs(ai - bi + 8));
+        int dist = bi - ai;
+        if(dist < 0){
+            dist += 8;
+        }
+        return dist;
     }
 
     // NOTE: Takes a worst-case of 10,000 bytecode to run.
@@ -214,6 +298,7 @@ public class Util {
             if(x == 0 || x == rc.getMapWidth() - 1 || y == 0 || y == rc.getMapHeight() - 1){
                 continue;
             }
+
             if(spawnLocMap[x - 1][y]
                 && spawnLocMap[x + 1][y]
                 && spawnLocMap[x][y - 1]
@@ -224,19 +309,25 @@ public class Util {
         }
 
         if(spawnCenterIdx < 3){
-            Util.log("Not all spawn centers found in getSpawnLocCenters");
-            rc.resign();
+            System.out.println("Not all spawn centers found in getSpawnLocCenters");
+            Util.resign();
         }
 
         return spawnCenters;
     }
 
     public static void log(String str){
-        System.out.println(str);
+        if(LOGGING_ALLOWED){
+            System.out.println(str);
+        }
     }
 
     public static void logBytecode(String str){
-        System.out.println(str + ": " + Clock.getBytecodesLeft());
+        Util.log(str + ": " + Clock.getBytecodesLeft());
+    }
+
+    public static void logBytecodeUsed(String str){
+        Util.log(str + ": " + Clock.getBytecodeNum());
     }
 
 
@@ -264,9 +355,6 @@ public class Util {
     }
 
 
-
-    // this method checks if a direction is cardinal
-    // used in AttackModule when prioritizing to move in cardinal directions to maintain attack formation
     public static boolean checkIfDirIsCardinal(Direction dir){
         return dir == Direction.CENTER
                 || dir == Direction.NORTH
@@ -291,94 +379,16 @@ public class Util {
         return null;
     }
 
-
-    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException {
+    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
+        // TODO: implement this method to take into account attack specializations
         // this method returns the attack damage of the robot given its specialization
-        // and also considers the global upgrade selected by the other team
-        if (robotInfo == null) return 0;
-
-        GlobalUpgrade[] globalUpgrades = (robotInfo.getTeam().equals(robot.myTeam))
-                ? robot.myTeamGlobalUpgrades
-                : robot.oppTeamGlobalUpgrades;
-
-        boolean isGlobalUpgradeAttack = Util.checkIfItemInArray(GlobalUpgrade.ATTACK, globalUpgrades);
-        int attackLevelSpecialization = robotInfo.getAttackLevel();
-
-        switch (attackLevelSpecialization) {
-            case 0: // 0% damage boost for attack specialization level 0
-                // 225 = (150 + 75)
-                // 150 =  base attack
-                return isGlobalUpgradeAttack ? 225.0 : 150.0;
-
-            case 1: // 5% damage boost for attack specialization level 1
-                // 236.25 = (150 + 75) * 1.05
-                // 157.5 = 150 * 1.05
-                return isGlobalUpgradeAttack ? 236.25 : 157.5;
-
-            case 2: // 7% damage boost for attack specialization level 2
-                // 240.75 = (150 + 75) * 1.07
-                // 160.5 = 150 * 1.07
-                return isGlobalUpgradeAttack ? 240.75 : 160.5;
-
-            case 3: // 10% damage boost for attack specialization level 3
-                // 247.5 = (150 + 75) * 1.10
-                // 165.0 = 150 * 1.10
-                return isGlobalUpgradeAttack ? 247.5 : 165.0;
-
-            case 4: // 30% damage boost for attack specialization level 4
-                // 292.5 = (150 + 75) * 1.30
-                // 195.0 = 150 *  1.30
-                return isGlobalUpgradeAttack ? 292.5 : 195.0;
-
-            case 5: // 35% damage boost for attack specialization level 5
-                // 303.75 = (150 + 75) * 1.35
-                // 202.5 = 150 * 1.35
-                return isGlobalUpgradeAttack ? 303.75 : 202.5;
-
-            case 6: // 60% damage boost for attack specialization level 6
-                // 360 = (150 + 75) * 1.60
-                // 240 = 150 * 1.60
-                return isGlobalUpgradeAttack ? 360 : 240;
-
-            default:
-                return 150.0;
-        }
+        return 150.0;
     }
 
 
     public static double getAttackCooldown(RobotInfo robotInfo) throws GameActionException{
-        // this method returns the attack
-        if (robotInfo == null) return 0;
-        int attackLevelSpecialization = robotInfo.getAttackLevel();
-        switch(attackLevelSpecialization){
-            case 0:
-                // 0% reduction in cooldown
-                return 20.0;
-
-            case 1:
-                // 5% reduction in cooldwon
-                return 19.0;
-
-            case 2:
-                // 7% reduction in cooldown
-                return 18.6;
-
-            case 3:
-                // 10% reduction in cooldown
-                return 18.0;
-
-            case 4:
-                // 20% reduction in cooldown
-                return 16.0;
-
-            case 5:
-                // 35% reduction in cooldown
-                return 13.0;
-
-            case 6:
-                // 60% reduction in cooldown
-                return 8.0;
-        }
+        // TODO: implement this method to take into account attack specializations
         return 20.0;
     }
+
 }

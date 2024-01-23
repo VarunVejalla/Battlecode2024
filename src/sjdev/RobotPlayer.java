@@ -35,23 +35,22 @@ public strictfp class RobotPlayer {
      **/
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
+        Util.LOGGING_ALLOWED = false;
+
         int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);
         if(rc.getRoundNum() != startTurn){
-            Util.log("BYTECODE EXCEEDED");
-            rc.resign();
+            System.out.println("BYTECODE EXCEEDED");
+            Util.resign();
         }
         while (true) {
             startTurn = rc.getRoundNum();
 
-//            if (rc.getRoundNum() > 500){
-//                rc.resign();
-//            }
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
-                    Util.log("BYTECODE EXCEEDED");
-//                    rc.resign();
+                    System.out.println("BYTECODE EXCEEDED " + robot.mode);
+                    Util.resign();
                 }
             }
             catch (Exception e) {

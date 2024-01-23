@@ -19,7 +19,6 @@ enum OffensiveTargetType { CARRIED, DROPPED, DEFAULT, APPROXIMATE;
             default:
                 return "NULL";
         }
-
     }
 };
 
@@ -184,37 +183,38 @@ public class OffenseModule {
                 robot.homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(robot.myLoc);
             }
             robot.myLoc = rc.getLocation();
-            comms.removeKnownOppFlagLoc(robot.myLoc);
-            nav.mode = NavigationMode.BUGNAV;
-            nav.goTo(robot.homeLocWhenCarryingFlag, 0);
+            comms.removeKnownOppFlagLocFromId(robot.idOfFlagImCarrying);
+            nav.pathBF(robot.homeLocWhenCarryingFlag, 0);
             Util.addToIndicatorString("HL: " + robot.homeLocWhenCarryingFlag);
             if(sharedOffensiveTarget.equals(robot.myLoc)){
                 sharedOffensiveTarget = rc.getLocation();
                 comms.writeSharedOffensiveTarget(sharedOffensiveTarget);
             }
             robot.myLoc = rc.getLocation();
-            comms.writeKnownOppFlagLoc(robot.myLoc, true);
+            comms.writeKnownOppFlagLocFromFlagID(robot.myLoc, true, robot.idOfFlagImCarrying);
         } else if (sharedOffensiveTarget == null) {
             nav.moveRandom();
             Util.addToIndicatorString("RND");
         } else {
-            nav.mode = NavigationMode.BUGNAV;
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
-                nav.circle(sharedOffensiveTarget, 3, 8);
+                nav.circle(sharedOffensiveTarget, 3, 8, 0);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
                 Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
-                nav.goTo(sharedOffensiveTarget, 0);
+                Util.logBytecode("Beginning of pathBF");
+                nav.pathBF(sharedOffensiveTarget, 100);
             }
         }
     }
 
     public void runMovement() throws GameActionException {
         // if you can pick up a flag, pick it up (and update comms)
+        Util.logBytecode("Beginning of run movement");
         robot.tryPickingUpOppFlag();
 
         if (rc.isMovementReady()) {
+            Util.logBytecode("Beginning move to target");
             moveToTarget();
         }
     }

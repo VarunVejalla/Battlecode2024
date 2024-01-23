@@ -1,273 +1,231 @@
 package sjdev;
 
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-
-enum NavigationMode{
-    FUZZYNAV, BUGNAV;
-}
+import battlecode.common.*;
 
 public class Navigation {
+
+    /**
+     * Array containing all the possible movement directions.
+     */
+    static final Direction[] movementDirections = {
+            Direction.NORTH,
+            Direction.NORTHEAST,
+            Direction.EAST,
+            Direction.SOUTHEAST,
+            Direction.SOUTH,
+            Direction.SOUTHWEST,
+            Direction.WEST,
+            Direction.NORTHWEST,
+    };
+
+    // array containing all directions
+    static final Direction[] allDirections = {
+            Direction.NORTH,
+            Direction.NORTHEAST,
+            Direction.EAST,
+            Direction.SOUTHEAST,
+            Direction.SOUTH,
+            Direction.SOUTHWEST,
+            Direction.WEST,
+            Direction.NORTHWEST,
+            Direction.CENTER
+    };
+
+    static final int BFS_CENTER_X = 5;
+    static final int BFS_CENTER_Y = 4;
 
     RobotController rc;
     Robot robot;
     Comms comms;
 
-    NavigationMode mode = NavigationMode.BUGNAV;
+    FuzzyNav fuzzyNav;
+    BugNav bugNav;
+    BFS bfs;
 
-    // Bugnav variables
-    int closestDistToTarget = Integer.MAX_VALUE;
-    MapLocation lastWallFollowed = null;
-    Direction lastDirectionMoved = null;
-    int roundsSinceClosestDistReset = 0;
-    MapLocation prevTarget = null;
+    int[][] heuristicMap;
+    int lastRoundHeuristicMapCalculated = 0;
+
     boolean[][] locsToIgnore;
     final int RECENTLY_VISITED_LENGTH = 5;
     MapLocation[] recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH]; // Used for circling
     int recentlyVisitedIdx = 0; // Used for circling
     boolean prevCircleDir = false;
-    boolean bugFollowRight = true; // TODO: Figure out how to make this a smart decision.
-
-    final int ROUNDS_TO_RESET_BUG_CLOSEST = 15;
+    boolean wasRunningBug = false;
+    boolean waterFillingAllowed = false;
 
     public Navigation(RobotController rc, Comms comms, Robot robot) throws GameActionException {
         this.rc = rc;
         this.comms = comms;
         this.robot = robot;
-        bugFollowRight = comms.readScoutCountEven();
+        fuzzyNav = new FuzzyNav(rc, comms, robot);
+        bugNav = new BugNav(rc, comms, robot);
+        bfs = new BFS20(rc, robot);
         locsToIgnore = new boolean[rc.getMapWidth()][rc.getMapHeight()];
     }
 
-    public boolean goToBug(MapLocation target, int minDistToSatisfy) throws GameActionException {
-        if(mode != NavigationMode.BUGNAV){
-            mode = NavigationMode.BUGNAV;
-            resetBugNav();
-        }
-        if(!target.equals(prevTarget)){
-            resetBugNav();
-        }
-        prevTarget = target;
-        return goTo(target, minDistToSatisfy);
+    public void resetBFS(){
+        recentlyVisited = new MapLocation[RECENTLY_VISITED_LENGTH];
     }
 
-    public boolean goToFuzzy(MapLocation target, int minDistToSatisfy) throws GameActionException {
-        mode = NavigationMode.FUZZYNAV;
-        return goTo(target, minDistToSatisfy);
-    }
-
-    public void resetBugNav() {
-        closestDistToTarget = Integer.MAX_VALUE;
-        lastWallFollowed = null;
-        lastDirectionMoved = null;
-        roundsSinceClosestDistReset = 0;
-    }
-
-    public Direction bugNav(MapLocation target) throws GameActionException {
-        Util.addToIndicatorString("BGN");
-        // Every 20 turns reset the closest distance to target
-        if(roundsSinceClosestDistReset >= ROUNDS_TO_RESET_BUG_CLOSEST){
-            closestDistToTarget = Integer.MAX_VALUE;
-            roundsSinceClosestDistReset = 0;
+    public void pathBF(MapLocation target, int minCrumbsForNavigation) throws GameActionException {
+        if(!rc.isMovementReady()){
+            return;
         }
-        roundsSinceClosestDistReset++;
 
-        Direction closestDir = null;
-        Direction wallDir = null;
-        Direction dir = null;
+        waterFillingAllowed = rc.getCrumbs() >= minCrumbsForNavigation;
 
-        if(lastWallFollowed != null){
-
-            // Check if the last wall still exists and update
-            Direction toLastWallFollowed = robot.myLoc.directionTo(lastWallFollowed);
-            if (toLastWallFollowed == Direction.CENTER || (robot.myLoc.isAdjacentTo(lastWallFollowed) && rc.canMove(toLastWallFollowed))) {
-                lastWallFollowed = null;
+        if(!target.equals(bugNav.prevTarget)){
+            wasRunningBug = false;
+            bugNav.resetBug0(target, waterFillingAllowed);
+        }
+        bugNav.closestDistBug0 = Math.min(bugNav.closestDistBug0, rc.getLocation().distanceSquaredTo(target));
+        if(rc.getRoundNum() > bugNav.lastUpdatedRoundNum){
+            bugNav.updateBug0CurrLocation(robot.myLoc);
+            bugNav.lastUpdatedRoundNum = rc.getRoundNum();
+        }
+        if(wasRunningBug && bugNav.currWallLocation == null) { // If we were previously going towards target.
+            // Try running BFS
+            Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            if(moveDir != null){
+                Util.tryMove(moveDir);
+                recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
+                recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
+                wasRunningBug = false;
+                Util.addToIndicatorString("SW_BFS");
+                return;
             }
-            else {
-                dir = robot.myLoc.directionTo(lastWallFollowed);
-            }
-        }
-        if (dir == null) {
-            dir = robot.myLoc.directionTo(target);
-        }
-
-        // This should never happen theoretically, but in case it does, just reset and continue.
-        if(dir == Direction.CENTER){
-            resetBugNav();
-            return Direction.CENTER;
-        }
-
-        for (int i = 0; i < 8; i++) {
-            MapLocation newLoc = rc.adjacentLocation(dir);
-//            if(!rc.isActionReady()) {
-//                if(!rc.canMove(dir)) {
-//                    continue;
-//                }
-//            } else {
-//                // water is fine if we have enough crumbs
-//                // TODO: 30 shouldn't be this constant value since it may be able to fill for cheaper
-//                if(rc.getCrumbs() < 30) {
-//                    if(!rc.canMove(dir)) {
-//                        continue;
-//                    }
-//                } else {
-//                    if(!rc.canMove(dir) && !rc.canFill(newLoc)) {
-//                        continue;
-//                    }
-//                }
-//            }
-
-            // TODO: improve these cases
-            if(rc.canMove(dir) || (rc.isActionReady() && rc.getCrumbs() >= 30 && rc.canFill(newLoc))){
-                // If we can get closer to the target than we've ever been before, do that.
-                int dist = newLoc.distanceSquaredTo(target);
-                if(dist < closestDistToTarget){
-                    closestDistToTarget = dist;
-                    closestDir = dir;
+            else { // If that doesn't work, try going towards target.
+                wasRunningBug = true;
+                if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
+                    Util.addToIndicatorString("CT_MCTG");
+                    return;
                 }
-
-                // Check if wall-following is viable
-                if(wallDir == null){
-                    wallDir = dir;
-                }
-            }
-
-            // If we canot move in direction
-            else {
-                if (wallDir == null) {
-                    // Count as wall if its not outer boundary or another robot
-                    if (rc.onTheMap(newLoc) && !rc.canSenseRobotAtLocation(newLoc)){
-                        lastWallFollowed = newLoc;
-                    }
-                }
-            }
-            dir = bugFollowRight ? dir.rotateRight() : dir.rotateLeft();
-        }
-
-        if(closestDir != null){
-            return closestDir;
-        }
-        return wallDir;
-    }
-
-    public Direction fuzzyNav(MapLocation target) throws GameActionException{
-        Util.addToIndicatorString("FZN");
-        Direction toTarget = robot.myLoc.directionTo(target);
-        Direction[] moveOptions = {
-                toTarget,
-                toTarget.rotateLeft(),
-                toTarget.rotateRight(),
-                toTarget.rotateLeft().rotateLeft(),
-                toTarget.rotateRight().rotateRight()
-        };
-
-        Direction bestDir = null;
-        int leastNumMoves = Integer.MAX_VALUE;
-        int leastDistanceSquared = Integer.MAX_VALUE;
-
-        MapLocation bestNewLoc = robot.myLoc;
-
-        for(int i= moveOptions.length; i--> 0;){
-            Direction dir = moveOptions[i];
-            MapLocation newLoc = robot.myLoc.add(dir);
-
-            if(!rc.isActionReady()) {
-                if(!rc.canMove(dir)) {
-                    continue;
-                }
-            } else {
-                // water is fine if we have enough crumbs
-                // TODO: 30 shouldn't be this constant value since it may be able to fill for cheaper
-                if(rc.getCrumbs() < 30) {
-                    if(!rc.canMove(dir)) {
-                        continue;
-                    }
-                } else {
-                    if(!rc.canMove(dir) && !rc.canFill(newLoc)) {
-                        continue;
-                    }
-                }
-            }
-
-            int numMoves = Util.minMovesToReach(newLoc, target);
-            int distanceSquared = newLoc.distanceSquaredTo(target);
-
-            if(numMoves < leastNumMoves ||
-                    (numMoves == leastNumMoves && distanceSquared < leastDistanceSquared)){
-                leastNumMoves = numMoves;
-                leastDistanceSquared = distanceSquared;
-                bestDir = dir;
-                bestNewLoc = newLoc;
+                // If that doesn't work, try going around obstacle.
+                bugNav.needToChooseBugDirection = true;
+                bugNav.tryGoingAroundWall(target, waterFillingAllowed);
+                Util.addToIndicatorString("SW_BUG");
+                return;
             }
         }
-//        if(rc.canFill(bestNewLoc)) {
-//            rc.fill(bestNewLoc);
-//        }
-        return bestDir;
-    }
+        else if(wasRunningBug && bugNav.currWallLocation != null) { // If we were previously going around an obstacle.
+            wasRunningBug = true;
+            // Try moving closer to goal.
+            if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
+                Util.addToIndicatorString("SW_MCTG");
+                return;
+            }
 
-
-    public void moveRandom() throws GameActionException {
-        int randomIdx = robot.rng.nextInt(8);
-        for(int i = 0; i < Robot.movementDirections.length; i++){
-            if(Util.tryMove(Robot.movementDirections[(randomIdx + i) % Robot.movementDirections.length])){
+            // If that fails, go around obstacle.
+            bugNav.tryGoingAroundWall(target, waterFillingAllowed);
+            Util.addToIndicatorString("CT_BUG");
+            return;
+        }
+        else { // If was previously running BFS.
+            // Try continuing BFS.
+            Direction moveDir = bfs.getBestDir(target, getHeuristicMapBFS());
+            if(moveDir != null){
+                Util.tryMove(moveDir);
+                recentlyVisited[recentlyVisitedIdx] = rc.getLocation();
+                recentlyVisitedIdx = (recentlyVisitedIdx + 1) % recentlyVisited.length;
+                wasRunningBug = false;
+                Util.addToIndicatorString("CT_BFS");
+            }
+            else { // If that doesn't work, try going towards target.
+                wasRunningBug = true;
+                bugNav.resetBug0(target, waterFillingAllowed);
+                resetBFS();
+                if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
+                    Util.addToIndicatorString("SW_MCTG");
+                    return;
+                }
+                // If that doesn't work, try going around obstacle.
+                bugNav.needToChooseBugDirection = true;
+                bugNav.tryGoingAroundWall(target, waterFillingAllowed);
+                Util.addToIndicatorString("SW_BUG");
                 return;
             }
         }
     }
 
-
-    public boolean goTo(MapLocation target, int minDistToSatisfy) throws GameActionException{
-        // thy journey hath been completed
-        if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy) {
-            return true;
+    public void update() throws GameActionException {
+        if(!bfs.vars_are_reset){
+            bfs.resetVars(getHeuristicMapBFS());
         }
-
-        if (!rc.isMovementReady()) {
-            return false;
-        }
-
-        while (rc.isMovementReady()) {
-            Direction toGo = null;
-            switch (mode) {
-                case FUZZYNAV:
-                    toGo = fuzzyNav(target);
-                    break;
-                case BUGNAV:
-                    toGo = bugNav(target);
-                    break;
-            }
-            if(toGo == null) return false;
-            Util.tryMove(toGo); // Should always return true since fuzzyNav checks if rc.canMove(dir)
-            if (robot.myLoc.distanceSquaredTo(target) <= minDistToSatisfy){
-                return true;
-            }
-        }
-        return true;
     }
 
-    public boolean circle(MapLocation center, int minDist, int maxDist) throws GameActionException {
+    public void moveRandom() throws GameActionException {
+        int randomIdx = robot.rng.nextInt(8);
+        for(int i = 0; i < movementDirections.length; i++){
+            if(Util.tryMove(movementDirections[(randomIdx + i) % movementDirections.length])){
+                return;
+            }
+        }
+    }
+
+    public int[][] getHeuristicMapBFS() throws GameActionException {
+        if(rc.getRoundNum() == lastRoundHeuristicMapCalculated){
+            return heuristicMap;
+        }
+        MapInfo[] infos = rc.senseNearbyMapInfos();
+        heuristicMap = new int[10][10];
+        int ourX = rc.getLocation().x;
+        int ourY = rc.getLocation().y;
+
+        // NOTE: This loop takes ~3000 bytecode (slowest part of the nav code).
+        for(int i = infos.length; i-- > 0;){
+            MapLocation infoLoc = infos[i].getMapLocation();
+            int bfsX = infoLoc.x - ourX + BFS_CENTER_X;
+            int bfsY = infoLoc.y - ourY + BFS_CENTER_Y;
+            if(waterFillingAllowed && infos[i].isWater()){
+                heuristicMap[bfsX][bfsY] = 3;
+            }
+            else if(infos[i].isPassable()){
+                heuristicMap[bfsX][bfsY] = 1;
+            }
+        }
+        for(int i = recentlyVisited.length; i-- > 0;){
+            MapLocation loc = recentlyVisited[i];
+            if(loc == null){
+                continue;
+            }
+            int bfsX = loc.x - ourX + BFS_CENTER_X;
+            int bfsY = loc.y - ourY + BFS_CENTER_Y;
+            if(bfsX >= 0 && bfsX < heuristicMap.length && bfsY >= 0 && bfsY < heuristicMap[0].length){
+                heuristicMap[bfsX][bfsY] = 0;
+            }
+        }
+        heuristicMap[BFS_CENTER_X][BFS_CENTER_Y] = 1;
+
+        lastRoundHeuristicMapCalculated = rc.getRoundNum();
+        return heuristicMap;
+    }
+
+
+    public boolean circle(MapLocation center, int minDist, int maxDist, int minCrumbsForNavigation) throws GameActionException {
 //        Util.log("Tryna circle CCW? " + prevCircleDir);
-        if(circle(center, minDist, maxDist, prevCircleDir)){
+        if(circle(center, minDist, maxDist, prevCircleDir, minCrumbsForNavigation)){
             return true;
         }
 //        Util.log("Tryna circle CW");
-        if(circle(center, minDist, maxDist, !prevCircleDir)){
+        if(circle(center, minDist, maxDist, !prevCircleDir, minCrumbsForNavigation)){
             return true;
         }
         return false;
     }
 
     // from: https://github.com/srikarg89/Battlecode2022/blob/main/src/cracked4BuildOrder/Navigation.java
-    public boolean circle(MapLocation center, int minDist, int maxDist, boolean ccw) throws GameActionException {
+    public boolean circle(MapLocation center, int minDist, int maxDist, boolean ccw, int minCrumbsForNavigation) throws GameActionException {
         if(!rc.isMovementReady()){
             return false;
         }
         MapLocation myLoc = robot.myLoc;
         if(Util.minMovesToReach(myLoc, center) > maxDist){
 //            Util.log("Moving closer!");
-            return goTo(center, minDist);
+            pathBF(center, minCrumbsForNavigation);
+            if(!rc.isMovementReady()){
+                return true;
+            }
+            return fuzzyNav.goTo(center, minCrumbsForNavigation);
         }
         if(Util.minMovesToReach(myLoc, center) < minDist){
 //            Util.log("Moving away!");
@@ -276,15 +234,10 @@ public class Navigation {
                 centerDir = robot.centerLoc.directionTo(myLoc);
             }
             MapLocation target = myLoc.subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir).subtract(centerDir);
-            boolean moved = goToBug(target, minDist);
-            if(moved){
+            if(bugNav.goToBug0(target, minCrumbsForNavigation)){
                 return true;
             }
-            moved = goToFuzzy(target, minDist);
-            if(moved) {
-                return true;
-            }
-            return false;
+            return fuzzyNav.goTo(target, minCrumbsForNavigation);
         }
 
         if(ccw != prevCircleDir){
