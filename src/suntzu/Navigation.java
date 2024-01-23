@@ -132,6 +132,7 @@ public class Navigation {
             }
             else { // If that doesn't work, try going towards target.
                 wasRunningBug = true;
+                bugNav.resetBug0(target, waterFillingAllowed);
                 resetBFS();
                 if(bugNav.tryMovingCloserToGoal(target, waterFillingAllowed)) {
                     Util.addToIndicatorString("SW_MCTG");

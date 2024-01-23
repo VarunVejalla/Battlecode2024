@@ -76,7 +76,7 @@ public class BugNav {
     public void resetBug0(MapLocation target, boolean waterFillingAllowed) throws GameActionException {
         prevTarget = target;
         currWallLocation = null;
-        closestDistBug0 = Integer.MAX_VALUE;
+        closestDistBug0 = rc.getLocation().distanceSquaredTo(target);
         resetVisited();
         chooseBugDirection(target, waterFillingAllowed);
     }
@@ -185,10 +185,10 @@ public class BugNav {
         Direction targetDir = robot.myLoc.directionTo(currWallLocation);
         MapLocation locBeforeMoving = robot.myLoc;
 
-        // TODO: Remove this??
-        if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
-            return true;
-        }
+//        // TODO: Remove this??
+//        if(rc.onTheMap(currWallLocation) && rc.canSenseLocation(currWallLocation) && rc.isLocationOccupied(currWallLocation)){
+//            return true;
+//        }
         targetDir = bugFollowRight ? targetDir.rotateRight() : targetDir.rotateLeft();
         Direction worstCaseDir = null;
         for(int i = 0; i < 8; i++){
@@ -206,7 +206,7 @@ public class BugNav {
 //            else if(rc.onTheMap(adjLoc) && rc.canSenseLocation(adjLoc) && rc.isLocationOccupied(adjLoc)){
 //                return true;
 //            }
-            else if(!Util.tryMove(targetDir, waterFillingAllowed)) {
+            else if(!Util.canMove(targetDir, waterFillingAllowed)) {
                 // Can't move there.
             }
             else if(checkInVisited(adjLoc)){

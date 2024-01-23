@@ -518,7 +518,6 @@ public class AttackModule {
 
         RobotInfo[] nearbyEnemies = rc.senseNearbyRobots(9, robot.oppTeam);
 
-
         // factor in rounds to kill
         // factor in enemy HP
         double safetyMultiplier = getHeuristicSafetyMultiplier();
@@ -527,8 +526,8 @@ public class AttackModule {
         double friendlyHP = 0.0;
         double enemyHP = 0.0;
 
-        RobotInfo nearestEnemy = getClosestBot(visionEnemies);
-//        RobotInfo nearestEnemy = getBestAttackVictim();
+//        RobotInfo nearestEnemy = getClosestBot(visionEnemies);
+        RobotInfo nearestEnemy = getBestAttackVictim();
         if(nearestEnemy == null){
             nearestEnemy = getClosestBot(visionEnemies);
         }
@@ -540,14 +539,15 @@ public class AttackModule {
             enemyHP += enemy.getHealth();
         }
 
-
         // calculate friendlies attacking the enemy
         for (int i = visionFriendlies.length; --i >= 0; ) {
             RobotInfo friendly = visionFriendlies[i];
 
             // if this friendly can't attack the closest enemy to me, don't consider the friendly
+//            if (nearestEnemy != null &&
+//                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
             if (nearestEnemy != null &&
-                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 4) {
+                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
                 continue;
             }
 
@@ -556,10 +556,12 @@ public class AttackModule {
             friendlyHP += friendly.getHealth();
         }
 
+//        friendlyHP = 0.0;
+//        enemyHP = 0.0;
+
         if(nearestEnemy != null){
-            enemyHP = nearestEnemy.getHealth();
+            enemyHP += nearestEnemy.getHealth();
         }
-//        friendlyHP = rc.getHealth();
 
         RobotInfo myRobotInfo = rc.senseRobot(rc.getID());
         // factor in the damage that you can do
