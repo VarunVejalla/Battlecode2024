@@ -14,7 +14,7 @@ public class DefenseModule {
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
-    MapLocation[] trapsList = new MapLocation[31];
+    MapLocation[] trapsList = new MapLocation[100];
     boolean[][] trapsMap;
     int trapCount = 0;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
@@ -28,7 +28,6 @@ public class DefenseModule {
     }
 
     // Helper methods to manage trap count.
-
     public void updateTrapInfo(MapInfo info){
         MapLocation infoLoc = info.getMapLocation();
         if(info.getTrapType() == TrapType.NONE){ // If there's actually no trap at that location.
@@ -85,9 +84,34 @@ public class DefenseModule {
             // Only count the location if it's closest to us.
             updateTrapInfo(info);
         }
+//        for(int i = 0; i < trapsList.length; i++){
+//            if(trapsList[i] == null){
+//                continue;
+//            }
+//            MapLocation infoLoc = trapsList[i];
+//            if(!rc.canSenseLocation(infoLoc)){
+//                continue;
+//            }
+//            MapInfo info = rc.senseMapInfo(infoLoc);
+//            // Check if trap still exists.
+//            if(info.getTrapType() == TrapType.NONE){
+////                trapsMap[infoLoc.x][infoLoc.y] = false;
+//                trapsList[i] = null;
+//                trapCount -= 1;
+//            }
+//        }
+//
+//        // Check if trap placement target is still available.
+//        if(trapPlacementTarget != null && rc.canSenseLocation(trapPlacementTarget)){
+//            if(rc.senseMapInfo(trapPlacementTarget).getTrapType() != TrapType.NONE){
+//                trapPlacementTarget = null;
+//                trapPlacementHeuristic = Integer.MAX_VALUE;
+//            }
+//        }
     }
 
-    public boolean checkIfLowestTrapCount() throws GameActionException {
+    public int getNumHomiesWithLowerTrapCount() throws GameActionException {
+        int numHomies = 0;
         for(int i = 0; i < 3; i++){
             if(i == defendingFlagIdx){
                 continue;
@@ -95,11 +119,12 @@ public class DefenseModule {
             if(comms.getHomeFlagTakenStatus(i)){
                 continue;
             }
-            if(comms.readNumTrapsForFlag(i) < trapCount){
-                return false;
+            int otherFlagTraps = comms.readNumTrapsForFlag(i);
+            if(otherFlagTraps != Constants.MAX_NUM_OF_TRAPS_COMMABLE && otherFlagTraps < trapCount){
+                numHomies += 1;
             }
         }
-        return true;
+        return numHomies;
     }
 
     // Spawning / setup methods
@@ -180,16 +205,17 @@ public class DefenseModule {
         MapLocation bestTrapLoc = trapPlacementTarget;
         Direction flagToCenter = flagDefaultLoc.directionTo(robot.centerLoc);
         for(MapInfo info : robot.sensedNearbyMapInfos){
+            MapLocation infoLoc = info.getMapLocation();
             if(info.getTrapType() != TrapType.NONE){
                 continue;
             }
             if(!info.isPassable()){
                 continue;
             }
-            if(info.getMapLocation().equals(flagDefaultLoc)){
+            if(infoLoc.equals(flagDefaultLoc)){
                 continue;
             }
-            int heuristic = info.getMapLocation().distanceSquaredTo(flagDefaultLoc) * 10;
+            int heuristic = infoLoc.distanceSquaredTo(flagDefaultLoc) * 10;
             Direction flagToSpot = flagDefaultLoc.directionTo(info.getMapLocation());
             heuristic += Util.directionDistance(flagToSpot, flagToCenter) * 10;
             if(heuristic < bestHeuristic){
@@ -210,9 +236,11 @@ public class DefenseModule {
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
 
         // If you don't have enough crumbs for a trap, just circle.
-        boolean isOurTurnToTrap = checkIfLowestTrapCount();
+//        boolean isOurTurnToTrap = checkIfLowestTrapCount();
+        int numHomies = getNumHomiesWithLowerTrapCount();
+        int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
         Util.logBytecode("After checking if lowest trap count");
-        if((trapPlacementTarget == null) || (rc.getCrumbs() < TrapType.EXPLOSIVE.buildCost) || !isOurTurnToTrap){
+        if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
             Util.logBytecode("After circling");
@@ -223,6 +251,13 @@ public class DefenseModule {
         }
         else{
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
+//            for(int i = 0; i < trapsList.length; i++){
+//                if(trapsList[i] == null){
+//                    trapsList[i] = trapPlacementTarget;
+//                    trapCount += 1;
+//                    break;
+//                }
+//            }
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
             Util.logBytecode("After build");

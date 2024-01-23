@@ -25,6 +25,9 @@ public class Constants {
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
     public static final int LOCATION_NULL_VAL = 61; // value used to signify that a location field is null
 
+    // Trap counts
+    public static final int MAX_NUM_OF_TRAPS_COMMABLE = 31;
+
     // ------------------- crumbs shit ------------------------
     public static final int CRUMB_REMEMBER_COUNT = 20;
     public static final int CRUMB_GIVE_UP_STEPS = 50;

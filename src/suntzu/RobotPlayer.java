@@ -35,9 +35,7 @@ public strictfp class RobotPlayer {
      **/
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
-        if(rc.getID() != 12476){
-            Util.LOGGING_ALLOWED = false;
-        }
+        Util.LOGGING_ALLOWED = false;
 
         int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);

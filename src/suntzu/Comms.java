@@ -729,6 +729,7 @@ public class Comms {
 
     public void writeNumTrapsForFlag(int flagIdx, int count) throws GameActionException{
         // Max value of 31.
+        count = Math.min(count, Constants.MAX_NUM_OF_TRAPS_COMMABLE);
         insertVal(Constants.TRAP_COUNT_IDX, Constants.TRAP_COUNT_MASKS[flagIdx], Constants.TRAP_COUNT_SHIFTS[flagIdx], count);
     }
 
