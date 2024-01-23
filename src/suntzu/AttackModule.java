@@ -392,6 +392,7 @@ public class AttackModule {
         // maybe it's not worth since they just respawn
         // maybe something like chase enemies with the flag, but not otherwise?
 
+        robot.tryPickingUpOppFlag();
         if (robot.nearbyActionEnemies.length != 0) {
             if (rc.isMovementReady()) {
                 moveToSafestSpot();
