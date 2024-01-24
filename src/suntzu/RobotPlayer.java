@@ -36,7 +36,7 @@ public strictfp class RobotPlayer {
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
         Util.LOGGING_ALLOWED = false;
-        if(rc.getID() == 12373){
+        if(rc.getID() == 11102){
             Util.LOGGING_ALLOWED = true;
         }
 
@@ -49,11 +49,15 @@ public strictfp class RobotPlayer {
         while (true) {
             startTurn = rc.getRoundNum();
 
+//            if(rc.getRoundNum() > 250){
+//                rc.resign();
+//            }
+
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
                     System.out.println("BYTECODE EXCEEDED " + robot.mode);
-                    Util.resign();
+//                    Util.resign();
                 }
             }
             catch (Exception e) {

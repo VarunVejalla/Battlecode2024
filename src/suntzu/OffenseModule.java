@@ -42,6 +42,7 @@ public class OffenseModule {
 
     MapLocation sharedOffensiveTarget;
     OffensiveTargetType sharedOffensiveTargetType;
+    MapLocation randomSearchTarget = null;
 
     public OffenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -88,6 +89,9 @@ public class OffenseModule {
         int currentTargetCost = getOffensiveTargetCost(currentTarget);
 
         for(MapLocation flagLoc : robot.knownCarriedOppFlags){
+            if(flagLoc == null){
+                continue;
+            }
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.CARRIED);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
@@ -102,6 +106,9 @@ public class OffenseModule {
 
         // loop over dropped flags
         for(MapLocation flagLoc : robot.knownDroppedOppFlags){
+            if(flagLoc == null){
+                continue;
+            }
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DROPPED);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
@@ -116,6 +123,9 @@ public class OffenseModule {
 
         // loop over default opp flag locations
         for(MapLocation flagLoc : robot.defaultOppFlagLocs){
+            if(flagLoc == null){
+                continue;
+            }
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DEFAULT);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
@@ -128,9 +138,11 @@ public class OffenseModule {
             return currentTarget;
         }
 
-
         // loop over approximate flag locations
         for(MapLocation flagLoc : robot.approximateOppFlagLocations){
+            if(flagLoc == null){
+                continue;
+            }
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.APPROXIMATE);
             int targetCost = getOffensiveTargetCost(target);
             if (targetCost < currentTargetCost){
@@ -142,6 +154,7 @@ public class OffenseModule {
         if (gotNewTarget){
             return currentTarget;
         }
+
         return currentTarget;
     }
 
@@ -153,6 +166,10 @@ public class OffenseModule {
         OffensiveTarget newTarget = tryGettingNewTarget(currentTarget);
 //        Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
 
+        if(newTarget == null){
+            comms.writeSharedOffensiveTarget(null);
+            return;
+        }
         if(newTarget == null || newTarget.equals(currentTarget)){
             return;
         }
@@ -196,12 +213,30 @@ public class OffenseModule {
             nav.moveRandom();
             Util.addToIndicatorString("RND");
         } else {
-            if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
+            if(sharedOffensiveTargetType == null){
+                // Check if it needs to be reset.
+                if(randomSearchTarget != null){
+                    if(randomSearchTarget.equals(rc.getLocation())){
+                        randomSearchTarget = null;
+                    }
+                    else if(rc.canSenseLocation(randomSearchTarget) && !rc.senseMapInfo(randomSearchTarget).isPassable()){
+                        randomSearchTarget = null;
+                    }
+                }
+                if(randomSearchTarget == null){
+                    randomSearchTarget = new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
+                }
+                System.out.println("Choosing randomSearchTarget for myself to explore");
+                Util.addToIndicatorString("RND TGT:" + randomSearchTarget);
+                nav.pathBF(randomSearchTarget, 100);
+            }
+            else if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
+                Util.addToIndicatorString("CRTGT:" + sharedOffensiveTarget);
                 nav.circle(sharedOffensiveTarget, 3, 8, 0);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
-                Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
+                Util.addToIndicatorString("OFTGT: " + sharedOffensiveTarget + "," + sharedOffensiveTargetType.shortString());
                 Util.logBytecode("Beginning of pathBF");
                 nav.pathBF(sharedOffensiveTarget, 100);
             }

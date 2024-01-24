@@ -370,7 +370,12 @@ public class Robot {
 
         defenseModule.sharedDefensiveTarget = comms.getSharedDefensiveTarget();
 
-        offenseModule.sharedOffensiveTargetType = null;
+        Util.logArray("KCOF:", knownCarriedOppFlags);
+        Util.log("SOT:" + offenseModule.sharedOffensiveTarget);
+//        if(offenseModule.sharedOffensiveTarget == null){
+//            offenseModule.sharedOffensiveTargetType = null;
+//        } 
+//        else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, knownCarriedOppFlags)){
         if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, knownCarriedOppFlags)){
             offenseModule.sharedOffensiveTargetType = OffensiveTargetType.CARRIED;
         }
@@ -425,6 +430,19 @@ public class Robot {
             Util.log("Approximate Flag Broadcast!");
             Util.logArray("approximateFlagLocs: ", approximateOppFlagLocations);
             Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
+        }
+    }
+
+    public void checkIfApproxOppFlagStillValid() throws GameActionException {
+        for(int i = 0; i < approximateOppFlagLocations.length; i++){
+            MapLocation approxLoc = approximateOppFlagLocations[i];
+            if(approxLoc == null){
+                continue;
+            }
+            if(approxLoc.equals(rc.getLocation())){
+                approximateOppFlagLocations[i] = null;
+                comms.setApproxOppFlags(approximateOppFlagLocations);
+            }
         }
     }
 
@@ -614,6 +632,7 @@ public class Robot {
         }
 
         listenToOppFlagBroadcast(); // if it's been 100 rounds since last update, fetch new approximate flag locations
+        checkIfApproxOppFlagStillValid();
         tryCleaningKnownOppFlags(); // try removing records of opponent flag locations if we know they're not valid anymore
         tryAddingKnownOppFlags(); // try adding new records of opponent flag locations based on what we sensed
         tryCleaningTakenAllyFlags();

@@ -219,6 +219,7 @@ public class DefenseModule {
             if(heuristic < bestHeuristic){
                 bestHeuristic = heuristic;
                 bestTrapLoc = info.getMapLocation();
+
             }
         }
 
@@ -230,12 +231,10 @@ public class DefenseModule {
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
         Util.logBytecode("After updating TPT");
-        Util.addToIndicatorString("TPT: " + trapPlacementTarget);
-        Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
+        Util.addToIndicatorString("TPT:" + trapPlacementTarget + "" + trapPlacementHeuristic);
 
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
-        Util.logBytecode("After computing # of homies");
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
         if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
@@ -274,7 +273,7 @@ public class DefenseModule {
 
         Util.assert_wrapper(defendingFlagIdx != -1);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
-        Util.addToIndicatorString("FL: " + flagDefaultLoc);
+        Util.addToIndicatorString("FL:" + flagDefaultLoc);
         Util.logBytecode("Start of stationary defense method");
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
         Util.logBytecode("After checking defensive target still valid");
