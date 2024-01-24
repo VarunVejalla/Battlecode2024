@@ -329,7 +329,7 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
-        else {
+        if(rc.isSpawned()){
             tryGlobalUpgrade();
             changeTroopRatioIfNeeded();
 
@@ -413,7 +413,7 @@ public class Robot {
         if(rc.getRoundNum() % 50 == 0){
             testLog();
         }
-        if(rc.getRoundNum() > 1000){
+        if(rc.getRoundNum() > 10){
             Util.resign();
         }
     }
