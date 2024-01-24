@@ -380,8 +380,6 @@ public class Robot {
         else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, approximateOppFlagLocations)){
             offenseModule.sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
-        Util.addToIndicatorString("SOT:" + offenseModule.sharedOffensiveTarget);
-        Util.addToIndicatorString("SOTT:" + offenseModule.sharedOffensiveTargetType);
 
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
 

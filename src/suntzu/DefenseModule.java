@@ -14,12 +14,12 @@ public class DefenseModule {
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
-    MapLocation[] trapsList = new MapLocation[100];
-//    boolean[][] trapsMap;
+    byte[][] trapsMap; // 0 means nothing, 1 means I placed a trap, 2 means someone else placed a trap, 3 means its currently in the trap PQ.
     int trapCount = 0;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
-    MapLocation[] potTrapLocs = new MapLocation[200];
-    int[] trapHeuristics = new int[200];
+    final int NUM_TRAPS_TO_KEEP_TRACK_OF = 200;
+    PriorityQueue trapPQ;
+    int[][] heuristicMap;
     boolean initializedPotTrapsArray = false;
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
@@ -27,113 +27,71 @@ public class DefenseModule {
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
-//        trapsMap = new boolean[rc.getMapWidth()][rc.getMapHeight()];
+        trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
+        heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
+        trapPQ = new PriorityQueue(NUM_TRAPS_TO_KEEP_TRACK_OF);
     }
 
     // Helper methods to manage trap count.
-//    public void updateTrapInfo(MapInfo info){
-//        MapLocation infoLoc = info.getMapLocation();
-//        if(info.getTrapType() == TrapType.NONE){ // If there's actually no trap at that location.
-//            if(trapsMap[infoLoc.x][infoLoc.y]){
-//                // We think there's a trap there, but there really isn't one.
-//                trapsMap[infoLoc.x][infoLoc.y] = false;
-//                for(int i = 0; i < trapsList.length; i++){
-//                    if(infoLoc.equals(trapsList[i])){
-//                        trapsList[i] = null;
-//                        trapCount -= 1;
-//                        return;
-//                    }
-//                }
-//            }
-//        }
-//        else{ // If there actually is a trap at that location.
-//            if(!trapsMap[infoLoc.x][infoLoc.y]){
-//                // We think there's no trap but there actually is one.
-//                for(int i = 0; i < trapsList.length; i++){
-//                    if(trapsList[i] == null){
-//                        trapsMap[infoLoc.x][infoLoc.y] = true;
-//                        trapsList[i] = infoLoc;
-//                        trapCount += 1;
-//                        return;
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     public void updateTrapCountValue() throws GameActionException {
-//        for(MapInfo info : robot.sensedNearbyMapInfos){
-//            MapLocation infoLoc = info.getMapLocation();
-//            // We alr know about this trap.
-//            if(trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() != TrapType.NONE){
-//                continue;
-//            }
-//
-//            // We alr know that there's no trap.
-//            if(!trapsMap[infoLoc.x][infoLoc.y] && info.getTrapType() == TrapType.NONE){
-//                continue;
-//            }
-//
-//            // Check if our flag is closest to the location compared to other flags.
-//            int ourFlagDist = flagDefaultLoc.distanceSquaredTo(info.getMapLocation());
-//            int minDist = Math.min(Math.min(allFlagDefaultLocs[0].distanceSquaredTo(info.getMapLocation()),
-//                    allFlagDefaultLocs[1].distanceSquaredTo(info.getMapLocation())),
-//                    allFlagDefaultLocs[2].distanceSquaredTo(info.getMapLocation()));
-//
-//            if(minDist != ourFlagDist){
-//                continue;
-//            }
-//
-//            // Only count the location if it's closest to us.
-//            updateTrapInfo(info);
-//        }
-        for(int i = 0; i < trapsList.length; i++){
-            if(trapsList[i] == null){
-                continue;
-            }
-            MapLocation infoLoc = trapsList[i];
-            if(!rc.canSenseLocation(infoLoc)){
-                continue;
-            }
-            MapInfo info = rc.senseMapInfo(infoLoc);
-            // Check if trap still exists.
-            if(info.getTrapType() == TrapType.NONE){
-                trapsList[i] = null;
-                trapCount -= 1;
-            }
-        }
+        MapInfo info;
+        int x, y;
+        for (int i = robot.sensedNearbyMapInfos.length; --i >= 0; ) {
+            info = robot.sensedNearbyMapInfos[i];
+            x = info.getMapLocation().x;
+            y = info.getMapLocation().y;
 
-        // Check if trap placement target is still available.
-        if(trapPlacementTarget != null && rc.canSenseLocation(trapPlacementTarget)){
-            if(rc.senseMapInfo(trapPlacementTarget).getTrapType() != TrapType.NONE){
-                trapPlacementTarget = null;
-                trapPlacementHeuristic = Integer.MAX_VALUE;
+            // If trap removed.
+            if(info.getTrapType() != TrapType.NONE){ // If trap sensed.
+                if(trapsMap[x][y] == 0 || trapsMap[x][y] == 3){ // If we've never interacted with this location, or its in the queue.
+                    trapsMap[x][y] = 2; // Mark it down as someone placed a trap there.
+                }
+            }
+            else{
+                if(trapsMap[x][y] == 1){ // If I placed the trap, then decrement count, and add it back in the queue.
+                    assert(heuristicMap[x][y] != 0);
+                    trapCount--;
+                    trapsMap[x][y] = 3;
+                    trapPQ.insert(heuristicMap[x][y], info.getMapLocation());
+                }
             }
         }
     }
 
-    public void initializePotTrapsArray() throws GameActionException {
+    public void updatePotTrapLocs(MapLocation trapPacedLoc) throws GameActionException {
         MapInfo info;
-        MapLocation infoLoc;
         for(Direction dir : Navigation.movementDirections){
-            MapLocation adjLoc = flagDefaultLoc.add(dir);
+            MapLocation adjLoc = trapPacedLoc.add(dir);
             if(!rc.onTheMap(adjLoc)){
+                continue;
+            }
+            if(trapsMap[adjLoc.x][adjLoc.y] == 1 || trapsMap[adjLoc.x][adjLoc.y] == 2){ // A trap has already been placed here by someone.
+                continue;
+            }
+            if(trapsMap[adjLoc.x][adjLoc.y] == 3){ // Already in PQ.
+                continue;
+            }
+            if(heuristicMap[adjLoc.x][adjLoc.y] == -2){ // This location is bad (not passable or some shit like that).
                 continue;
             }
             Util.assert_wrapper(rc.canSenseLocation(adjLoc));
             info = rc.senseMapInfo(adjLoc);
             if(!info.isPassable() && !info.isWater()){
+                heuristicMap[adjLoc.x][adjLoc.y] = -2;
                 continue;
             }
-            infoLoc = info.getMapLocation();
-            for(int i = 0; i < potTrapLocs.length; i++){
-                if(potTrapLocs[i] == null){
-                    potTrapLocs[i] = infoLoc;
-                    trapHeuristics[i] = getTrapHeuristic(infoLoc);
-                }
+            else if(info.getTrapType() != TrapType.NONE){
+                int heuristic = getTrapHeuristic(adjLoc);
+                heuristicMap[adjLoc.x][adjLoc.y] = heuristic;
+                trapsMap[adjLoc.x][adjLoc.y] = 2; // Someone else must've placed a trap there.
+            }
+            else{
+                int heuristic = getTrapHeuristic(adjLoc);
+                heuristicMap[adjLoc.x][adjLoc.y] = heuristic;
+                trapPQ.insert(heuristic, adjLoc);
+                trapsMap[adjLoc.x][adjLoc.y] = 3;
             }
         }
-        initializedPotTrapsArray = true;
     }
 
     public int getTrapHeuristic(MapLocation trapLoc){
@@ -144,67 +102,56 @@ public class DefenseModule {
         return heuristic;
     }
 
-    public void locIsAdjacentToTrap(MapLocation loc){
-
-    }
-
     public void updateBestTrapPlacementTarget(){
-        int bestHeuristic = trapPlacementHeuristic;
-        MapLocation bestTrapLoc = trapPlacementTarget;
-        for(MapInfo info : robot.sensedNearbyMapInfos){
-            MapLocation infoLoc = info.getMapLocation();
-            if(info.getTrapType() != TrapType.NONE){
-                continue;
-            }
-            if(!info.isPassable()){
-                continue;
-            }
-            if(infoLoc.equals(flagDefaultLoc)){
-                continue;
-            }
-            if(!locIsAdjacentToTrap(infoLoc)){
-                continue;
-            }
-            int heuristic = getTrapHeuristic(infoLoc);
-            if(heuristic < bestHeuristic){
-                bestHeuristic = heuristic;
-                bestTrapLoc = infoLoc;
-            }
+        MapLocation bestLoc = trapPQ.mapLocs[0];
+        while(trapPQ.size >= 0 && trapsMap[bestLoc.x][bestLoc.y] != 3){ // If trap has bene placed there, remove it from the queue.
+            trapPQ.extractMin();
+            bestLoc = trapPQ.mapLocs[0];
         }
 
-        trapPlacementTarget = bestTrapLoc;
-        trapPlacementHeuristic = bestHeuristic;
+        // Reset trapPlacementTarget if needed.
+        if(trapPlacementTarget != null && trapsMap[trapPlacementTarget.x][trapPlacementTarget.y] != 3){
+            trapPlacementTarget = null;
+            trapPlacementHeuristic = Integer.MAX_VALUE;
+        }
+
+        // Check if the PQ has any better spot.
+        if(trapPQ.peekPriority() >= trapPlacementHeuristic){
+            return;
+        }
+
+        // Insert the current target back in.
+        if(trapPlacementTarget != null){
+            trapPQ.insert(trapPlacementHeuristic, trapPlacementTarget);
+        }
+
+        // Get the lowest heuristic location as the new target.
+        trapPlacementHeuristic = trapPQ.peekPriority();
+        trapPlacementTarget = trapPQ.extractMin();
     }
 
     // Movement methods
     public void placeTrapsAroundFlag() throws GameActionException {
         updateBestTrapPlacementTarget();
-        Util.logBytecode("After updating TPT");
         Util.addToIndicatorString("TPT: " + trapPlacementTarget);
         Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
+        Util.addToIndicatorString("TC: " + trapCount);
 
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
-        Util.logBytecode("After computing # of homies");
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
-        if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
+        if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
-            Util.logBytecode("After circling location");
         }
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
-            Util.logBytecode("After going towards TPT");
         }
         else{
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
-            for(int i = 0; i < trapsList.length; i++){
-                if(trapsList[i] == null){
-                    trapsList[i] = trapPlacementTarget;
-                    trapCount += 1;
-                    break;
-                }
-            }
+            trapsMap[trapPlacementTarget.x][trapPlacementTarget.y] = 1; // I placed a trap there.
+            trapCount++;
+            updatePotTrapLocs(trapPlacementTarget);
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
         }
@@ -235,9 +182,6 @@ public class DefenseModule {
             Util.resign();
         }
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
-        if(!initializedPotTrapsArray){
-            initializePotTrapsArray();
-        }
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
         int bestIdx = -1;
         int bestDist = Integer.MAX_VALUE;
@@ -317,32 +261,29 @@ public class DefenseModule {
         Util.assert_wrapper(defendingFlagIdx != -1);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         Util.addToIndicatorString("FL: " + flagDefaultLoc);
-        Util.logBytecode("Start of stationary defense method");
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecode("After checking defensive target still valid");
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecode("After updating defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
+
+        if(!initializedPotTrapsArray){
+            updatePotTrapLocs(flagDefaultLoc);
+            initializedPotTrapsArray = true;
+        }
         updateTrapCountValue();
-        Util.logBytecode("After updating trap count");
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
-        Util.logBytecode("After placing traps around flag");
     }
 
     public void runMobileDefense() throws GameActionException {
-        Util.logBytecode("Beginning of mobile defense");
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
 
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecode("Checked if defensive target still valid");
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecode("Updated shared defensive target");
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
