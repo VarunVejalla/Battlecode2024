@@ -18,6 +18,9 @@ public class DefenseModule {
 //    boolean[][] trapsMap;
     int trapCount = 0;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
+    MapLocation[] potTrapLocs = new MapLocation[200];
+    int[] trapHeuristics = new int[200];
+    boolean initializedPotTrapsArray = false;
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -109,6 +112,104 @@ public class DefenseModule {
         }
     }
 
+    public void initializePotTrapsArray() throws GameActionException {
+        MapInfo info;
+        MapLocation infoLoc;
+        for(Direction dir : Navigation.movementDirections){
+            MapLocation adjLoc = flagDefaultLoc.add(dir);
+            if(!rc.onTheMap(adjLoc)){
+                continue;
+            }
+            Util.assert_wrapper(rc.canSenseLocation(adjLoc));
+            info = rc.senseMapInfo(adjLoc);
+            if(!info.isPassable() && !info.isWater()){
+                continue;
+            }
+            infoLoc = info.getMapLocation();
+            for(int i = 0; i < potTrapLocs.length; i++){
+                if(potTrapLocs[i] == null){
+                    potTrapLocs[i] = infoLoc;
+                    trapHeuristics[i] = getTrapHeuristic(infoLoc);
+                }
+            }
+        }
+        initializedPotTrapsArray = true;
+    }
+
+    public int getTrapHeuristic(MapLocation trapLoc){
+        Direction flagToCenter = flagDefaultLoc.directionTo(robot.centerLoc);
+        int heuristic = trapLoc.distanceSquaredTo(flagDefaultLoc) * 10;
+        Direction flagToSpot = flagDefaultLoc.directionTo(trapLoc);
+        heuristic += Util.directionDistance(flagToSpot, flagToCenter) * 10;
+        return heuristic;
+    }
+
+    public void locIsAdjacentToTrap(MapLocation loc){
+
+    }
+
+    public void updateBestTrapPlacementTarget(){
+        int bestHeuristic = trapPlacementHeuristic;
+        MapLocation bestTrapLoc = trapPlacementTarget;
+        for(MapInfo info : robot.sensedNearbyMapInfos){
+            MapLocation infoLoc = info.getMapLocation();
+            if(info.getTrapType() != TrapType.NONE){
+                continue;
+            }
+            if(!info.isPassable()){
+                continue;
+            }
+            if(infoLoc.equals(flagDefaultLoc)){
+                continue;
+            }
+            if(!locIsAdjacentToTrap(infoLoc)){
+                continue;
+            }
+            int heuristic = getTrapHeuristic(infoLoc);
+            if(heuristic < bestHeuristic){
+                bestHeuristic = heuristic;
+                bestTrapLoc = infoLoc;
+            }
+        }
+
+        trapPlacementTarget = bestTrapLoc;
+        trapPlacementHeuristic = bestHeuristic;
+    }
+
+    // Movement methods
+    public void placeTrapsAroundFlag() throws GameActionException {
+        updateBestTrapPlacementTarget();
+        Util.logBytecode("After updating TPT");
+        Util.addToIndicatorString("TPT: " + trapPlacementTarget);
+        Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
+
+        // If you don't have enough crumbs for a trap, just circle.
+        int numHomies = getNumHomiesWithLowerTrapCount();
+        Util.logBytecode("After computing # of homies");
+        int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
+        if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
+            Util.addToIndicatorString("CRC: " + flagDefaultLoc);
+            nav.circle(flagDefaultLoc, 2, 5, 0);
+            Util.logBytecode("After circling location");
+        }
+        else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
+            nav.pathBF(trapPlacementTarget, 0);
+            Util.logBytecode("After going towards TPT");
+        }
+        else{
+            rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
+            for(int i = 0; i < trapsList.length; i++){
+                if(trapsList[i] == null){
+                    trapsList[i] = trapPlacementTarget;
+                    trapCount += 1;
+                    break;
+                }
+            }
+            trapPlacementTarget = null;
+            trapPlacementHeuristic = Integer.MAX_VALUE;
+        }
+    }
+
     public int getNumHomiesWithLowerTrapCount() throws GameActionException {
         int numHomies = 0;
         for(int i = 0; i < 3; i++){
@@ -134,6 +235,9 @@ public class DefenseModule {
             Util.resign();
         }
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
+        if(!initializedPotTrapsArray){
+            initializePotTrapsArray();
+        }
         MapLocation[] spawnLocs = rc.getAllySpawnLocations();
         int bestIdx = -1;
         int bestDist = Integer.MAX_VALUE;
@@ -196,68 +300,6 @@ public class DefenseModule {
         }
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         comms.incrementNumDefendersForFlag(defendingFlagIdx);
-    }
-
-    public void updateBestTrapPlacementTarget(){
-        int bestHeuristic = trapPlacementHeuristic;
-        MapLocation bestTrapLoc = trapPlacementTarget;
-        Direction flagToCenter = flagDefaultLoc.directionTo(robot.centerLoc);
-        for(MapInfo info : robot.sensedNearbyMapInfos){
-            MapLocation infoLoc = info.getMapLocation();
-            if(info.getTrapType() != TrapType.NONE){
-                continue;
-            }
-            if(!info.isPassable()){
-                continue;
-            }
-            if(infoLoc.equals(flagDefaultLoc)){
-                continue;
-            }
-            int heuristic = infoLoc.distanceSquaredTo(flagDefaultLoc) * 10;
-            Direction flagToSpot = flagDefaultLoc.directionTo(info.getMapLocation());
-            heuristic += Util.directionDistance(flagToSpot, flagToCenter) * 10;
-            if(heuristic < bestHeuristic){
-                bestHeuristic = heuristic;
-                bestTrapLoc = info.getMapLocation();
-            }
-        }
-
-        trapPlacementTarget = bestTrapLoc;
-        trapPlacementHeuristic = bestHeuristic;
-    }
-
-    // Movement methods
-    public void placeTrapsAroundFlag() throws GameActionException {
-        updateBestTrapPlacementTarget();
-        Util.logBytecode("After updating TPT");
-        Util.addToIndicatorString("TPT: " + trapPlacementTarget);
-        Util.addToIndicatorString("TPTH: " + trapPlacementHeuristic);
-
-        // If you don't have enough crumbs for a trap, just circle.
-        int numHomies = getNumHomiesWithLowerTrapCount();
-        Util.logBytecode("After computing # of homies");
-        int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
-        if((trapPlacementTarget == null) || rc.getCrumbs() < minCrumbsNeeded){
-            Util.addToIndicatorString("CRC: " + flagDefaultLoc);
-            nav.circle(flagDefaultLoc, 2, 5, 0);
-            Util.logBytecode("After circling location");
-        }
-        else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
-            nav.pathBF(trapPlacementTarget, 0);
-            Util.logBytecode("After going towards TPT");
-        }
-        else{
-            rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
-            for(int i = 0; i < trapsList.length; i++){
-                if(trapsList[i] == null){
-                    trapsList[i] = trapPlacementTarget;
-                    trapCount += 1;
-                    break;
-                }
-            }
-            trapPlacementTarget = null;
-            trapPlacementHeuristic = Integer.MAX_VALUE;
-        }
     }
 
     public void runStationaryDefense() throws GameActionException {
