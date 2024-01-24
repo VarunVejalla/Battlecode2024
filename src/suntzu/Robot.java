@@ -380,6 +380,8 @@ public class Robot {
         else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, approximateOppFlagLocations)){
             offenseModule.sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
+        Util.addToIndicatorString("SOT:" + offenseModule.sharedOffensiveTarget);
+        Util.addToIndicatorString("SOTT:" + offenseModule.sharedOffensiveTargetType);
 
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
 
@@ -480,6 +482,28 @@ public class Robot {
                 }
             }
         }
+
+        // do the same thing for approx flags.
+        for (int i = 0; i < approximateOppFlagLocations.length; i++) {
+            if (approximateOppFlagLocations[i] != null) {
+                if (rc.getLocation().equals(approximateOppFlagLocations[i])) {
+                    boolean flagIsStillValid = false;
+                    // check to see if we sensed the flag at the location in sensedNearbyFlags
+                    // if we did, and it's being carried, it's valid
+                    for (FlagInfo flagInfo : sensedNearbyFlags) {
+                        if (flagInfo.getTeam() == oppTeam) {
+                            flagIsStillValid = true;
+                        }
+                    }
+                    if (!flagIsStillValid) {
+                        System.out.println("SETTING APPROX FLAG LOCATION TO FALSE");
+                        approximateOppFlagLocations[i] = null;
+                        comms.setApproxOppFlags(approximateOppFlagLocations);
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -621,7 +645,6 @@ public class Robot {
         tryUpdatingHomeFlagTakenInfo();
         offenseModule.tryUpdateSharedOffensiveTarget();
     }
-
 
     public void tryPickingUpOppFlag() throws GameActionException {
         // this method tries to pick up an opponent flag

@@ -42,6 +42,7 @@ public class OffenseModule {
 
     MapLocation sharedOffensiveTarget;
     OffensiveTargetType sharedOffensiveTargetType;
+    MapLocation explorationTarget;
 
     public OffenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -192,16 +193,27 @@ public class OffenseModule {
             }
             robot.myLoc = rc.getLocation();
             comms.writeKnownOppFlagLocFromFlagID(robot.myLoc, true, robot.idOfFlagImCarrying);
-        } else if (sharedOffensiveTarget == null) {
-            nav.moveRandom();
-            Util.addToIndicatorString("RND");
+        } else if (sharedOffensiveTarget == null || sharedOffensiveTargetType == null) {
+            if(explorationTarget != null && rc.canSenseLocation(explorationTarget)){
+                explorationTarget = null;
+            }
+            if(explorationTarget == null){
+                explorationTarget = Util.getRandomLocation();
+            }
+            nav.pathBF(explorationTarget, 100);
+            Util.addToIndicatorString("EXP" + explorationTarget);
         } else {
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
                 nav.circle(sharedOffensiveTarget, 3, 8, 0);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
-                Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
+                if(sharedOffensiveTargetType == null){
+                    Util.addToIndicatorString("SHR:" + sharedOffensiveTarget + ",NL");
+                }
+                else{
+                    Util.addToIndicatorString("SHR:" + sharedOffensiveTarget + "," + sharedOffensiveTargetType.shortString());
+                }
                 Util.logBytecode("Beginning of pathBF");
                 nav.pathBF(sharedOffensiveTarget, 100);
             }
