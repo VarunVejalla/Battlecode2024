@@ -1,6 +1,7 @@
 package sjdev;
 
 import battlecode.common.GameActionException;
+import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
@@ -192,13 +193,21 @@ public class OffenseModule {
             }
             robot.myLoc = rc.getLocation();
             comms.writeKnownOppFlagLocFromFlagID(robot.myLoc, true, robot.idOfFlagImCarrying);
-        } else if (sharedOffensiveTarget == null) {
+        } else if (sharedOffensiveTarget == null) { // this should not happen after round 200
             nav.moveRandom();
             Util.addToIndicatorString("RND");
         } else {
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
                 nav.circle(sharedOffensiveTarget, 3, 8, 0);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
+            }
+            else if(sharedOffensiveTargetType == OffensiveTargetType.APPROXIMATE){
+                // note: broadcasts are accurate up to raidus of sqrt(100) = 10
+                // and the radius of bot is sqrt(20) ~ 4.5
+                // so i think this circle range gurantees we'll find the flag
+                nav.circle(sharedOffensiveTarget, 3, 7, 0);
+                Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
+
             }
             else{
                 Util.addToIndicatorString("SHRD TGT: " + sharedOffensiveTarget);
