@@ -7,6 +7,9 @@ public class Constants {
 
     }
 
+    // Game constants that aren't in game constants :/
+    public static final int FILL_CRUMB_COST = 30;
+
     // Round number constants
     public static final int NEW_FLAG_LOC_DECIDED_ROUND = 70;
     public static final int SETUP_ROUNDS = GameConstants.SETUP_ROUNDS;

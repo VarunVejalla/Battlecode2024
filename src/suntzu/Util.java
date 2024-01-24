@@ -32,7 +32,7 @@ public class Util {
     }
 
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
-        if(rc.getCrumbs() >= minCrumbsToFill && rc.canFill(rc.adjacentLocation(dir))) {
+        if(rc.getCrumbs() >= minCrumbsToFill + Constants.FILL_CRUMB_COST && rc.canFill(rc.adjacentLocation(dir))) {
             rc.fill(rc.adjacentLocation(dir));
         }
         if(rc.canMove(dir)) {
@@ -69,7 +69,7 @@ public class Util {
             return false;
         }
         MapInfo adjInfo = rc.senseMapInfo(adjLoc);
-        if(adjInfo.isWater() && waterFillingAllowed) {
+        if(adjInfo.isWater() && waterFillingAllowed && rc.canFill(adjLoc)) {
             return true;
         }
         if(adjInfo.isPassable()){

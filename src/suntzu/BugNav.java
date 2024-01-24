@@ -242,7 +242,7 @@ public class BugNav {
             return false;
         }
 
-        boolean waterFillingAllowed = rc.getCrumbs() >= minCrumbsForNavigation;
+        boolean waterFillingAllowed = rc.getCrumbs() >= minCrumbsForNavigation + Constants.FILL_CRUMB_COST;
 
         if(!target.equals(prevTarget)){
             resetBug0(target, waterFillingAllowed);
