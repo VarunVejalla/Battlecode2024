@@ -387,17 +387,48 @@ public class Util {
         }
         return null;
     }
-
-    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
-        // TODO: implement this method to take into account attack specializations
-        // this method returns the attack damage of the robot given its specialization
-        return 150.0;
+    
+    public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException {
+        switch (robotInfo.attackLevel) {
+            case 0:
+                return 150.0;
+            case 1:
+                return 157.5;
+            case 2:
+                return 160.5;
+            case 3:
+                return 165;
+            case 4:
+                return 195;
+            case 5:
+                return 202.5;
+            case 6:
+                return 240;
+            default:
+                return 150.0;
+        }
     }
-
+    
 
     public static double getAttackCooldown(RobotInfo robotInfo) throws GameActionException{
-        // TODO: implement this method to take into account attack specializations
-        return 20.0;
+        switch (robotInfo.attackLevel) {
+            case 0:
+                return 20.0;
+            case 1:
+                return 19.0;
+            case 2:
+                return 18.6;
+            case 3:
+                return 18.0;
+            case 4:
+                return 16.0;
+            case 5:
+                return 13.0;
+            case 6:
+                return 8.0;
+            default:
+                return 20.0;
+        }
     }
 
 }
