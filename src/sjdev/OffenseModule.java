@@ -51,7 +51,7 @@ public class OffenseModule {
         this.nav = nav;
     }
 
-    public int getOffensiveTargetCost(OffensiveTarget target){
+    public int getOffensiveTargetCost(OffensiveTarget target, MapLocation offensiveCOM){
         // this method returns the cost of the target
         int typeCost;
         if(target == null || target.loc == null || target.type==null){
@@ -76,21 +76,46 @@ public class OffenseModule {
                 break;
         }
 
-        if(sharedOffensiveTarget == null){
-            return typeCost*1000;
+
+        int distCost = 0;
+
+        // if offensiveCOM is not null, use it to calculate distance cost
+        // idea is we want to select targets that are closer to the current offensiveCOM
+        if(offensiveCOM != null){
+            distCost = Util.minMovesToReach(target.loc, offensiveCOM);
+//            Util.log("Offensive COM: " + offensiveCOM);
+//            Util.log("Target: " + target.loc);
+//            Util.log("Dist Cost: " + distCost);
         }
-        int distCost = Util.minMovesToReach(target.loc, sharedOffensiveTarget);
+
+        // if we don't have an offensiveCOM (which we should after round 200, but just in case)
+        // use the sharedOffensiveTarget
+        else if(sharedOffensiveTarget != null){
+            distCost = Util.minMovesToReach(target.loc, sharedOffensiveTarget);
+        }
+
+        // if we have neither offensiveCOM nor sharedOffensiveTarget, just return 0 for distCost
+        else{
+            distCost = 0;
+        }
         return typeCost*1000 + distCost;
     }
 
 
     public OffensiveTarget tryGettingNewTarget(OffensiveTarget currentTarget) throws GameActionException{
         boolean gotNewTarget = false;
-        int currentTargetCost = getOffensiveTargetCost(currentTarget);
 
+        MapLocation offensiveCOM = comms.getPreviousOffensiveCOM(); // offensiveCOM in previous round. variable is reused in
+        int currentTargetCost = getOffensiveTargetCost(currentTarget, offensiveCOM);
+
+        // loop over known carried flags (bros + flags >> flags)
         for(MapLocation flagLoc : robot.knownCarriedOppFlags){
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.CARRIED);
-            int targetCost = getOffensiveTargetCost(target);
+            int targetCost = getOffensiveTargetCost(target, offensiveCOM);
+//            Util.log("Carried flag target: " + target.loc + " " + target.type);
+//            Util.log("Cost: " + targetCost);
+//            Util.log("");
+
             if (targetCost < currentTargetCost){
                 currentTarget = target;
                 currentTargetCost = targetCost;
@@ -98,13 +123,19 @@ public class OffenseModule {
             }
         }
         if (gotNewTarget){
+//            Util.log("Got carried flag target: " + currentTarget.loc + " " + currentTarget.type);
+//            Util.log("Cost: " + currentTargetCost);
             return currentTarget;
         }
 
         // loop over dropped flags
         for(MapLocation flagLoc : robot.knownDroppedOppFlags){
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DROPPED);
-            int targetCost = getOffensiveTargetCost(target);
+            int targetCost = getOffensiveTargetCost(target, offensiveCOM);
+//            Util.log("Dropped flag target: " + target.loc + " " + target.type);
+//            Util.log("Cost: " + targetCost);
+//            Util.log("");
+
             if (targetCost < currentTargetCost){
                 currentTarget = target;
                 currentTargetCost = targetCost;
@@ -112,13 +143,18 @@ public class OffenseModule {
             }
         }
         if (gotNewTarget){
+//            Util.log("Got dropped flag target: " + currentTarget.loc + " " + currentTarget.type);
+//            Util.log("Cost: " + currentTargetCost);
             return currentTarget;
         }
 
         // loop over default opp flag locations
         for(MapLocation flagLoc : robot.defaultOppFlagLocs){
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.DEFAULT);
-            int targetCost = getOffensiveTargetCost(target);
+            int targetCost = getOffensiveTargetCost(target, offensiveCOM);
+//            Util.log("Default flag target: " + target.loc + " " + target.type);
+//            Util.log("Cost: " + targetCost);
+//            Util.log("");
             if (targetCost < currentTargetCost){
                 currentTarget = target;
                 currentTargetCost = targetCost;
@@ -126,14 +162,18 @@ public class OffenseModule {
             }
         }
         if (gotNewTarget){
+//            Util.log("Got default flag target: " + currentTarget.loc + " " + currentTarget.type);
+//            Util.log("Cost: " + currentTargetCost);
             return currentTarget;
         }
-
 
         // loop over approximate flag locations
         for(MapLocation flagLoc : robot.approximateOppFlagLocations){
             OffensiveTarget target = new OffensiveTarget(flagLoc, OffensiveTargetType.APPROXIMATE);
-            int targetCost = getOffensiveTargetCost(target);
+            int targetCost = getOffensiveTargetCost(target, offensiveCOM);
+//            Util.log("Approximate flag target: " + target.loc + " " + target.type);
+//            Util.log("Cost: " + targetCost);
+//            Util.log("");
             if (targetCost < currentTargetCost){
                 currentTarget = target;
                 currentTargetCost = targetCost;
@@ -141,6 +181,8 @@ public class OffenseModule {
             }
         }
         if (gotNewTarget){
+//            Util.log("Got approximate flag target: " + currentTarget.loc + " " + currentTarget.type);
+//            Util.log("Cost: " + currentTargetCost);
             return currentTarget;
         }
         return currentTarget;
@@ -151,7 +193,10 @@ public class OffenseModule {
         OffensiveTarget currentTarget = new OffensiveTarget(sharedOffensiveTarget, sharedOffensiveTargetType);
 //        Util.log("Current Target: " + currentTarget.loc + " " + currentTarget.type);
 
+//        Util.log("Current Target: " + currentTarget.loc + " " + currentTarget.type);
+
         OffensiveTarget newTarget = tryGettingNewTarget(currentTarget);
+//        Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
 //        Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
 
         if(newTarget == null || newTarget.equals(currentTarget)){
