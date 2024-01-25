@@ -474,12 +474,29 @@ public class AttackModule {
 
         // compute the direction to enemyCOM
         Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
+        int roundNum = rc.getRoundNum();
         for(Direction direction : Util.closeDirections(dirToEnemyCOM)){
             MapLocation potentialBuildLocation = robot.myLoc.add(direction);
-            if(rc.canBuild(TrapType.STUN, potentialBuildLocation)){
-                rc.build(TrapType.STUN, potentialBuildLocation);
-                return;
+            if(!rc.canBuild(TrapType.STUN, potentialBuildLocation)) {
+                continue;
             }
+
+            // Only place trap if it'll activate on a non-stunned enemy instantly.
+            boolean willStun = false;
+            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
+            for(int i = enemiesInRange.length; --i >= 0;){
+                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] < Constants.NUM_ROUNDS_OF_STUN){
+                    willStun = true;
+                    break;
+                }
+            }
+
+            if(!willStun){
+                continue;
+            }
+
+            rc.build(TrapType.STUN, potentialBuildLocation);
+            return;
         }
     }
 
