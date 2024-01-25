@@ -240,9 +240,22 @@ public class Robot {
         }
     }
 
+    public void checkIfInitializationNeeded(){
+        if(defenseModule.trapsMap == null){
+            defenseModule.trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
+        }
+        else if(defenseModule.heuristicMap == null){
+            defenseModule.heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
+        }
+        else if(defenseModule.trapPQ == null){
+            defenseModule.trapPQ = new PriorityQueue(defenseModule.NUM_TRAPS_TO_KEEP_TRACK_OF);
+        }
+    }
+
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
         indicatorString = "";
+        checkIfInitializationNeeded();
 
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
@@ -380,8 +393,6 @@ public class Robot {
         else if(Util.checkIfItemInArray(offenseModule.sharedOffensiveTarget, approximateOppFlagLocations)){
             offenseModule.sharedOffensiveTargetType = OffensiveTargetType.APPROXIMATE;
         }
-        Util.addToIndicatorString("SOT:" + offenseModule.sharedOffensiveTarget);
-        Util.addToIndicatorString("SOTT:" + offenseModule.sharedOffensiveTargetType);
 
         defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
 

@@ -282,7 +282,7 @@ public class DamScout {
         Util.addToIndicatorString("CL: " + targetCrumbLoc);
         // If we have a target
 
-        nav.pathBF(targetCrumbLoc, 0);  // Unrolled bellow
+        nav.pathBF(targetCrumbLoc, 100);  // Unrolled bellow
 
         // Reset target location once reached
         robot.myLoc = rc.getLocation();
@@ -291,12 +291,6 @@ public class DamScout {
             targetCrumbLocIsRandom = false;
         }
     }
-
-
-
-
-
-
 
     public void runLineUpMovement() throws GameActionException {
         switchToLineupModeIfNeeded();
@@ -316,7 +310,7 @@ public class DamScout {
         }
 
         if(adjDir == null){
-            nav.fuzzyNav.goTo(centerLoc, 0);
+            nav.fuzzyNav.goTo(centerLoc, 100);
             robot.indicatorString += "CENTER;";
             adjDir = getLineUpAdjDir();
         }

@@ -1,7 +1,9 @@
 package suntzu;
 
 import battlecode.common.Clock;
+import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
+import battlecode.common.TrapType;
 
 
 /**
@@ -36,14 +38,20 @@ public strictfp class RobotPlayer {
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws Exception {
         Util.LOGGING_ALLOWED = false;
-        if(rc.getID() == 12373){
+        if(rc.getID() == 10702){
             Util.LOGGING_ALLOWED = true;
         }
 
         int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);
+
+//        if(rc.getID() == 12041){
+//            PriorityQueue.test(robot.rng);
+//            rc.resign();
+//        }
+
         if(rc.getRoundNum() != startTurn){
-            System.out.println("BYTECODE EXCEEDED");
+            System.out.println("BYTECODE EXCEEDED " + robot.mode + ", " + rc.getLocation());
             Util.resign();
         }
         while (true) {
@@ -52,7 +60,7 @@ public strictfp class RobotPlayer {
             try{
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
-                    System.out.println("BYTECODE EXCEEDED " + robot.mode);
+                    System.out.println("BYTECODE EXCEEDED " + robot.mode + ", " + rc.getLocation());
                     Util.resign();
                 }
             }
