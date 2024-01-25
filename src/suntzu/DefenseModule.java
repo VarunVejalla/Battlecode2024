@@ -14,22 +14,24 @@ public class DefenseModule {
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
-    byte[][] trapsMap; // 0 means nothing, 1 means I placed a trap, 2 means someone else placed a trap, 3 means its currently in the trap PQ.
-    int trapCount = 0;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
     final int NUM_TRAPS_TO_KEEP_TRACK_OF = 200;
-    PriorityQueue trapPQ;
-    int[][] heuristicMap;
+    PriorityQueue trapPQ = null;
+    int[][] heuristicMap = null;
+    byte[][] trapsMap = null; // 0 means nothing, 1 means I placed a trap, 2 means someone else placed a trap, 3 means its currently in the trap PQ.
+    int trapCount = 0;
     boolean initializedPotTrapsArray = false;
+    MapLocation nearestCornerToFlag = null;
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
-        trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
-        heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
-        trapPQ = new PriorityQueue(NUM_TRAPS_TO_KEEP_TRACK_OF);
+        // NOTE: Changed these to be initialized on different round nums cuz initialization takes so much mf bytecode.
+//        trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
+//        heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
+//        trapPQ = new PriorityQueue(NUM_TRAPS_TO_KEEP_TRACK_OF);
     }
 
     // Helper methods to manage trap count.
@@ -95,6 +97,9 @@ public class DefenseModule {
     }
 
     public int getTrapHeuristic(MapLocation trapLoc){
+//        if(nearestCornerToFlag == null){
+//            nearestCornerToFlag = Util.getNearestCorner(flagDefaultLoc);
+//        }
         Direction flagToCenter = flagDefaultLoc.directionTo(robot.centerLoc);
         int heuristic = trapLoc.distanceSquaredTo(flagDefaultLoc) * 10;
         Direction flagToSpot = flagDefaultLoc.directionTo(trapLoc);
