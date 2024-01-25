@@ -94,14 +94,20 @@ public class Robot {
         spawnCenters = Util.getSpawnLocCenters();
         centerLoc = new MapLocation(rc.getMapWidth() / 2, rc.getMapHeight() / 2);
 
+        Util.logBytecode("Before constructors");
+
         this.comms = new Comms(rc, this);
         this.nav = new Navigation(rc, this.comms, this);
         this.rng = new Random(rc.getID());  // seed the random number generator with the id of the bot
+        Util.logBytecode("Before AM");
         this.attackModule = new AttackModule(this.rc, this);
+        Util.logBytecode("After AM");
         this.defenseModule = new DefenseModule(this.rc, this, this.comms, this.nav);
         this.offenseModule = new OffenseModule(this.rc, this, this.comms, this.nav);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
         this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
+
+        Util.logBytecode("After constructors");
 
         // if the round number is less than 50, set all opponent flags in the shared array to null
         // since we don't know anything about them yet
@@ -241,7 +247,16 @@ public class Robot {
     }
 
     public void checkIfInitializationNeeded(){
-        if(defenseModule.trapsMap == null){
+        if(attackModule.stunTrapInfo == null){
+            attackModule.stunTrapInfo = new int[rc.getMapWidth()][rc.getMapHeight()]; // initialized to all zeroes
+        }
+        else if(attackModule.lastStunnedInfo == null){
+            attackModule.lastStunnedInfo = new int[rc.getMapWidth()][rc.getMapHeight()];
+        }
+//        else if(attackModule.currentlyStunned == null){
+//            attackModule.currentlyStunned = new boolean[attackModule.CURRENTLY_STUNNED_SIZE];
+//        }
+        else if(defenseModule.trapsMap == null){
             defenseModule.trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
         }
         else if(defenseModule.heuristicMap == null){
@@ -250,18 +265,14 @@ public class Robot {
         else if(defenseModule.trapPQ == null){
             defenseModule.trapPQ = new PriorityQueue(defenseModule.NUM_TRAPS_TO_KEEP_TRACK_OF);
         }
-        else if(attackModule.stunTrapInfo == null){
-            attackModule.stunTrapInfo = new int[rc.getMapWidth()][rc.getMapHeight()]; // initialized to all zeroes
-        }
-        else if(attackModule.currentlyStunned == null){
-            attackModule.currentlyStunned = new boolean[69];
-        }
     }
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
         indicatorString = "";
-        checkIfInitializationNeeded();
+        if(rc.getRoundNum() > 1){ // Avoid creating these the same iteration that the module constructors are called.
+            checkIfInitializationNeeded();
+        }
 
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
@@ -269,8 +280,11 @@ public class Robot {
         Util.addToIndicatorString("Mode:" + mode.toShortString());
 
         readComms(); // update opp flags and the shared target loc index
+        Util.logBytecode("After comms");
         if (!rc.isSpawned()){
+            Util.logBytecode("Before spawn");
             spawn();
+            Util.logBytecode("After spawn");
         }
         if(rc.isSpawned()){
             tryGlobalUpgrade();
@@ -278,20 +292,25 @@ public class Robot {
             myLoc = rc.getLocation();
             scanSurroundings();
             updateComms();
+            Util.logBytecode("HI");
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
                 if(potentialFlagMover){
                     potentialFlagMover = flagMover.runFlagMover();
+                    Util.logBytecode("After flag mover");
                 }
                 else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runStationaryDefense();
+                    Util.logBytecode("After SD");
                 }
                 else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runMobileDefense();
+                    Util.logBytecode("After MD");
                 }
                 else{ // If on offense, keep running the scout code.
                     scout.runScout();
+                    Util.logBytecode("After scout");
                 }
             }
             else if(rc.hasFlag()){
@@ -315,17 +334,23 @@ public class Robot {
             }
             else{
                 homeLocWhenCarryingFlag = null;
+                Util.logBytecode("Before AM Setup");
                 attackModule.runSetup();
+                Util.logBytecode("After AM Setup");
                 attackModule.runStrategy();
+                Util.logBytecode("After AM Strategy");
                 nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
                 if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
+                    Util.logBytecode("After OM Movement");
                 }
                 else if(mode == Mode.STATIONARY_DEFENSE){
                     defenseModule.runStationaryDefense();
+                    Util.logBytecode("After SD Movement");
                 }
                 else if(mode == Mode.MOBILE_DEFENSE){
                     defenseModule.runMobileDefense();
+                    Util.logBytecode("After MD Movement");
                 }
             }
         }
@@ -690,7 +715,9 @@ public class Robot {
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
 
-        attackModule.updateStunTrapInfo();
+        if(rc.getRoundNum() > 5){
+            attackModule.updateStunTrapInfo();
+        }
     }
 
     public int getOppFlagIdx(int flagID){

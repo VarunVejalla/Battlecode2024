@@ -11,14 +11,40 @@ public class Util {
 
     public static void resign(){
         if(!SUBMISSION_MODE){
+            System.out.println("Resigning " + rc.getID() + ", " + robot.mode + ", " + rc.getLocation());
             rc.resign();
         }
     }
 
     public static void assert_wrapper(boolean bool){
         if(!SUBMISSION_MODE){
+            if(!bool){
+                System.out.println("Assert failed " + rc.getID() + ", " + robot.mode + ", " + rc.getLocation());
+            }
             assert(bool);
         }
+    }
+
+    public static MapLocation getClosestHomeFlag() throws GameActionException {
+        if(robot.defaultHomeFlagLocs == null){
+            return null;
+        }
+        MapLocation closest = null;
+        int closestDist = Integer.MAX_VALUE;
+        for(int i = 0; i < robot.defaultHomeFlagLocs.length; i++){
+            if(robot.comms.getHomeFlagTakenStatus(i)){
+                continue;
+            }
+            if(robot.defaultHomeFlagLocs[i] == null){
+                continue;
+            }
+            int dist = robot.myLoc.distanceSquaredTo(robot.defaultHomeFlagLocs[i]);
+            if(dist < closestDist){
+                closestDist = dist;
+                closest = robot.defaultHomeFlagLocs[i];
+            }
+        }
+        return closest;
     }
 
     public static int minMovesToReach(MapLocation a, MapLocation b){
