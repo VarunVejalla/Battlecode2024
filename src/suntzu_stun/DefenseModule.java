@@ -152,13 +152,16 @@ public class DefenseModule {
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
         }
-        else{
+        else if (trapCount < 12){
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
             trapsMap[trapPlacementTarget.x][trapPlacementTarget.y] = 1; // I placed a trap there.
             trapCount++;
             updatePotTrapLocs(trapPlacementTarget);
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
+        }
+        else{ // circle if you have placed down enough traps
+            nav.circle(flagDefaultLoc, 2, 5, 0);
         }
     }
 

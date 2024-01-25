@@ -2,6 +2,8 @@ package suntzu_stun;
 
 import battlecode.common.*;
 
+import java.lang.reflect.Array;
+
 class AttackHeuristic {
     double friendlyHP;
     double friendlyDamage;
@@ -9,6 +11,7 @@ class AttackHeuristic {
     double enemyDamage;
     double safetyMultipler; // If this is higher, the robot will be safer.
     boolean hasFlag;
+
 
 
     public AttackHeuristic(double friendlyHP, double friendlyDamage, double enemyHP, double enemyDamage, boolean hasFlag, double safetyMultipler){
@@ -56,6 +59,11 @@ public class AttackModule {
     RobotInfo bestAttackVictim = null;
     MapLocation enemyCOM;
     int lastRetreatRound = -1;
+
+    boolean wasSafeInPreviousRound = true;
+    int[][] stunTrapInfo = new int[9][9];
+    ArrayTransformer arrayTransformer = new ArrayTransformer(this);
+
 
 //    MapLocation enemyChaseLoc = null;
 //    int turnsSinceChaseLocSet = 0;
@@ -375,6 +383,10 @@ public class AttackModule {
         if (enemyCOM != null && rc.canSenseLocation(enemyCOM)) {
             friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
         }
+
+        if(heuristic != null){
+            wasSafeInPreviousRound = heuristic.getSafe();   // save previous round safety status
+        }
         heuristic = getHeuristic(robot.nearbyFriendlies, robot.nearbyVisionEnemies, robot.nearbyActionFriendlies, robot.nearbyActionEnemies, rc.hasFlag());
     }
 
@@ -445,8 +457,77 @@ public class AttackModule {
     }
 
 
+    public void translateStunTrapInfo() throws GameActionException{
+        // todo: fill this out
+        // this method updates the stun trap info when we move in a direction
+
+        if(robot.locationAtBeginningOfPreviousTurn == null){
+            return;
+        }
+        Direction delta = robot.locationAtBeginningOfPreviousTurn.directionTo(robot.locationAtBeginningOfCurrentTurn);
+        arrayTransformer.translate(delta);
+    }
+
+
+
+    public void initializeStunTrapInfo(){
+        // this method initializes the stun trap info
+        for(int row=stunTrapInfo.length; --row >= 0;){
+            for(int col=stunTrapInfo.length; --col >= 0;){
+                stunTrapInfo[row][col] = 5;
+            }
+        }
+    }
+
+    public void updateStunTrapInfo() throws GameActionException {
+        // 0 - we know there is a stun trap there
+        // 1 - we last saw a stun trap there last round
+        // 2 - we saw a stun trap there 2 rounds ago
+        // 3 - we saw a stun trap there 3 rounds ago
+        // 4 - we saw a stun trap there 4 rounds ago
+        // 5 - we don't know anything about that spot
+
+        if(robot.locationAtBeginningOfPreviousTurn == null){
+            initializeStunTrapInfo();
+            return;
+        }
+
+        translateStunTrapInfo();
+
+        // update stun trap info
+        MapInfo[] nearbyMapInfos = rc.senseNearbyMapInfos();
+        for(MapInfo info : nearbyMapInfos){
+            if(info.getTrapType() == TrapType.STUN){
+                // current location is the center of the 9x9 grid
+                int xOffset = info.getMapLocation().x - robot.locationAtBeginningOfCurrentTurn.x + 4; // grid is 9x9, so we add 4 to get the correct index
+                int yOffset = info.getMapLocation().y - robot.locationAtBeginningOfCurrentTurn.y + 4; // grid is 9x9, so we add 4 to get the correct index
+                stunTrapInfo[xOffset][yOffset] = 0; // marks that we know there is a trap there
+            }
+        }
+
+        for(int row=stunTrapInfo.length; --row >= 0;){
+            for(int col=stunTrapInfo.length; --col >= 0;){
+                if(stunTrapInfo[row][col] == 0 || stunTrapInfo[row][col] == 5){
+                    continue;
+                }
+                stunTrapInfo[row][col] += 1;
+            }
+        }
+    }
+
+
     public void runSetup() throws GameActionException {
         // main entry point to this module, which will determine if we're safe or not and will try attacking.
+
+
+        updateStunTrapInfo();
+        updateAllNearbyAttackInfo();    // might be unncessary, should prolly optimize
+
+        if(wasSafeInPreviousRound && !heuristic.getSafe()){
+            // if we were safe in the previous round and we're not safe now, try placing stun traps
+            tryPlacingStunTrap();
+        }
+
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
 
@@ -455,8 +536,22 @@ public class AttackModule {
         Util.addToIndicatorString("SF:" + heuristic.getSafe());
     }
 
+
+    public void tryPlacingStunTrap() throws GameActionException{
+        enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
+        Direction toEnemyCOM = robot.myLoc.directionTo(enemyCOM);
+        for(Direction dir: Util.closeDirections(toEnemyCOM)){
+            MapLocation potentialTrapLoc = robot.myLoc.add(dir);
+            if (rc.canBuild(TrapType.STUN, potentialTrapLoc)) {
+                rc.build(TrapType.STUN, potentialTrapLoc);
+                return;
+            }
+        }
+    }
+
     public void runStrategy() throws GameActionException {
         // main entry point to this module, which will run any attacking strategy (attacking micro).
+
 
         // keep retreating if we started retreating in the last x rounds
         if (heuristic.getSafe()) {
