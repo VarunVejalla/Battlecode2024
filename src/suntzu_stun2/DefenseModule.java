@@ -381,5 +381,30 @@ public class DefenseModule {
         return false;
     }
 
+    public boolean shouldISwitchToOffense() throws GameActionException{
+        // this method enables live switching from mobile defense to offense
+        // if we've successfully neutralized enemy threats
+
+        if(robot.mode != Mode.MOBILE_DEFENSE){
+            return false; // only try to switch modes if you are currently a mobile defender.
+        }
+        // get the desired ratio
+        TroopRatio desiredRatio = comms.getTroopRatio();
+
+        // compute the desired number of mobile defenders (based on the previous round counts of all the troops)
+        int numTrappers = comms.getPreviousRoundBotCount(Mode.TRAPPING);
+        int numStationaryDefenders = comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE);
+        int numMobileDefenders = comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE);
+        int numOffensive = comms.getPreviousRoundBotCount(Mode.OFFENSE);
+        int totalNumTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
+
+        int desiredNumMobileDefenders = (int) (desiredRatio.mobileDefenderFrac * totalNumTroops);
+
+        // check how many mobile defenders we have counted so far in the current round
+        int numMobileDefendersSpawned = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
+
+        // if the current number of mobile defenders is > desired number of defenders, switch to offense
+        return numMobileDefendersSpawned > desiredNumMobileDefenders;
+    }
 
 }

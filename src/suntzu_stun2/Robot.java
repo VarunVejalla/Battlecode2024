@@ -12,6 +12,34 @@ enum SymmetryType {
     DIAGONAL_LEFT
 }
 
+
+class TroopRatio {
+    int offensiveRatio;
+    double offensiveFrac;
+    int mobileDefenderRatio;
+    double mobileDefenderFrac;
+    int stationaryDefenderRatio;
+    double stationaryDefenderFrac;
+    int trapperRatio;
+    double trapperFrac;
+    int ratioDenom;
+
+
+    public TroopRatio(int offensiveRatio, int mobileDefenderRatio, int stationaryDefenderRatio, int trapperRatio){
+        // container class to hold ratio values
+        this.offensiveRatio = offensiveRatio;
+        this.mobileDefenderRatio = mobileDefenderRatio;
+        this.stationaryDefenderRatio = stationaryDefenderRatio;
+        this.trapperRatio = trapperRatio;
+        this.ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+
+        this.offensiveFrac = (double)offensiveRatio / ratioDenom;
+        this.mobileDefenderFrac = (double)mobileDefenderRatio / ratioDenom;
+        this.stationaryDefenderFrac = (double)stationaryDefenderRatio / ratioDenom;
+        this.trapperFrac = (double)trapperRatio / ratioDenom;
+    }
+}
+
 enum Mode {
     MOBILE_DEFENSE,
     STATIONARY_DEFENSE,
@@ -124,9 +152,12 @@ public class Robot {
             comms.setAllHomeFlags_NotTaken();
         }
 
-        comms.writeRatioVal(Mode.OFFENSE, 13);
-        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
-        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
+        // full send/
+        comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
+
+//        comms.writeRatioVal(Mode.OFFENSE, 13);
+//        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
+//        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
 
         mode = determineRobotTypeToSpawn();
 
@@ -166,6 +197,23 @@ public class Robot {
             rc.buyGlobal(GlobalUpgrade.ACTION);
         }
     }
+
+        public void changeTroopRatioIfNeeded() throws GameActionException{
+            // this method changes ratio of troops given the game progression
+            // look at the number of enemies at the flag under greatest distress
+            // read current ratio
+            // set the ratio according if needs to be changed
+            // TODO: based this off the game progression / how many flags we have / how many flags the opp has took / etc.
+
+            if(rc.getRoundNum() < 600){
+                return;
+            }
+            else{
+                comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
+            }
+        }
+
+
 
 
     public Mode determineRobotTypeToSpawn() throws GameActionException{
@@ -231,22 +279,29 @@ public class Robot {
         double currMobileDefendersFrac = (double) numMobileDefenders / totalNumOfTroops;
         double currOffenseFrac = (double) numOffensive / totalNumOfTroops;
 
-        // get the numbers representing the ratios
-        int trapperRatio = comms.readRatioVal(Mode.TRAPPING);
-        int stationaryDefenderRatio = comms.readRatioVal(Mode.STATIONARY_DEFENSE);
-        int mobileDefenderRatio = comms.readRatioVal(Mode.MOBILE_DEFENSE);
-        int offensiveRatio = comms.readRatioVal(Mode.OFFENSE);
-        int ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+//        // get the numbers representing the ratios
+//        int trapperRatio = comms.readRatioVal(Mode.TRAPPING);
+//        int stationaryDefenderRatio = comms.readRatioVal(Mode.STATIONARY_DEFENSE);
+//        int mobileDefenderRatio = comms.readRatioVal(Mode.MOBILE_DEFENSE);
+//        int offensiveRatio = comms.readRatioVal(Mode.OFFENSE);
+//        int ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+//
+//        double desiredTrapperFrac = (double) trapperRatio / ratioDenom;
+//        double desiredStationaryDefenderFrac = (double) stationaryDefenderRatio / ratioDenom;
+//        double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
+//        double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
+//
+//        int trapperDiff = (int)Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
+//        int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
+//        int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
+//        int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
 
-        double desiredTrapperFrac = (double) trapperRatio / ratioDenom;
-        double desiredStationaryDefenderFrac = (double) stationaryDefenderRatio / ratioDenom;
-        double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
-        double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
+        TroopRatio ratio = comms.getTroopRatio();
 
-        int trapperDiff = (int)Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
-        int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
-        int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
-        int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
+        int trapperDiff = (int)Math.ceil((ratio.trapperFrac - currTrapperFrac) * totalNumOfTroops);
+        int stationaryDefenderDiff = (int)Math.ceil((ratio.stationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
+        int mobileDefenderDiff = (int)Math.ceil((ratio.mobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
+        int offenseDiff = (int)Math.ceil((ratio.offensiveFrac - currOffenseFrac) * totalNumOfTroops);
 
         if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
                 && offenseDiff >= mobileDefenderDiff){
@@ -322,6 +377,7 @@ public class Robot {
         }
         if(rc.isSpawned()){
             tryGlobalUpgrade();
+            changeTroopRatioIfNeeded();
 
             myLoc = rc.getLocation();
             scanSurroundings();
@@ -366,6 +422,13 @@ public class Robot {
                 attackModule.runSetup();
                 attackModule.runStrategy();
                 nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+
+
+                // check to see if you are no longer needed as a mobile defender (live-switching)
+                if(mode == Mode.MOBILE_DEFENSE && defenseModule.shouldISwitchToOffense()){
+                    mode = Mode.OFFENSE;
+                }
+
                 if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
                 }
@@ -390,9 +453,9 @@ public class Robot {
             comms.incrementCurrentRoundBotCount(mode);
         }
 
-        if(rc.getRoundNum() % 5 == 0 && rc.getID() == 10847){
+        if(rc.getRoundNum() % 5 == 0){
             testLog();
-            if(rc.getRoundNum() == 300) {
+            if(rc.getRoundNum() == 800) {
                 Util.resign();
             }
         }

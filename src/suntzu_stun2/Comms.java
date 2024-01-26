@@ -1064,5 +1064,20 @@ public class Comms {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void writeTroopRatio(TroopRatio ratio) throws GameActionException{
+        // this method writes the troop ratio for a given mode
+        writeRatioVal(Mode.OFFENSE, ratio.offensiveRatio);
+        writeRatioVal(Mode.MOBILE_DEFENSE, ratio.mobileDefenderRatio);
+        writeRatioVal(Mode.STATIONARY_DEFENSE, ratio.stationaryDefenderRatio);
+        writeRatioVal(Mode.TRAPPING, ratio.trapperRatio);
+    }
 
+    public TroopRatio getTroopRatio() throws GameActionException {
+        // this method returns the troop ratio for a given mode
+        int offenseVal = readRatioVal(Mode.OFFENSE);
+        int mobileDefenseVal = readRatioVal(Mode.MOBILE_DEFENSE);
+        int stationaryDefenseVal = readRatioVal(Mode.STATIONARY_DEFENSE);
+        int trappingVal = readRatioVal(Mode.TRAPPING);
+        return new TroopRatio(offenseVal, mobileDefenseVal, stationaryDefenseVal, trappingVal);
+    }
 }
