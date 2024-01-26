@@ -174,10 +174,6 @@ public class Robot {
         // full send/
         comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
 
-//        comms.writeRatioVal(Mode.OFFENSE, 13);
-//        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
-//        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
-
         mode = determineRobotTypeToSpawn();
 
         if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
@@ -226,11 +222,13 @@ public class Robot {
             }
 
             TroopRatio potentialNewRatio;
-            // full send on defense
+            // full send on defense if one of our flags needs help
             if(numEnemiesNearOurFlags >= Constants.THRESHOLD_TO_CALL_FOR_HELP_ON_DEFENSE){
                 potentialNewRatio = new TroopRatio(0, 13, 0, 0);
             }
-            // full send on offense
+
+            // if the round num % constant == 0 and nobody has updated ratio, then increment offensiveRatio by 1
+            // decrement mobile defender ratio by 1?
             else{
                 potentialNewRatio = new TroopRatio(13, 2, 0, 0);
             }
@@ -503,12 +501,12 @@ public class Robot {
             comms.incrementCurrentRoundBotCount(mode);
         }
 
-//        if((rc.getRoundNum() % 5 == 0 || rc.getRoundNum() == 601) ){
-//            testLog();
-//            if(rc.getRoundNum() == 1000) {
-//                Util.resign();
-//            }
-//        }
+        if((rc.getRoundNum() % 5 == 0 || rc.getRoundNum() == 601) ){
+            testLog();
+            if(rc.getRoundNum() == 1000) {
+                Util.resign();
+            }
+        }
     }
 
 
@@ -517,6 +515,24 @@ public class Robot {
 
 
         Util.LOGGING_ALLOWED = true;
+
+
+        if(rc.getRoundNum() % 10 == 0) {
+            Util.LOGGING_ALLOWED = true;
+//            Util.logForBotWithId(13143, "Updating shared defensive target");
+
+            for(int i = 0; i < 3 ;i++){
+                Util.logForBotWithId(13143, "Flag loc" + i + ": " + defenseModule.allFlagDefaultLocs[i]);
+            }
+
+            for(int i = 0; i < 3; i++){
+                Util.logForBotWithId(13143, "Flag " + i + " enemy count: " + comms.getEnemyCountNearFlagPrevRound(i));
+            }
+            Util.LOGGING_ALLOWED = false;
+        }
+
+
+
         int id = 11031;
         Util.logForBotWithId(id, "------------- begin log -----------------");
         Util.logForBotWithId(id, "Current bot counts: ");
@@ -965,11 +981,10 @@ public class Robot {
     public void setEnemyCountsToPrevRoundIfNotAlreadySet() throws GameActionException {
         int mod = rc.getRoundNum() % 2;
         boolean setDefensiveTarget = comms.getEnemyCountNearFlagLastUpdated(0) != mod;
-        if(setDefensiveTarget){
-            testLog();
-            MapLocation[] closestEnemyLocs = {comms.getClosestEnemyToFlagLocation(0), comms.getClosestEnemyToFlagLocation(1) , comms.getClosestEnemyToFlagLocation(2)};
-//            defenseModule.tryUpdateSharedDefensiveTarget();
-        }
+//        if(setDefensiveTarget){
+//            MapLocation[] closestEnemyLocs = {comms.getClosestEnemyToFlagLocation(0), comms.getClosestEnemyToFlagLocation(1) , comms.getClosestEnemyToFlagLocation(2)};
+////            defenseModule.tryUpdateSharedDefensiveTarget();
+//        }
         if(mod != comms.getEnemyCountNearFlagLastUpdated(0)){
             // Update the "prev round" value and discard the curr round value.
             comms.setEnemyCountNearFlagPrevRound(0, comms.getEnemyCountNearFlagCurrRound(0));

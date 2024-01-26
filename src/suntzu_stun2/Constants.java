@@ -131,6 +131,8 @@ public class Constants {
 
 
 
+
+
     // BOT count-related constants
     // offensive soldier counts
     public static final int OFFENSIVE_PREV_COUNT_INDEX = 12;
@@ -280,7 +282,7 @@ public class Constants {
     public static final int CLOSEST_ENEMY_TO_FLAG_X_SHIFT = 6;
     public static final int CLOSEST_ENEMY_TO_FLAG_Y_MASK = 63; // 00000011111
     public static final int CLOSEST_ENEMY_TO_FLAG_Y_SHIFT = 0;
-    public static final int DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG = 30;
+    public static final int DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG = 100;
     //------------------------- Defense help stuff --------------------------
     public static final int THRESHOLD_TO_CALL_FOR_HELP_ON_DEFENSE = 2;
 

@@ -460,7 +460,7 @@ public class AttackModule {
         // this tries to place a stun trap in the direction of the enemyCOM
         // compute enemyCOM
 
-        if(rc.isActionReady()) return;  // can't build if we're not action ready
+        if(!rc.isActionReady()) return;  // can't build if we're not action ready
 
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
         if(enemyCOM == null){

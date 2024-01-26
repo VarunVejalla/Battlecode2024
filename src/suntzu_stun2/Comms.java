@@ -864,6 +864,7 @@ public class Comms {
         return -1;
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////
     // comms for shared defensive target
     public MapLocation getSharedDefensiveTarget() throws GameActionException {
@@ -1155,5 +1156,8 @@ public class Comms {
         }
         return new MapLocation(x, y);
     }
+
+
+
 
 }

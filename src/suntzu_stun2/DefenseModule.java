@@ -74,6 +74,8 @@ public class DefenseModule {
             if(heuristicMap[adjLoc.x][adjLoc.y] == -2){ // This location is bad (not passable or some shit like that).
                 continue;
             }
+
+            // TODO: make sure this passes (not passing because of bytecode issues)
             Util.assert_wrapper(rc.canSenseLocation(adjLoc));
             info = rc.senseMapInfo(adjLoc);
             if(!info.isPassable() && !info.isWater()){
@@ -145,9 +147,9 @@ public class DefenseModule {
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
-        if(trapCount > 10){
+        if(trapCount > 8){
             // TODO: Change this from a constant 10 to some dynamic commed value.
-            minCrumbsNeeded += 10 * TrapType.STUN.buildCost; // Leave some room for offensive guys to make traps
+            minCrumbsNeeded += 10000 * TrapType.EXPLOSIVE.buildCost; // Leave some room for offensive and mobile defense to make traps
         }
         if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
@@ -279,13 +281,13 @@ public class DefenseModule {
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
 
-        if(!initializedPotTrapsArray){
-            updatePotTrapLocs(flagDefaultLoc);
-            initializedPotTrapsArray = true;
-        }
-        updateTrapCountValue();
-        comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
-        placeTrapsAroundFlag();
+//        if(!initializedPotTrapsArray){
+//            updatePotTrapLocs(flagDefaultLoc);
+//            initializedPotTrapsArray = true;
+//        }
+//        updateTrapCountValue();
+//        comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
+//        placeTrapsAroundFlag();
     }
 
     public void runMobileDefense() throws GameActionException {
@@ -365,7 +367,10 @@ public class DefenseModule {
         // Check if base is still under attack.
         if(Util.checkIfItemInArray(sharedDefensiveTarget, allFlagDefaultLocs)){
             int flagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
-            if(comms.getEnemyCountNearFlagPrevRound(flagIdx) > HOME_DANGER_EXIT_THRESHOLD){
+            Util.log("Checking if flag " + flagIdx + " is still under attack");
+            Util.log("sharedDefensiveTarget: " + sharedDefensiveTarget.toString());
+            Util.log("Enemy count near flag prev round: " + comms.getEnemyCountNearFlagPrevRound(flagIdx));
+             if(comms.getEnemyCountNearFlagPrevRound(flagIdx) > HOME_DANGER_EXIT_THRESHOLD){
                 sharedDefensiveTargetPriority = 2;
                 mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
                 return false;
