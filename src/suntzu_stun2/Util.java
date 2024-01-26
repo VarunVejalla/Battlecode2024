@@ -175,6 +175,13 @@ public class Util {
         System.out.println(out);
     }
 
+
+    public static void logForBotWithId(int id, String str){
+        if(rc.getID() == id){
+            Util.log(str);
+        }
+    }
+
     public static void logArray(String name, int[] arr){
         logArray(name, intToIntegerArray(arr));
     }

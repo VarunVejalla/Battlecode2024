@@ -153,7 +153,7 @@ public class Robot {
         }
 
         // full send/
-        comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
+        comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
 
 //        comms.writeRatioVal(Mode.OFFENSE, 13);
 //        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
@@ -209,7 +209,7 @@ public class Robot {
                 return;
             }
             else{
-                comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
+                comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
             }
         }
 
@@ -303,6 +303,16 @@ public class Robot {
         int mobileDefenderDiff = (int)Math.ceil((ratio.mobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
         int offenseDiff = (int)Math.ceil((ratio.offensiveFrac - currOffenseFrac) * totalNumOfTroops);
 
+
+//        Util.LOGGING_ALLOWED = true;
+//        Util.logForBotWithId(12553, "Diffs: ");
+//        Util.logForBotWithId(12553, "TRAPPER: " + trapperDiff);
+//        Util.logForBotWithId(12553, "SD: " + stationaryDefenderDiff);
+//        Util.logForBotWithId(12553, "MD: " + mobileDefenderDiff);
+//        Util.logForBotWithId(12553, "OF: " + offenseDiff);
+//        Util.LOGGING_ALLOWED = false;
+
+
         if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
                 && offenseDiff >= mobileDefenderDiff){
             return Mode.OFFENSE;
@@ -326,6 +336,17 @@ public class Robot {
 
 
     public void spawn() throws GameActionException {
+        // reset mode based on current ratios
+        if(rc.getRoundNum() > Constants.SETUP_ROUNDS){
+            mode = determineRobotTypeToSpawn();
+        }
+        if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){
+            defenseModule.setup();
+        }
+        else if(mode == Mode.OFFENSE){
+            offenseModule.setup();
+        }
+
         if(mode == Mode.STATIONARY_DEFENSE){
             defenseModule.spawnStationary();
         }
@@ -453,9 +474,9 @@ public class Robot {
             comms.incrementCurrentRoundBotCount(mode);
         }
 
-        if(rc.getRoundNum() % 5 == 0){
+        if((rc.getRoundNum() % 5 == 0 || rc.getRoundNum() == 601) ){
             testLog();
-            if(rc.getRoundNum() == 800) {
+            if(rc.getRoundNum() == 1000) {
                 Util.resign();
             }
         }
@@ -463,12 +484,25 @@ public class Robot {
 
 
     public void testLog() throws GameActionException {
+
+
+
         Util.LOGGING_ALLOWED = true;
-        Util.log("Current bot counts: ");
-        Util.log("TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
-        Util.log("SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
-        Util.log("MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
-        Util.log("OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+        Util.logForBotWithId(12553, "------------- begin log -----------------");
+        Util.logForBotWithId(12553, "Current bot counts: ");
+        Util.logForBotWithId(12553, "TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
+        Util.logForBotWithId(12553, "SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
+        Util.logForBotWithId(12553, "MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
+        Util.logForBotWithId(12553, "OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+
+        Util.logForBotWithId(12553, "current commed ratio:");
+        Util.logForBotWithId(12553, "TRAPPER: " + comms.getTroopRatio().trapperRatio);
+        Util.logForBotWithId(12553, "SD: " + comms.getTroopRatio().stationaryDefenderRatio);
+        Util.logForBotWithId(12553, "MD: " + comms.getTroopRatio().mobileDefenderRatio);
+        Util.logForBotWithId(12553, "OF: " + comms.getTroopRatio().offensiveRatio);
+        Mode mode = determineRobotTypeToSpawn();
+        Util.logForBotWithId(12553, "------------- end log ------------------");
+
         Util.LOGGING_ALLOWED = false;
 
 //        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
