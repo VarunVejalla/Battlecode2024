@@ -129,25 +129,59 @@ public class Constants {
     public static final int TRAPPER_RATIO_MASK = 61440; // 1111 0000 0000 0000
     public static final int TRAPPER_RATIO_SHIFT = 12;
 
+
+
     // BOT count-related constants
     // offensive soldier counts
-    public static final int OFFENSIVE_COUNT_INDEX = 12;
-    public static final int OFFENSIVE_COUNT_MASK = 0b111111; // 111111
-    public static final int OFFENSIVE_COUNT_SHIFT = 0;
+    public static final int OFFENSIVE_PREV_COUNT_INDEX = 12;
+    public static final int OFFENSIVE_PREV_COUNT_MASK = 0b111111; // 111111
+    public static final int OFFENSIVE_PREV_COUNT_SHIFT = 0;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
+
+
 
     // mobile defender counts
-    public static final int MOBILE_DEFENDER_COUNT_INDEX = 12;
-    public static final int MOBILE_DEFENDER_COUNT_MASK = 0b111111000000; // 111111 000000
-    public static final int MOBILE_DEFENDER_COUNT_SHIFT = 6;
+    public static final int MOBILE_DEFENDER_PREV_COUNT_INDEX = 12;
+    public static final int MOBILE_DEFENDER_PREV_COUNT_MASK = 0b111111000000; // 111111 000000
+    public static final int MOBILE_DEFENDER_PREV_COUNT_SHIFT = 6;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
+
 
     // stationary defender counts
-    public static final int STATIONARY_DEFENDER_COUNT_INDEX = 13;
-    public static final int STATIONARY_DEFENDER_COUNT_MASK = 0b111111;
-    public static final int STATIONARY_DEFENDER_COUNT_SHIFT = 0;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_SHIFT = 0;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
 
-    public static final int TRAPPER_COUNT_INDEX = 13;
-    public static final int TRAPPER_COUNT_MASK = 0b111111000000;
-    public static final int TRAPPER_COUNT_SHIFT = 6;
+    public static final int TRAPPER_PREV_COUNT_INDEX = 13;
+    public static final int TRAPPER_PREV_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_PREV_COUNT_SHIFT = 6;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
+
+    public static final int OFFENSIVE_CURR_COUNT_INDEX = 44;
+    public static final int OFFENSIVE_CURR_COUNT_MASK = 0b111111;
+    public static final int OFFENSIVE_CURR_COUNT_SHIFT = 0;
+
+    public static final int MOBILE_DEFENDER_CURR_COUNT_INDEX = 44;
+    public static final int MOBILE_DEFENDER_CURR_COUNT_MASK = 0b111111000000;
+    public static final int MOBILE_DEFENDER_CURR_COUNT_SHIFT = 6;
+
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_INDEX = 45;
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_SHIFT = 0;
+
+    public static final int TRAPPER_CURR_COUNT_INDEX = 45;
+    public static final int TRAPPER_CURR_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_CURR_COUNT_SHIFT = 6;
+    public static final int NUM_ROUNDS_WITH_MASS_SPAWNING = 10;
 
     //--------------------------------------------------------------------------------------------
     public static final int SHARED_DEFENSIVE_TARGET_IDX = 17;
@@ -222,4 +256,6 @@ public class Constants {
     public static final int STUNNED_OPPONENT_LOC_Y_MASK = 0b111111;
 
     //--------------
+    //
+
 }
