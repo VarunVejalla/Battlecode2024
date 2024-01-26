@@ -459,6 +459,9 @@ public class AttackModule {
     public void tryPlacingStunTrap() throws GameActionException {
         // this tries to place a stun trap in the direction of the enemyCOM
         // compute enemyCOM
+
+        if(rc.isActionReady()) return;  // can't build if we're not action ready
+
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
         if(enemyCOM == null){
             return;
@@ -513,7 +516,6 @@ public class AttackModule {
     public void updateStunTrapInfo() throws GameActionException {
         // this method will scan nearby squares and update stun trap info
         // the 2D matrix will be updated with the current round number if we sense a stun trap at the corresponding location
-
         // this method is called in the scanSurroundings method of Robot
         // it should be called by all Robot types
         int currRoundNum = rc.getRoundNum();
@@ -535,17 +537,27 @@ public class AttackModule {
 
     public void runSetup() throws GameActionException {
         // main entry point to this module, which will determine if we're safe or not and will try attacking.
+
+        if(robot.mode == Mode.MOBILE_DEFENSE){
+            tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM
+        }
+
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
 
         Util.logBytecode("Before update");
         updateAllNearbyAttackInfo();
         Util.logBytecode("After update");
+
+
+
         if(previouslySafe && !heuristic.getSafe()){
             Util.addToIndicatorString("UNSAFE");
             tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM
             Util.logBytecode("After placing stun trap");
         }
+
+
         previouslySafe = heuristic.getSafe();
         Util.addToIndicatorString("SF:" + heuristic.getSafe());
     }
