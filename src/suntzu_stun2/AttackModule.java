@@ -475,8 +475,8 @@ public class AttackModule {
 
             // Only place trap if it'll activate on a non-stunned enemy instantly.
             boolean willStun = false;
-//            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
-            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
+            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
+//            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
 //            willStun = enemiesInRange.length > 0;
             for(int i = enemiesInRange.length; --i >= 0;){
                 if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] >= Constants.NUM_ROUNDS_OF_STUN){
