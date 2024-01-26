@@ -28,10 +28,6 @@ public class DefenseModule {
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
-        // NOTE: Changed these to be initialized on different round nums cuz initialization takes so much mf bytecode.
-//        trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
-//        heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
-//        trapPQ = new PriorityQueue(NUM_TRAPS_TO_KEEP_TRACK_OF);
     }
 
     // Helper methods to manage trap count.
