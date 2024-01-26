@@ -253,9 +253,6 @@ public class Robot {
         else if(attackModule.lastStunnedInfo == null){
             attackModule.lastStunnedInfo = new int[rc.getMapWidth()][rc.getMapHeight()];
         }
-//        else if(attackModule.currentlyStunned == null){
-//            attackModule.currentlyStunned = new boolean[attackModule.CURRENTLY_STUNNED_SIZE];
-//        }
         else if(defenseModule.trapsMap == null){
             defenseModule.trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
         }

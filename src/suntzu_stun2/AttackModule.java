@@ -29,8 +29,6 @@ class AttackHeuristic {
         double myTurnsNeeded = enemyHP / friendlyDamage;
         double enemyTurnsNeeded = friendlyHP / enemyDamage;
 
-//        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
-
         if(hasFlag){
             return myTurnsNeeded <= enemyTurnsNeeded;
         }
@@ -38,12 +36,6 @@ class AttackHeuristic {
             // TODO: tune the safetyMultiplier parameter and the 1.3 constant
             return myTurnsNeeded < enemyTurnsNeeded * safetyMultipler * 1.3;
         }
-
-////        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
-//        if(hasFlag){
-//            return friendlyAttackDamage >= enemyAttackDamage;
-//        }
-//        return friendlyVisionDamage >= enemyVisionDamage * safetyMultipler;
     }
 }
 
@@ -484,8 +476,9 @@ public class AttackModule {
             // Only place trap if it'll activate on a non-stunned enemy instantly.
             boolean willStun = false;
             RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
+//            willStun = enemiesInRange.length > 0;
             for(int i = enemiesInRange.length; --i >= 0;){
-                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] < Constants.NUM_ROUNDS_OF_STUN){
+                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] >= Constants.NUM_ROUNDS_OF_STUN){
                     willStun = true;
                     break;
                 }
