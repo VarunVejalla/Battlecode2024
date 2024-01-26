@@ -241,7 +241,13 @@ public class Robot {
     }
 
     public void checkIfInitializationNeeded(){
-        if(defenseModule.trapsMap == null){
+        if(attackModule.stunTrapInfo == null){
+            attackModule.stunTrapInfo = new int[rc.getMapWidth()][rc.getMapHeight()]; // initialized to all zeroes
+        }
+        else if(attackModule.lastStunnedInfo == null){
+            attackModule.lastStunnedInfo = new int[rc.getMapWidth()][rc.getMapHeight()];
+        }
+        else if(defenseModule.trapsMap == null){
             defenseModule.trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
         }
         else if(defenseModule.heuristicMap == null){
@@ -250,18 +256,14 @@ public class Robot {
         else if(defenseModule.trapPQ == null){
             defenseModule.trapPQ = new PriorityQueue(defenseModule.NUM_TRAPS_TO_KEEP_TRACK_OF);
         }
-        else if(attackModule.stunTrapInfo == null){
-            attackModule.stunTrapInfo = new int[rc.getMapWidth()][rc.getMapHeight()]; // initialized to all zeroes
-        }
-        else if(attackModule.currentlyStunned == null){
-            attackModule.currentlyStunned = new boolean[69];
-        }
     }
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
         indicatorString = "";
-        checkIfInitializationNeeded();
+        if(rc.getRoundNum() > 1){ // Avoid creating these the same iteration that the module constructors are called.
+            checkIfInitializationNeeded();
+        }
 
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
@@ -690,7 +692,9 @@ public class Robot {
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
 
-        attackModule.updateStunTrapInfo();
+        if(rc.getRoundNum() > 5){
+            attackModule.updateStunTrapInfo();
+        }
     }
 
     public int getOppFlagIdx(int flagID){

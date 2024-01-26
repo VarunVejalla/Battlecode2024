@@ -1,6 +1,7 @@
 package suntzu_stun2;
 
 import battlecode.common.GameConstants;
+import battlecode.common.TrapType;
 
 public class Constants {
     public Constants(){
@@ -23,6 +24,8 @@ public class Constants {
     public static final double OFFENSE_ATTACK_SAFETY_FACTOR = 1.0;
     public static final double STATIONARY_DEFENSE_ATTACK_SAFETY_FACTOR = 2.0;
     public static final double MOBILE_DEFENSE_ATTACK_SAFETY_FACTOR = 0.5;
+    public static final int NUM_ROUNDS_TO_RETREAT_FOR = 3;
+    public static final int NUM_ROUNDS_OF_STUN = TrapType.STUN.opponentCooldown / 10;
 
     // Comms constants
     public static final int FULL_MASK = 65535; // 1111 1111 1111 1111
@@ -189,7 +192,6 @@ public class Constants {
             OPP_FLAG_2_ID_IDX,
             OPP_FLAG_3_ID_IDX};
 
-
     public static final int MASK_FOR_OPP_FLAG_ID = 0b1111111111111111;
     public static final int SHIFT_FOR_OPP_FLAG_ID = 0;
     public static final int NULL_FLAG_ID_VAL = 3700; // max the id can be is 60x60=3600
@@ -203,7 +205,6 @@ public class Constants {
             DEFAULT_OPP_FLAG_3_INFO_IDX
     };
 
-
     public static final int DEFAULT_OPP_FLAG_X_SHIFT = 6;
     public static final int DEFAULT_OPP_FLAG_X_MASK = 0b111111000000;
     public static final int DEFAULT_OPP_FLAG_Y_SHIFT = 0;
@@ -211,6 +212,14 @@ public class Constants {
     public static final int OPP_FLAG_CAPTURED_MASK = 0b1000000000000;
     public static final int OPP_FLAG_CAPTURED_SHIFT = 12;
 
+    // ------------------- offensive trapper shit ------------------------
+    public static final int[] STUNNED_OPPONENT_LOCS = {
+            46, 47, 48, 49, 50, 51, 52, 53
+    };
+    public static final int STUNNED_OPPONENT_LOC_X_SHIFT = 6;
+    public static final int STUNNED_OPPONENT_LOC_X_MASK = 0b111111000000;
+    public static final int STUNNED_OPPONENT_LOC_Y_SHIFT = 0;
+    public static final int STUNNED_OPPONENT_LOC_Y_MASK = 0b111111;
+
     //--------------
-    public static final int NUM_ROUNDS_TO_RETREAT_FOR = 3;
 }

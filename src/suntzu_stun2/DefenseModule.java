@@ -28,10 +28,6 @@ public class DefenseModule {
         this.robot = robot;
         this.comms = comms;
         this.nav = nav;
-        // NOTE: Changed these to be initialized on different round nums cuz initialization takes so much mf bytecode.
-//        trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
-//        heuristicMap = new int[rc.getMapWidth()][rc.getMapHeight()];
-//        trapPQ = new PriorityQueue(NUM_TRAPS_TO_KEEP_TRACK_OF);
     }
 
     // Helper methods to manage trap count.
@@ -147,14 +143,21 @@ public class DefenseModule {
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
+        if(trapCount > 10){
+            // TODO: Change this from a constant 10 to some dynamic commed value.
+            minCrumbsNeeded += 10 * TrapType.STUN.buildCost; // Leave some room for offensive guys to make traps
+        }
         if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
         }
+        else if(rc.canSenseLocation(trapPlacementTarget) && rc.canFill(trapPlacementTarget)){
+            rc.fill(trapPlacementTarget);
+        }
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
         }
-        else if(trapCount < 10){
+        else{
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
             trapsMap[trapPlacementTarget.x][trapPlacementTarget.y] = 1; // I placed a trap there.
             trapCount++;

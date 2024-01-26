@@ -173,7 +173,7 @@ public class Navigation {
         int ourY = rc.getLocation().y;
 
         // NOTE: This loop takes ~3000 bytecode (slowest part of the nav code).
-        for(int i = infos.length; i-- > 0;){
+        for(int i = infos.length; --i >= 0;){
             MapLocation infoLoc = infos[i].getMapLocation();
             int bfsX = infoLoc.x - ourX + BFS_CENTER_X;
             int bfsY = infoLoc.y - ourY + BFS_CENTER_Y;
@@ -184,7 +184,7 @@ public class Navigation {
                 heuristicMap[bfsX][bfsY] = 1;
             }
         }
-        for(int i = recentlyVisited.length; i-- > 0;){
+        for(int i = recentlyVisited.length; --i >= 0;){
             MapLocation loc = recentlyVisited[i];
             if(loc == null){
                 continue;

@@ -29,8 +29,6 @@ class AttackHeuristic {
         double myTurnsNeeded = enemyHP / friendlyDamage;
         double enemyTurnsNeeded = friendlyHP / enemyDamage;
 
-//        Util.addToIndicatorString("MTN:" + (int)myTurnsNeeded + ",ETN:" + (int)enemyTurnsNeeded);
-
         if(hasFlag){
             return myTurnsNeeded <= enemyTurnsNeeded;
         }
@@ -38,12 +36,6 @@ class AttackHeuristic {
             // TODO: tune the safetyMultiplier parameter and the 1.3 constant
             return myTurnsNeeded < enemyTurnsNeeded * safetyMultipler * 1.3;
         }
-
-////        Util.addToIndicatorString("FD:" + (int)friendlyDamage + ",ED:" + (int)enemyDamage);
-//        if(hasFlag){
-//            return friendlyAttackDamage >= enemyAttackDamage;
-//        }
-//        return friendlyVisionDamage >= enemyVisionDamage * safetyMultipler;
     }
 }
 
@@ -57,12 +49,11 @@ public class AttackModule {
     MapLocation enemyCOM;
     int lastRetreatRound = -1;
     int[][] stunTrapInfo;
-    boolean[] currentlyStunned; // array of length 69 (lolz) that stores all spots in vision radius
+    int[][] lastStunnedInfo;
     boolean previouslySafe = true;
 
 //    MapLocation enemyChaseLoc = null;
 //    int turnsSinceChaseLocSet = 0;
-
 
     public AttackModule(RobotController rc, Robot robot) throws GameActionException {
         this.rc = rc;
@@ -285,6 +276,7 @@ public class AttackModule {
             if (robot.nearbyVisionEnemies.length == 0) {
                 if (robot.nearbyFriendlies.length > 0) { // If no enemies nearby, go to nearest friendly.
                     // find the closest friendly
+                    Util.addToIndicatorString("RTRF");
                     RobotInfo nearestFriendly = getClosestBot(robot.nearbyFriendlies);
 
                     // fuzzy nav to the closest friendly
@@ -298,13 +290,18 @@ public class AttackModule {
                 // vision radius and no friendlies in vision radius, move away from enemyCOM if that's not null
                 else if (enemyCOM != null) { // If no one nearby,
                     // fuzzy nav away from enemyCOM
+                    Util.addToIndicatorString("RTRE");
                     Direction awayFromEnemyCOM = robot.myLoc.directionTo(enemyCOM).opposite();
 
                     robot.nav.fuzzyNav.goTo(robot.myLoc.add(awayFromEnemyCOM).add(awayFromEnemyCOM).add(awayFromEnemyCOM), 0);
                     return;
-                } else {
-                    System.out.println("No one nearby, but enemyCOM is null");
-                    Util.resign();
+                } else if(robot.defaultHomeFlagLocs != null) {
+                    // If retreating, and no friendlies or enemies nearby, just retreat towards closest flag.
+                    MapLocation closestHome = Util.getClosestHomeFlag();
+                    if(closestHome != null){
+                        Util.addToIndicatorString("RTRH");
+                        robot.nav.fuzzyNav.goTo(closestHome, 0);
+                    }
                 }
             }
         }
@@ -317,7 +314,11 @@ public class AttackModule {
         // gonna use this as a tiebreaker for selecting the best spot to the move from
         int minDistanceToCurrTarget = Integer.MAX_VALUE;
         MapLocation currentTarget = Util.getCurrentTarget();    // the current target that the robot is going to (based on its mode)
+        Util.addToIndicatorString("CT:" + currentTarget);
+        Util.log("RL:" + robot.myLoc);
+        Util.log("CT:" + currentTarget);
 
+        int roundNum = rc.getRoundNum();
         enemyCOM = getCenterOfMass(robot.nearbyVisionEnemies);
         for (int i = 9; --i >= 0; ) {
             Direction dir = robot.nav.allDirections[i];
@@ -325,21 +326,27 @@ public class AttackModule {
             int currentDistanceToTarget = 0;
             boolean currDirIsCardinal = Util.checkIfDirIsCardinal(dir);
 
-            if (currentTarget != null) {
-                currentDistanceToTarget = robot.myLoc.distanceSquaredTo(currentTarget);
-            }
-
             // don't consider this direction if we can't move in it
-            if (!rc.canMove(dir)) continue;
+            if (!Util.canMove(dir, true)) continue;
             MapLocation loc = robot.myLoc.add(dir);
+
+            if (currentTarget != null) {
+                currentDistanceToTarget = loc.distanceSquaredTo(currentTarget);
+            }
 
             // loop over all the enemies in our vision radius and check if they can attack this spot
             for (int x = robot.nearbyVisionEnemies.length; --x >= 0; ) {
                 RobotInfo enemy = robot.nearbyVisionEnemies[x];
+                // Don't count enemies that are stunned.
+                if(roundNum - lastStunnedInfo[enemy.location.x][enemy.location.y] < Constants.NUM_ROUNDS_OF_STUN){
+//                    System.out.println("Ignoring " + enemy.getLocation() + " because they're stunned");
+                    continue;
+                }
                 if (enemy.location.distanceSquaredTo(loc) <= GameConstants.ATTACK_RADIUS_SQUARED) {
                     currNumEnemiesThatCanAttack++;
                 }
             }
+            Util.log("Dir: " + dir + ", NE: " + currNumEnemiesThatCanAttack + ", DT: " + currentDistanceToTarget);
 
             // see if this is the best direction to move in
             if ((currNumEnemiesThatCanAttack < minNumEnemiesThatCanAttack) ||   // minimies the number of enemies that can see you in the new location
@@ -355,8 +362,8 @@ public class AttackModule {
 
 
         if (bestDirToMove != null && bestDirToMove != Direction.CENTER) {
-            Util.addToIndicatorString("MV");
-            rc.move(bestDirToMove);
+            Util.addToIndicatorString("BDM" + bestDirToMove);
+            Util.assert_wrapper(Util.tryMove(bestDirToMove, true));
             robot.myLoc = rc.getLocation();
         }
     }
@@ -374,10 +381,10 @@ public class AttackModule {
 //            enemyActionCOM = enemyCOM;
 //        }
 //        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyActionCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
-        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = new RobotInfo[0];
-        if (enemyCOM != null && rc.canSenseLocation(enemyCOM)) {
-            friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
-        }
+//        RobotInfo[] friendliesThatCanAttackEnemyActionCOM = new RobotInfo[0];
+//        if (enemyCOM != null && rc.canSenseLocation(enemyCOM)) {
+//            friendliesThatCanAttackEnemyActionCOM = rc.senseNearbyRobots(enemyCOM, GameConstants.ATTACK_RADIUS_SQUARED, robot.myTeam);
+//        }
         heuristic = getHeuristic(robot.nearbyFriendlies, robot.nearbyVisionEnemies, robot.nearbyActionFriendlies, robot.nearbyActionEnemies, rc.hasFlag());
     }
 
@@ -459,93 +466,85 @@ public class AttackModule {
 
         // compute the direction to enemyCOM
         Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
+        int roundNum = rc.getRoundNum();
         for(Direction direction : Util.closeDirections(dirToEnemyCOM)){
             MapLocation potentialBuildLocation = robot.myLoc.add(direction);
-            if(rc.canBuild(TrapType.STUN, potentialBuildLocation)){
-                rc.build(TrapType.STUN, potentialBuildLocation);
-                return;
+            if(!rc.canBuild(TrapType.STUN, potentialBuildLocation)) {
+                continue;
+            }
+
+            // Only place trap if it'll activate on a non-stunned enemy instantly.
+            boolean willStun = false;
+//            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
+            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
+//            willStun = enemiesInRange.length > 0;
+            for(int i = enemiesInRange.length; --i >= 0;){
+                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] >= Constants.NUM_ROUNDS_OF_STUN){
+                    willStun = true;
+                    break;
+                }
+            }
+
+            if(!willStun){
+                continue;
+            }
+
+            rc.build(TrapType.STUN, potentialBuildLocation);
+            return;
+        }
+    }
+
+    public void updateEnemyStunnedLocs(int centerX, int centerY, int roundLastStunned){
+        int lowerX = Math.max(centerX - 3, 0);
+        int upperX = Math.min(centerX + 3, rc.getMapWidth());
+        int lowerY = Math.max(centerY - 3, 0);
+        int upperY = Math.min(centerY + 3, rc.getMapHeight());
+
+        for(int x = lowerX; x < upperX; x++){
+            for(int y = lowerY; y < upperY; y++){
+                if(roundLastStunned > lastStunnedInfo[x][y]){
+                    lastStunnedInfo[x][y] = roundLastStunned;
+                }
             }
         }
     }
 
 
-    public void updateStunTrapInfo() throws GameActionException{
+    public void updateStunTrapInfo() throws GameActionException {
         // this method will scan nearby squares and update stun trap info
         // the 2D matrix will be updated with the current round number if we sense a stun trap at the corresponding location
 
         // this method is called in the scanSurroundings method of Robot
         // it should be called by all Robot types
         int currRoundNum = rc.getRoundNum();
-        MapInfo[] nearbyMapInfos = rc.senseNearbyMapInfos();
-        for(MapInfo info: nearbyMapInfos){
+        for(MapInfo info: robot.sensedNearbyMapInfos){
+            int x = info.getMapLocation().x; int y = info.getMapLocation().y;
             if(info.getTrapType() == TrapType.STUN){
-                stunTrapInfo[info.getMapLocation().x][info.getMapLocation().y] = currRoundNum;
+                stunTrapInfo[x][y] = currRoundNum;
             }
-        }
-    }
-
-    public void resetCurrentlyStunned() throws GameActionException{
-        // resets currentlyStunned array to all false
-        if(currentlyStunned == null) return;    // don't do anything if currentlyStunned is null
-        for(int i= currentlyStunned.length; --i>=0;){
-                currentlyStunned[i] = false;
-            }
-    }
-
-
-
-    public void computeCurrentlyStunnedMatrix() throws GameActionException{
-        // this matrix used the stunTrapInfo matrix to compute which squares are currently stunned
-        // a square is currently stunned if the round number of the stun trap is within the last 4 rounds
-        robot.myLoc = rc.getLocation();
-        resetCurrentlyStunned();    // set all items in currently stunned array to false
-        int currRoundNum = rc.getRoundNum();
-        for(int i=-4; i<=4; i++){
-                for(int j=-4; j<=4; j++) {
-                    int xIndex = robot.myLoc.x + i;
-                    int yIndex = robot.myLoc.y + j;
-                    // if it's out of bounds, don't consider it
-                    if (xIndex < 0 || xIndex >= rc.getMapWidth() || yIndex < 0 || yIndex >= rc.getMapHeight()) {
-                        continue;
-                    }
-//                    Util.log("i: " + i + ", j: " + j + ", xIndex: " + xIndex + ", yIndex: " + yIndex);
-                    int idx = Util.getPositionDeltaToIdx(i, j);
-//                    Util.log("idx: " + idx);
-                    if (idx == -1) continue;
-                    int numRoundSinceStunLastSeen = currRoundNum - stunTrapInfo[xIndex][yIndex];
-//                    Util.log("numRoundSinceStunLastSeen: " + numRoundSinceStunLastSeen);
-                    boolean stunned = numRoundSinceStunLastSeen <= 4 && numRoundSinceStunLastSeen > 0;
-                    if (stunned) {
-                        currentlyStunned[idx] = true;
-                        // set the 8 squares around that value to be stunned as well
-                        for (int k = -1; k <= 1; k++) {
-                            for (int l = -1; l <= 1; l++) {
-                                int xIndex2 = xIndex + k;
-                                int yIndex2 = yIndex + l;
-                                // if it's out of bounds, don't consider it
-                                if (xIndex2 < 0 || xIndex2 >= rc.getMapWidth() || yIndex2 < 0 || yIndex2 >= rc.getMapHeight()) {
-                                    continue;
-                                }
-                                int idx2 = Util.getPositionDeltaToIdx(i + k, j + l);
-                                if (idx2 == -1) continue;
-                                currentlyStunned[idx2] = true;
-                            }
-                        }
-                    }
+            else if(stunTrapInfo[x][y] != 0){
+                // If the stun trap went off in the last few rounds, compute enemy stunned locs.
+                System.out.println("Stun trap went off " + (currRoundNum - stunTrapInfo[x][y]) + " rounds ago at " + info.getMapLocation() + "!");
+                if(currRoundNum - stunTrapInfo[x][y] < Constants.NUM_ROUNDS_OF_STUN){
+                    updateEnemyStunnedLocs(x, y, stunTrapInfo[x][y]);
                 }
+                stunTrapInfo[x][y] = 0;
+            }
         }
     }
-
 
     public void runSetup() throws GameActionException {
         // main entry point to this module, which will determine if we're safe or not and will try attacking.
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
 
+        Util.logBytecode("Before update");
         updateAllNearbyAttackInfo();
+        Util.logBytecode("After update");
         if(previouslySafe && !heuristic.getSafe()){
             Util.addToIndicatorString("UNSAFE");
             tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM
+            Util.logBytecode("After placing stun trap");
         }
         previouslySafe = heuristic.getSafe();
         Util.addToIndicatorString("SF:" + heuristic.getSafe());
@@ -613,11 +612,8 @@ public class AttackModule {
         // TODO: we should calculate the legit damage values here according to bot specializations.
         //  Not sure if there's a way to that without hardcoding in values at the moment.
 
-
         RobotInfo[] nearbyEnemies = rc.senseNearbyRobots(9, robot.oppTeam);
         robot.myLoc = rc.getLocation();
-        computeCurrentlyStunnedMatrix();
-
 
         // factor in rounds to kill
         // factor in enemy HP
@@ -627,7 +623,6 @@ public class AttackModule {
         double friendlyHP = 0.0;
         double enemyHP = 0.0;
 
-//        RobotInfo nearestEnemy = getClosestBot(visionEnemies);
         RobotInfo nearestEnemy = getBestAttackVictim();
         if(nearestEnemy == null){
             nearestEnemy = getClosestBot(visionEnemies);
@@ -638,17 +633,10 @@ public class AttackModule {
 
             enemyHP += enemy.getHealth();
             // check to see if they're currently stunned, and if so, don't consider the damage they can do
-//            Util.log("xDelta: " + (enemy.getLocation().x - robot.myLoc.x) + ", yDelta: " + (enemy.getLocation().y - robot.myLoc.y) + ", idx: " + Util.getPositionDeltaToIdx(enemy.getLocation().x - robot.myLoc.x, enemy.getLocation().y - robot.myLoc.y));
             MapLocation enemyLocation = enemy.getLocation();
 
-            Util.LOGGING_ALLOWED = true;
-
-//            Util.log("idx: " + Util.getPositionDeltaToIdx(enemyLocation.x - robot.myLoc.x, enemyLocation.y - robot.myLoc.y));
-//            Util.log("currentlyStnned val: " + currentlyStunned[Util.getPositionDeltaToIdx(enemyLocation.x - robot.myLoc.x, enemyLocation.y - robot.myLoc.y)]);
-
-
-            if(currentlyStunned[Util.getPositionDeltaToIdx(enemyLocation.x - robot.myLoc.x, enemyLocation.y - robot.myLoc.y)]){
-                Util.log("i think the enemy at " + enemyLocation + " is currently stunned");
+            if(rc.getRoundNum() - lastStunnedInfo[enemyLocation.x][enemyLocation.y] < Constants.NUM_ROUNDS_OF_STUN){
+//                System.out.println("i think the enemy at " + enemyLocation + " is currently stunned");
                 continue;
             }
 
@@ -663,8 +651,6 @@ public class AttackModule {
             RobotInfo friendly = visionFriendlies[i];
 
             // if this friendly can't attack the closest enemy to me, don't consider the friendly
-//            if (nearestEnemy != null &&
-//                    friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
             if (nearestEnemy != null &&
                     friendly.getLocation().distanceSquaredTo(nearestEnemy.getLocation()) > 9) {
                 continue;
@@ -673,13 +659,6 @@ public class AttackModule {
             double attackDamage = Util.getAttackDamage(friendly);
             friendlyDamage += attackDamage / Util.getAttackCooldown(friendly);
             friendlyHP += friendly.getHealth();
-        }
-
-//        friendlyHP = 0.0;
-//        enemyHP = 0.0;
-
-        if(nearestEnemy != null){
-            enemyHP += nearestEnemy.getHealth();
         }
 
         RobotInfo myRobotInfo = rc.senseRobot(rc.getID());

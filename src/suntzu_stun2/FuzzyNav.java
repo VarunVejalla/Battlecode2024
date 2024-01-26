@@ -65,7 +65,7 @@ public class FuzzyNav {
         int leastNumMoves = Integer.MAX_VALUE;
         int leastDistanceSquared = Integer.MAX_VALUE;
 
-        for(int i = moveOptions.length; i-- > 0;){
+        for(int i = moveOptions.length; --i >= 0;){
             Direction dir = moveOptions[i];
             MapLocation newLoc = robot.myLoc.add(dir);
 
