@@ -145,6 +145,8 @@ public class DefenseModule {
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
+        
+        
         if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
@@ -152,16 +154,13 @@ public class DefenseModule {
         else if(!rc.canBuild(TrapType.EXPLOSIVE, trapPlacementTarget)){
             nav.pathBF(trapPlacementTarget, 0);
         }
-        else if (trapCount < 12){
+        else if (trapCount < 10){
             rc.build(TrapType.EXPLOSIVE, trapPlacementTarget);
             trapsMap[trapPlacementTarget.x][trapPlacementTarget.y] = 1; // I placed a trap there.
             trapCount++;
             updatePotTrapLocs(trapPlacementTarget);
             trapPlacementTarget = null;
             trapPlacementHeuristic = Integer.MAX_VALUE;
-        }
-        else{ // circle if you have placed down enough traps
-            nav.circle(flagDefaultLoc, 2, 5, 0);
         }
     }
 

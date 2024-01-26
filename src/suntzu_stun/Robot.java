@@ -56,11 +56,6 @@ public class Robot {
     Team oppTeam;
     MapLocation centerLoc;
 
-
-    // map locations used to update traps
-    MapLocation locationAtBeginningOfPreviousTurn;
-    MapLocation locationAtBeginningOfCurrentTurn;
-
     // array containing enemy flag locations (updated every round using comms)
     MapLocation[] approximateOppFlagLocations;
     MapLocation[] knownDroppedOppFlags;
@@ -259,8 +254,6 @@ public class Robot {
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
-        Util.LOGGING_ALLOWED = true;
-
         indicatorString = "";
         checkIfInitializationNeeded();
 
@@ -271,23 +264,10 @@ public class Robot {
 
         readComms(); // update opp flags and the shared target loc index
 
-//        Util.logBytecodeUsed("Before initializing stun trap");
-
         if (!rc.isSpawned()){
             spawn();
-//            Util.logBytecodeUsed("Before initializing stun trap");
-            attackModule.initializeStunTrapInfo();
-//            Util.logBytecodeUsed("After initializing stun trap");
-            locationAtBeginningOfPreviousTurn = null;
         }
-        if(rc.isSpawned()) {
-            locationAtBeginningOfCurrentTurn = rc.getLocation();
-            locationAtBeginningOfCurrentTurn = rc.getLocation();
-
-//            Util.logBytecodeUsed("Before updating stun trap");
-            attackModule.updateStunTrapInfo();
-//            Util.logBytecodeUsed("After updating stun trap");
-
+        else {
             tryGlobalUpgrade();
 
             myLoc = rc.getLocation();
@@ -312,7 +292,6 @@ public class Robot {
             else if(rc.hasFlag()){
                 attackModule.runSetup();
                 if(attackModule.heuristic.getSafe()){
-
                     offenseModule.runMovement();
                 }
                 else{
@@ -354,8 +333,9 @@ public class Robot {
             comms.setOppFlagToCaptured(idOfFlagImCarrying);
         }
 
-
-        locationAtBeginningOfPreviousTurn = locationAtBeginningOfCurrentTurn;
+//        if(rc.getRoundNum() % 50 == 0){
+//            testLog();
+//        }
     }
 
 
