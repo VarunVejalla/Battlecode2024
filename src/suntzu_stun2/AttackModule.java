@@ -130,7 +130,27 @@ public class AttackModule {
             return 1;
         }
 
-        // prioritize specializations
+        // priortize people who are stunned
+        int currRound = rc.getRoundNum();
+        MapLocation enemyXLoc = x.getLocation();
+        MapLocation enemyYLoc = y.getLocation();
+
+
+        int numRoundsSinceXStunned =  currRound - lastStunnedInfo[enemyXLoc.x][enemyYLoc.y];
+        int numRoundsSinceYStunned =  currRound - lastStunnedInfo[enemyYLoc.x][enemyYLoc.y];
+        if(numRoundsSinceXStunned < Constants.NUM_ROUNDS_OF_STUN && numRoundsSinceYStunned >= Constants.NUM_ROUNDS_OF_STUN){
+            return -1;
+        }
+        else if(numRoundsSinceXStunned >= Constants.NUM_ROUNDS_OF_STUN && numRoundsSinceYStunned < Constants.NUM_ROUNDS_OF_STUN){
+            return 1;
+        }
+
+        else if(numRoundsSinceXStunned < Constants.NUM_ROUNDS_OF_STUN && numRoundsSinceYStunned < Constants.NUM_ROUNDS_OF_STUN){
+            return numRoundsSinceXStunned - numRoundsSinceYStunned;
+        }
+
+
+            // prioritize specializations
         int xSpecializationHeuristic = getSpecializationHeuristic(x);
         int ySpecializationHeuristic = getSpecializationHeuristic(y);
 
@@ -468,12 +488,12 @@ public class AttackModule {
         Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
         int roundNum = rc.getRoundNum();
         for(Direction direction : Util.closeDirections(dirToEnemyCOM)){
+
             MapLocation potentialBuildLocation = robot.myLoc.add(direction);
             if(!rc.canBuild(TrapType.STUN, potentialBuildLocation)) {
                 continue;
             }
 
-            // Only place trap if it'll activate on a non-stunned enemy instantly.
             boolean willStun = false;
             RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
 //            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
@@ -496,9 +516,9 @@ public class AttackModule {
 
     public void updateEnemyStunnedLocs(int centerX, int centerY, int roundLastStunned){
         int lowerX = Math.max(centerX - 3, 0);
-        int upperX = Math.min(centerX + 3, rc.getMapWidth());
+        int upperX = Math.min(centerX + 4, rc.getMapWidth());
         int lowerY = Math.max(centerY - 3, 0);
-        int upperY = Math.min(centerY + 3, rc.getMapHeight());
+        int upperY = Math.min(centerY + 4, rc.getMapHeight());
 
         for(int x = lowerX; x < upperX; x++){
             for(int y = lowerY; y < upperY; y++){
@@ -569,8 +589,8 @@ public class AttackModule {
 
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
-        runHealing(); // try healing
         tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM if possible
+        runHealing(); // try healing
     }
 
     public double getHeuristicSafetyMultiplier() {
@@ -635,14 +655,18 @@ public class AttackModule {
             // check to see if they're currently stunned, and if so, don't consider the damage they can do
             MapLocation enemyLocation = enemy.getLocation();
 
-            if(rc.getRoundNum() - lastStunnedInfo[enemyLocation.x][enemyLocation.y] < Constants.NUM_ROUNDS_OF_STUN){
-//                System.out.println("i think the enemy at " + enemyLocation + " is currently stunned");
-                continue;
+            int numRoundsSinceStun = rc.getRoundNum() - lastStunnedInfo[enemyLocation.x][enemyLocation.y];
+            double attackDamage;
+            if(numRoundsSinceStun < Constants.NUM_ROUNDS_OF_STUN){
+                attackDamage = Util.getAttackDamage(enemy) * (numRoundsSinceStun) / Constants.NUM_ROUNDS_OF_STUN;
+            }
+
+            else{
+                attackDamage = Util.getAttackDamage(enemy);
             }
 
             //TODO: we should still probably consider the damage that stunned bots can do,
             // maybe multiply their damage by a factor dependent on how long they're stunned for?
-            double attackDamage = Util.getAttackDamage(enemy);
             enemyDamage += attackDamage / Util.getAttackCooldown(enemy);
         }
 

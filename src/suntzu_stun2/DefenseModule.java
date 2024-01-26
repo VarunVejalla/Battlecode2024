@@ -145,7 +145,7 @@ public class DefenseModule {
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
         if(trapCount > 10){
             // TODO: Change this from a constant 10 to some dynamic commed value.
-            minCrumbsNeeded += 10 * TrapType.STUN.buildCost; // Leave some room for offensive guys to make traps
+            minCrumbsNeeded += 10000 * TrapType.STUN.buildCost; // Leave some room for offensive guys to make traps
         }
         if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
