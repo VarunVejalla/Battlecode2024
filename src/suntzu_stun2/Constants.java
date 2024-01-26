@@ -256,6 +256,30 @@ public class Constants {
     public static final int STUNNED_OPPONENT_LOC_Y_MASK = 0b111111;
 
     //--------------
-    //
+    // Defense Related Stuff
+    //------------------------- Defense help stuff --------------------------
+
+    // -------------------- # of Enemies Near Ally Flag ---------------------
+    public static final int ENEMY_COUNT_NEAR_FLAG_0_IDX = 35;
+    public static final int ENEMY_COUNT_NEAR_FLAG_1_IDX = 36;
+    public static final int ENEMY_COUNT_NEAR_FLAG_2_IDX = 37;
+    public static final int[] ENEMY_COUNT_NEAR_FLAG_INDICES = {ENEMY_COUNT_NEAR_FLAG_0_IDX, ENEMY_COUNT_NEAR_FLAG_1_IDX, ENEMY_COUNT_NEAR_FLAG_2_IDX};
+    public static final int ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_MASK = 0b11111;
+    public static final int ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_SHIFT = 0;
+    public static final int ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_MASK = 0b1111100000;
+    public static final int ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_SHIFT = 5;
+    public static final int ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_MASK = 0b10000000000;
+    public static final int ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_SHIFT = 10;
+
+    // ------------------- Closest Enemy Loc to Ally Flag --------------------
+    public static final int CLOSEST_ENEMY_TO_FLAG_0_IDX = 38;
+    public static final int CLOSEST_ENEMY_TO_FLAG_1_IDX = 39;
+    public static final int CLOSEST_ENEMY_TO_FLAG_2_IDX = 40;
+    public static final int[] CLOSEST_ENEMY_TO_FLAG_INDICES = {CLOSEST_ENEMY_TO_FLAG_0_IDX, CLOSEST_ENEMY_TO_FLAG_1_IDX, CLOSEST_ENEMY_TO_FLAG_2_IDX};
+    public static final int CLOSEST_ENEMY_TO_FLAG_X_MASK = 4032; // 111111000000
+    public static final int CLOSEST_ENEMY_TO_FLAG_X_SHIFT = 6;
+    public static final int CLOSEST_ENEMY_TO_FLAG_Y_MASK = 63; // 00000011111
+    public static final int CLOSEST_ENEMY_TO_FLAG_Y_SHIFT = 0;
+    public static final int DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG = 30;
 
 }

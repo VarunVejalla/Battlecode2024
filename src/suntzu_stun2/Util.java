@@ -421,6 +421,18 @@ public class Util {
         return null;
     }
 
+    public static int maxIndexInArray(int[] array){
+        int maxVal = array[0];
+        int maxIdx = 0;
+        for(int i = 1; i < array.length; i++){
+            if(array[i] > maxVal){
+                maxVal = array[i];
+                maxIdx = i;
+            }
+        }
+        return maxIdx;
+    }
+
     public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
         // TODO: implement this method to take into account attack specializations
         // this method returns the attack damage of the robot given its specialization
@@ -432,5 +444,4 @@ public class Util {
         // TODO: implement this method to take into account attack specializations
         return 20.0;
     }
-
 }

@@ -12,6 +12,8 @@ public class DefenseModule {
     MapLocation flagDefaultLoc;
     MapLocation sharedDefensiveTarget;
     int sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+    int mobileDefendingFlagIdx = -1;
+
     MapLocation trapPlacementTarget = null;
     int trapPlacementHeuristic = Integer.MAX_VALUE;
     MapLocation[] allFlagDefaultLocs = new MapLocation[3];
@@ -340,15 +342,32 @@ public class DefenseModule {
 //        return Integer.MAX_VALUE;
 //    }
 
+
+
+    final int HOME_DANGER_ENTER_THRESHOLD = 3;
+    final int HOME_DANGER_EXIT_THRESHOLD = 1;
+    final int HOME_DANGER_SWITCH_THRESHOLD = 3;
     public boolean checkSharedDefensiveTargetStillValid() throws GameActionException {
         if(sharedDefensiveTarget == null){
             sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+            mobileDefendingFlagIdx = -1;
             return false;
         }
 
         for (MapLocation loc : robot.knownTakenAllyFlags) {
             if (loc != null && loc.distanceSquaredTo(sharedDefensiveTarget) <= 2) {
                 sharedDefensiveTargetPriority = 1;
+                mobileDefendingFlagIdx = -1;
+                return false;
+            }
+        }
+
+        // Check if base is still under attack.
+        if(Util.checkIfItemInArray(sharedDefensiveTarget, allFlagDefaultLocs)){
+            int flagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
+            if(comms.getEnemyCountNearFlagPrevRound(flagIdx) > HOME_DANGER_EXIT_THRESHOLD){
+                sharedDefensiveTargetPriority = 2;
+                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
                 return false;
             }
         }
@@ -357,6 +376,8 @@ public class DefenseModule {
         Util.logArray("KTA: ", robot.knownTakenAllyFlags);
         sharedDefensiveTarget = null;
         sharedDefensiveTargetPriority = Integer.MAX_VALUE;
+        mobileDefendingFlagIdx = -1;
+
         return true;
     }
 
@@ -373,9 +394,23 @@ public class DefenseModule {
             }
         }
 
+        if(bestPriority >= 2){
+            int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
+            int mostInDangerFlagIdx = Util.maxIndexInArray(enemyCounts);
+            if(enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_ENTER_THRESHOLD){
+                if(mobileDefendingFlagIdx == -1 || enemyCounts[mobileDefendingFlagIdx] - enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_SWITCH_THRESHOLD){
+                    bestDefensiveTargetLoc = allFlagDefaultLocs[mostInDangerFlagIdx];
+                    bestPriority = 2;
+                }
+            }
+        }
+
         if(bestPriority < sharedDefensiveTargetPriority){
             sharedDefensiveTarget = bestDefensiveTargetLoc;
             sharedDefensiveTargetPriority = bestPriority;
+            if(sharedDefensiveTargetPriority == 2){
+                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
+            }
             return true;
         }
         return false;

@@ -205,12 +205,12 @@ public class Robot {
             // set the ratio according if needs to be changed
             // TODO: based this off the game progression / how many flags we have / how many flags the opp has took / etc.
 
-            if(rc.getRoundNum() < 600){
-                return;
-            }
-            else{
-                comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
-            }
+//            if(rc.getRoundNum() < 600){
+//                return;
+//            }
+//            else{
+//                comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
+//            }
         }
 
 
@@ -488,20 +488,33 @@ public class Robot {
 
 
         Util.LOGGING_ALLOWED = true;
-        Util.logForBotWithId(12553, "------------- begin log -----------------");
-        Util.logForBotWithId(12553, "Current bot counts: ");
-        Util.logForBotWithId(12553, "TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
-        Util.logForBotWithId(12553, "SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
-        Util.logForBotWithId(12553, "MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
-        Util.logForBotWithId(12553, "OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+        int id = 11031;
+        Util.logForBotWithId(id, "------------- begin log -----------------");
+        Util.logForBotWithId(id, "Current bot counts: ");
+        Util.logForBotWithId(id, "TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
+        Util.logForBotWithId(id, "SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
+        Util.logForBotWithId(id, "MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
+        Util.logForBotWithId(id, "OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
 
-        Util.logForBotWithId(12553, "current commed ratio:");
-        Util.logForBotWithId(12553, "TRAPPER: " + comms.getTroopRatio().trapperRatio);
-        Util.logForBotWithId(12553, "SD: " + comms.getTroopRatio().stationaryDefenderRatio);
-        Util.logForBotWithId(12553, "MD: " + comms.getTroopRatio().mobileDefenderRatio);
-        Util.logForBotWithId(12553, "OF: " + comms.getTroopRatio().offensiveRatio);
-        Mode mode = determineRobotTypeToSpawn();
-        Util.logForBotWithId(12553, "------------- end log ------------------");
+        Util.logForBotWithId(id, "current commed ratio:");
+        Util.logForBotWithId(id, "TRAPPER: " + comms.getTroopRatio().trapperRatio);
+        Util.logForBotWithId(id, "SD: " + comms.getTroopRatio().stationaryDefenderRatio);
+        Util.logForBotWithId(id, "MD: " + comms.getTroopRatio().mobileDefenderRatio);
+        Util.logForBotWithId(id, "OF: " + comms.getTroopRatio().offensiveRatio);
+//        Mode mode = determineRobotTypeToSpawn();
+
+        if(rc.getID() == id) {
+            if (defaultHomeFlagLocs != null) {
+                Util.logArray("defaultHomeFlagLocs: ", defaultHomeFlagLocs);
+            }
+            Util.logArray("Enemy counts near flags", new Integer[]{
+                    comms.getEnemyCountNearFlagPrevRound(0),
+                    comms.getEnemyCountNearFlagPrevRound(1),
+                    comms.getEnemyCountNearFlagPrevRound(2),
+            });
+        }
+
+        Util.logForBotWithId(id, "------------- end log ------------------");
 
         Util.LOGGING_ALLOWED = false;
 
@@ -819,6 +832,14 @@ public class Robot {
         tryCleaningTakenAllyFlags();
         tryAddingTakenAllyFlags();
         tryUpdatingHomeFlagTakenInfo();
+
+        // Figuring out how close enemies are to us
+        setEnemyCountsToPrevRoundIfNotAlreadySet();
+        updateEnemyCountsNearFlag();
+        updateClosestEnemyToFlag();
+
+
+
         offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
@@ -868,4 +889,78 @@ public class Robot {
         return -1;
     }
 
+    public void updateClosestEnemyToFlag() throws GameActionException {
+        for(int flagIdx = 0; flagIdx < 3; flagIdx++){
+            MapLocation closestLoc = comms.getClosestEnemyToFlagLocation(flagIdx);
+            int closestDist = Integer.MAX_VALUE;
+            if(comms.getHomeFlagTakenStatus(0)){
+                continue;
+            }
+            for(RobotInfo info : nearbyVisionEnemies){
+                MapLocation infoLoc = info.getLocation();
+                int dist = infoLoc.distanceSquaredTo(defaultHomeFlagLocs[flagIdx]);
+                if(dist < closestDist){
+                    closestDist = dist;
+                    closestLoc = infoLoc;
+                }
+            }
+            comms.setClosestEnemyToFlagLocation(flagIdx, closestLoc);
+        }
+    }
+
+    public void updateEnemyCountsNearFlag() throws GameActionException {
+        int[] counts = new int[3];
+        for(RobotInfo info : nearbyVisionEnemies){
+            MapLocation infoLoc = info.getLocation();
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[0]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[0] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[1]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[1] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[2]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[2] += 1;
+            }
+        }
+        if(!comms.getHomeFlagTakenStatus(0) && counts[0] > comms.getEnemyCountNearFlagCurrRound(0)){
+            comms.setEnemyCountNearFlagCurrRound(0, counts[0]);
+        }
+        if(!comms.getHomeFlagTakenStatus(1) && counts[1] > comms.getEnemyCountNearFlagCurrRound(1)){
+            comms.setEnemyCountNearFlagCurrRound(1, counts[1]);
+        }
+        if(!comms.getHomeFlagTakenStatus(2) && counts[2] > comms.getEnemyCountNearFlagCurrRound(2)){
+            comms.setEnemyCountNearFlagCurrRound(2, counts[2]);
+        }
+    }
+
+    public void setEnemyCountsToPrevRoundIfNotAlreadySet() throws GameActionException {
+        int mod = rc.getRoundNum() % 2;
+        boolean setDefensiveTarget = comms.getEnemyCountNearFlagLastUpdated(0) != mod;
+        if(setDefensiveTarget){
+            testLog();
+            MapLocation[] closestEnemyLocs = {comms.getClosestEnemyToFlagLocation(0), comms.getClosestEnemyToFlagLocation(1) , comms.getClosestEnemyToFlagLocation(2)};
+//            defenseModule.tryUpdateSharedDefensiveTarget();
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(0)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(0, comms.getEnemyCountNearFlagCurrRound(0));
+            comms.setEnemyCountNearFlagCurrRound(0, 0);
+            comms.setEnemyCountNearFlagLastUpdated(0, mod);
+            comms.setClosestEnemyToFlagLocation(0, null);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(1)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(1, comms.getEnemyCountNearFlagCurrRound(1));
+            comms.setEnemyCountNearFlagCurrRound(1,  0);
+            comms.setEnemyCountNearFlagLastUpdated(1, mod);
+            comms.setClosestEnemyToFlagLocation(1, null);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(2)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(2, comms.getEnemyCountNearFlagCurrRound(2));
+            comms.setEnemyCountNearFlagCurrRound( 2, 0);
+            comms.setEnemyCountNearFlagLastUpdated(2, mod);
+            comms.setClosestEnemyToFlagLocation(2, null);
+        }
+    }
 }
