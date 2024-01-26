@@ -297,6 +297,9 @@ public class DamScout {
 
         // if you're adjacent to a dam, don't do anything
         if (getDamAdjDir() != null) { // if we're adjacent to a dam, just stop
+            if(rc.canBuild(TrapType.STUN, robot.myLoc)) {
+                rc.build(TrapType.STUN, robot.myLoc);
+            }
             return;
         }
 
