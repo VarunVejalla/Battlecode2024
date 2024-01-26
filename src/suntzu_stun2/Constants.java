@@ -221,5 +221,17 @@ public class Constants {
     public static final int STUNNED_OPPONENT_LOC_Y_SHIFT = 0;
     public static final int STUNNED_OPPONENT_LOC_Y_MASK = 0b111111;
 
-    //--------------
+    // flag placement stuff
+    public static final int HOME_FLAG_0_CURRENT_IDX = 50;
+    public static final int HOME_FLAG_1_CURRENT_IDX = 51;
+    public static final int HOME_FLAG_2_CURRENT_IDX = 52;
+    public static final int[] HOME_FLAG_CURRENT_INDICES = {
+            HOME_FLAG_0_CURRENT_IDX,
+            HOME_FLAG_1_CURRENT_IDX,
+            HOME_FLAG_2_CURRENT_IDX
+    };
+    public static final int FLAG_SNAPBACK_IDX = 3;
+    public static final int FLAG_SNAPBACK_SHIFT = 8;
+    public static final int FLAG_SNAPBACK_MASK = 0b100000000;
+
 }

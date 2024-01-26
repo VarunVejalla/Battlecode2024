@@ -14,6 +14,9 @@ public class FlagMover {
     boolean placedFlag = false;
     int flagIdx = -1;
     MapLocation[] alreadyPlacedFlags = new MapLocation[3];
+    boolean stayHoldingFlags = false;
+    boolean spreadOut = false;
+    boolean keepGoing = true;
 
     public FlagMover(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -33,21 +36,53 @@ public class FlagMover {
             }
         }
 
+//        if(rc.getRoundNum() == Constants.SETUP_ROUNDS-10) {
+//            MapLocation currLoc = rc.getLocation();
+//            if(maxDist >= 20) {
+//                stayHoldingFlags = true;
+//                spreadOut = false;
+//                keepGoing = false;
+//            } else if(minDist < 6) {
+//                spreadOut = true;
+//                stayHoldingFlags = false;
+//                keepGoing = false;
+//            } else {
+//                keepGoing = true;
+//                spreadOut = false;
+//                stayHoldingFlags = false;
+//            }
+//        }
+
         // If it's almost the last round, just place down the flag. It'll get placed down automatically, but this way you can at least log the exact location.
         if(rc.getRoundNum() >= Constants.SETUP_ROUNDS - 2){
             MapLocation currLoc = rc.getLocation();
+            boolean legal = rc.senseLegalStartingFlagPlacement(currLoc);
             rc.dropFlag(currLoc);
             placedFlag = true;
             if(flagIdx == -1){
                 System.out.println("UNKNOWN FLAG IDX SO RESIGNING");
                 Util.resign();
             }
-            System.out.println("Setting new default flag loc for " + flagIdx + " to " + currLoc);
-            comms.writeDefaultHomeFlagLocs(flagIdx, currLoc);
+
+            if(legal && !comms.getFlagSnapbackAllowed()) {
+                System.out.println("Setting new default flag loc for " + flagIdx + " to " + currLoc);
+                comms.writeDefaultHomeFlagLocs(flagIdx, currLoc);
+            }
+            else {
+                System.out.println("Resetting all flag locations.");
+                // TODO: want to reset all flag locations, not just let the one we are holding be not written
+
+                for(int i = 0; i < 3; i += 1) {
+                    comms.writeDefaultHomeFlagLocs(i, robot.spawnCenters[i]);
+                }
+                comms.writeFlagSnapBackAllowed(1);
+            }
             comms.writeOurFlagNewHomeStatus(flagIdx, true);
+            return;
         }
 
-        MapInfo[] infos = rc.senseNearbyMapInfos(GameConstants.VISION_RADIUS_SQUARED);
+        // only need to look at adjacent squares (and current square)
+        MapInfo[] infos = rc.senseNearbyMapInfos(GameConstants.INTERACT_RADIUS_SQUARED);
         for(MapInfo info : infos){
             MapLocation loc = info.getMapLocation();
             // Check something

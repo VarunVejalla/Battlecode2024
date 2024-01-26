@@ -263,6 +263,7 @@ public class DefenseModule {
             runMobileDefense();
             return;
         }
+        checkIfFlagsValid();
 
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
@@ -287,6 +288,7 @@ public class DefenseModule {
     }
 
     public void runMobileDefense() throws GameActionException {
+        checkIfFlagsValid();
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
@@ -322,6 +324,19 @@ public class DefenseModule {
             Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
             nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
+        }
+    }
+
+    private void checkIfFlagsValid() throws GameActionException {
+        int roundNum = rc.getRoundNum();
+        if(roundNum >= GameConstants.SETUP_ROUNDS-2 && roundNum <= GameConstants.SETUP_ROUNDS+1) {
+            if(comms.getFlagSnapbackAllowed()) {
+                trapPQ = null;
+                trapCount = 0;
+                heuristicMap = null;
+                trapsMap = null; // 0 means nothing, 1 means I placed a trap, 2 means someone else placed a trap, 3 means its currently in the trap PQ.
+                robot.checkIfInitializationNeeded();
+            }
         }
     }
 
@@ -379,6 +394,10 @@ public class DefenseModule {
             return true;
         }
         return false;
+    }
+
+    public static void resetTrapPQ() {
+
     }
 
 
