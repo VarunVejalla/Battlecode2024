@@ -38,6 +38,23 @@ class TroopRatio {
         this.stationaryDefenderFrac = (double)stationaryDefenderRatio / ratioDenom;
         this.trapperFrac = (double)trapperRatio / ratioDenom;
     }
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        TroopRatio other = (TroopRatio) obj;
+
+        return this.offensiveRatio == other.offensiveRatio &&
+                this.mobileDefenderRatio == other.mobileDefenderRatio &&
+                this.stationaryDefenderRatio == other.stationaryDefenderRatio &&
+                this.trapperRatio == other.trapperRatio &&
+                this.ratioDenom == other.ratioDenom;
+    }
 }
 
 enum Mode {
@@ -103,6 +120,8 @@ public class Robot {
     MapLocation[] defaultHomeFlagLocs; // default spots where home flags should be after round 200 (populated after round 200)
     MapLocation[] spawnCenters;
     MapLocation[] allSpawnLocs;
+
+    int numRoundsThatFlagsHaveBeenSafe = 0; // how many rounds have our flags been relatively safe
 
     int idOfFlagImCarrying = -1;
 
@@ -199,18 +218,28 @@ public class Robot {
     }
 
         public void changeTroopRatioIfNeeded() throws GameActionException{
-            // this method changes ratio of troops given the game progression
-            // look at the number of enemies at the flag under greatest distress
-            // read current ratio
-            // set the ratio according if needs to be changed
-            // TODO: based this off the game progression / how many flags we have / how many flags the opp has took / etc.
+            TroopRatio currRatio = comms.getTroopRatio();
+            int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
+            int numEnemiesNearOurFlags = 0;
+            for(int i = 0; i < 3; i++){
+                numEnemiesNearOurFlags += enemyCounts[i];
+            }
 
-//            if(rc.getRoundNum() < 600){
-//                return;
-//            }
-//            else{
-//                comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
-//            }
+            TroopRatio potentialNewRatio;
+            // full send on defense
+            if(numEnemiesNearOurFlags >= Constants.THRESHOLD_TO_CALL_FOR_HELP_ON_DEFENSE){
+                potentialNewRatio = new TroopRatio(0, 13, 0, 0);
+            }
+            // full send on offense
+            else{
+                potentialNewRatio = new TroopRatio(13, 2, 0, 0);
+            }
+
+            if(potentialNewRatio.equals(currRatio)){    // don't do an unnecessary write if you don't need to
+                return;
+            }
+
+            comms.writeTroopRatio(potentialNewRatio);
         }
 
 
@@ -474,12 +503,12 @@ public class Robot {
             comms.incrementCurrentRoundBotCount(mode);
         }
 
-        if((rc.getRoundNum() % 5 == 0 || rc.getRoundNum() == 601) ){
-            testLog();
-            if(rc.getRoundNum() == 1000) {
-                Util.resign();
-            }
-        }
+//        if((rc.getRoundNum() % 5 == 0 || rc.getRoundNum() == 601) ){
+//            testLog();
+//            if(rc.getRoundNum() == 1000) {
+//                Util.resign();
+//            }
+//        }
     }
 
 

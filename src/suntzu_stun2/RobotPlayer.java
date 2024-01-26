@@ -45,7 +45,7 @@ public strictfp class RobotPlayer {
 
         if(rc.getRoundNum() != startTurn){
             System.out.println("BYTECODE EXCEEDED " + rc.getID() + ", " + robot.mode + ", " + rc.getLocation());
-            Util.resign();
+//            Util.resign();
         }
         while (true) {
             startTurn = rc.getRoundNum();
@@ -58,7 +58,7 @@ public strictfp class RobotPlayer {
                 robot.run();
                 if(rc.getRoundNum() != startTurn){
                     System.out.println("BYTECODE EXCEEDED " + rc.getID() + ", " + robot.mode + ", " + rc.getLocation());
-                    Util.resign();
+//                    Util.resign();
                 }
             }
             catch (Exception e) {
