@@ -153,11 +153,11 @@ public class Robot {
         // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
         // we run the canBuyGlobal() method so we don't waste bytecode
         if(rc.getRoundNum() > 1500 && rc.getRoundNum() < 1600 && rc.canBuyGlobal(GlobalUpgrade.CAPTURING)){
-            rc.buyGlobal(GlobalUpgrade.CAPTURING);
+            rc.buyGlobal(GlobalUpgrade.ACTION);
         }
 
         else if(rc.getRoundNum() > 750 && rc.getRoundNum() < 850 && rc.canBuyGlobal(GlobalUpgrade.ACTION)){
-            rc.buyGlobal(GlobalUpgrade.ACTION);
+            rc.buyGlobal(GlobalUpgrade.HEALING);
         }
     }
 
@@ -329,10 +329,10 @@ public class Robot {
                 checkToSeeIfIShouldBecomeStationaryDefender();
 
                 if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
-                    System.out.println("RUNNING STATIONARY DEFENSE");
-                    System.out.println("DEFENDING FLAG IDX: " + defenseModule.defendingFlagIdx);
-                    System.out.println("my current location: " + rc.getLocation());
-                    System.out.println("location of flag I'm trying to defend: " + comms.getDefaultHomeFlagLoc(defenseModule.defendingFlagIdx));
+//                    System.out.println("RUNNING STATIONARY DEFENSE");
+//                    System.out.println("DEFENDING FLAG IDX: " + defenseModule.defendingFlagIdx);
+//                    System.out.println("my current location: " + rc.getLocation());
+//                    System.out.println("location of flag I'm trying to defend: " + comms.getDefaultHomeFlagLoc(defenseModule.defendingFlagIdx));
                     defenseModule.runStationaryDefense();
                 }
 
