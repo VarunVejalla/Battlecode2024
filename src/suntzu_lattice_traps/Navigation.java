@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.*;
 
@@ -16,6 +16,13 @@ public class Navigation {
             Direction.SOUTHWEST,
             Direction.WEST,
             Direction.NORTHWEST,
+    };
+
+    static final Direction[] cardinalDirections = {
+            Direction.NORTH,
+            Direction.EAST,
+            Direction.SOUTH,
+            Direction.WEST,
     };
 
     // array containing all directions

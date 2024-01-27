@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.*;
 
@@ -145,6 +145,11 @@ public class DefenseModule {
         // If you don't have enough crumbs for a trap, just circle.
         int numHomies = getNumHomiesWithLowerTrapCount();
         int minCrumbsNeeded = numHomies * TrapType.EXPLOSIVE.buildCost + TrapType.EXPLOSIVE.buildCost;
+        if(trapCount > 8){
+            // TODO: Change this from a constant 10 to some dynamic commed value.
+            minCrumbsNeeded += 100000 * TrapType.STUN.buildCost; // Leave some room for offensive guys to make traps
+        }
+
         if(trapPlacementTarget == null || rc.getCrumbs() < minCrumbsNeeded){
             Util.addToIndicatorString("CRC: " + flagDefaultLoc);
             nav.circle(flagDefaultLoc, 2, 5, 0);
@@ -280,6 +285,7 @@ public class DefenseModule {
         comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
         placeTrapsAroundFlag();
     }
+
 
     public void runMobileDefense() throws GameActionException {
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);

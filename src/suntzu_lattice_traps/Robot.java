@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.*;
 
@@ -241,6 +241,12 @@ public class Robot {
     }
 
     public void checkIfInitializationNeeded(){
+        if(attackModule.stunTrapInfo == null){
+            attackModule.stunTrapInfo = new int[rc.getMapWidth()][rc.getMapHeight()]; // initialized to all zeroes
+        }
+        else if(attackModule.lastStunnedInfo == null){
+            attackModule.lastStunnedInfo = new int[rc.getMapWidth()][rc.getMapHeight()];
+        }
         if(defenseModule.trapsMap == null){
             defenseModule.trapsMap = new byte[rc.getMapWidth()][rc.getMapHeight()];
         }
@@ -254,6 +260,11 @@ public class Robot {
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
+
+        if(rc.getRoundNum() > 50){
+            rc.resign();
+        }
+
         indicatorString = "";
         checkIfInitializationNeeded();
 
@@ -276,19 +287,41 @@ public class Robot {
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
-                if(potentialFlagMover){
-                    potentialFlagMover = flagMover.runFlagMover();
+                if(rc.getRoundNum() < 10) {
+                    MapLocation[] spawnLocCenters = Util.getSpawnLocCenters();
+                    comms.writeDefaultHomeFlagLocs(0, spawnLocCenters[0]);
+                    comms.writeOurFlagNewHomeStatus(0, false);
+
+                    comms.writeDefaultHomeFlagLocs(1, spawnLocCenters[1]);
+                    comms.writeOurFlagNewHomeStatus(1, false);
+
+                    comms.writeDefaultHomeFlagLocs(2, spawnLocCenters[2]);
+                    comms.writeOurFlagNewHomeStatus(2, false);
+
+                    int avgX = 0;
+                    int avgY = 0;
+
+                    for(MapLocation loc : spawnLocCenters) {
+                        avgX += loc.x;
+                        avgY += loc.y;
+                    }
+                    avgX /= 3;
+                    avgY /= 3;
+                    comms.writeNewHomeFlagCenter(new MapLocation(avgX, avgY));
                 }
-                else if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+
+                if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runStationaryDefense();
                 }
                 else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runMobileDefense();
                 }
-                else{ // If on offense, keep running the scout code.
+                else if(mode != Mode.STATIONARY_DEFENSE){ // If on offense, keep running the scout code.
                     scout.runScout();
                 }
             }
+
+
             else if(rc.hasFlag()){
                 attackModule.runSetup();
                 if(attackModule.heuristic.getSafe()){
@@ -684,6 +717,11 @@ public class Robot {
         nearbyActionFriendlies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, myTeam);
         nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
         nearbyActionEnemies = rc.senseNearbyRobots(GameConstants.ATTACK_RADIUS_SQUARED, oppTeam);
+
+        if(rc.getRoundNum() > 5){
+            attackModule.updateStunTrapInfo();
+        }
+
     }
 
     public int getOppFlagIdx(int flagID){

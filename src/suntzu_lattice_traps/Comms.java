@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -856,5 +856,12 @@ public class Comms {
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // comms for flag snapback
+    public boolean getFlagSnapbackAllowed() throws GameActionException {
+        return extractVal(Constants.FLAG_SNAPBACK_IDX, Constants.FLAG_SNAPBACK_MASK, Constants.FLAG_SNAPBACK_SHIFT) == 1;
+    }
+    public void writeFlagSnapBackAllowed(int isAllowed) throws GameActionException {
+        insertVal(Constants.FLAG_SNAPBACK_IDX, Constants.FLAG_SNAPBACK_MASK, Constants.FLAG_SNAPBACK_SHIFT, isAllowed);
+    }
 
 }

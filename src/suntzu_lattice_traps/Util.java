@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.*;
 
@@ -7,7 +7,7 @@ public class Util {
     static RobotController rc;
     static Robot robot;
     static boolean LOGGING_ALLOWED = true;
-    static boolean SUBMISSION_MODE = false; // TODO: Set this to true when submitting.
+    static boolean SUBMISSION_MODE = true; // TODO: Set this to true when submitting.
 
     public static void resign(){
         if(!SUBMISSION_MODE){

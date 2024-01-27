@@ -1,9 +1,7 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.Clock;
-import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
-import battlecode.common.TrapType;
 
 
 /**

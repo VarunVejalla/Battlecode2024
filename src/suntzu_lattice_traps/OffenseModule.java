@@ -1,4 +1,4 @@
-package suntzu;
+package suntzu_lattice_traps;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
