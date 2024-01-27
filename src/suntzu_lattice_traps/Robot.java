@@ -344,7 +344,7 @@ public class Robot {
                 tryPickingUpOppFlag();
                 if(rc.hasFlag() && homeLocWhenCarryingFlag == null){
                     homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
-                } else {
+                } else if(!rc.hasFlag()){
                     homeLocWhenCarryingFlag = null;
                 }
                 attackModule.runSetup();
