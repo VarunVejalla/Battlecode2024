@@ -459,10 +459,6 @@ public class AttackModule {
     public void tryPlacingStunTrap() throws GameActionException {
         // this tries to place a stun trap in the direction of the enemyCOM
         // compute enemyCOM
-        Util.LOGGING_ALLOWED = true;
-        Util.logBytecode("before tryPlacing Stun Trap");
-        Util.LOGGING_ALLOWED = false;
-
 
         if(!rc.isActionReady()) return;  // can't build if we're not action ready
 
@@ -481,46 +477,37 @@ public class AttackModule {
             }
 
             // check to see if there a is another stun trap in a cardinally adjacent square. if so, don't place a trap
-            boolean adjacentStunTrap = false;
-            for(Direction dir : robot.nav.cardinalDirections){
-                MapLocation adjacentLoc = potentialBuildLocation.add(dir);
-                if(rc.canSenseLocation(adjacentLoc) && (stunTrapInfo[adjacentLoc.x][adjacentLoc.y] != 0)){
-                        adjacentStunTrap = true;
-                        break;
-                    }
-                }
-
-            if(!adjacentStunTrap && rc.canBuild(TrapType.STUN, potentialBuildLocation)){
-                rc.build(TrapType.STUN, potentialBuildLocation);
-
-                Util.LOGGING_ALLOWED = true;
-                Util.logBytecode("after placing trap");
-                Util.LOGGING_ALLOWED = false;
-                return;
-            }
-
-            Util.LOGGING_ALLOWED = true;
-            Util.logBytecode("after tryPlacing Stun Trap");
-            Util.LOGGING_ALLOWED = false;
+//            boolean adjacentStunTrap = false;
+//            for(Direction dir : robot.nav.cardinalDirections){
+//                MapLocation adjacentLoc = potentialBuildLocation.add(dir);
+//                if(rc.canSenseLocation(adjacentLoc) && (stunTrapInfo[adjacentLoc.x][adjacentLoc.y] != 0)){
+//                        adjacentStunTrap = true;
+//                        break;
+//                    }
+//                }
+//
+//            if(adjacentStunTrap && rc.canBuild(TrapType.STUN, potentialBuildLocation)){
+//                rc.build(TrapType.STUN, potentialBuildLocation);
+//            }
 
             // Only place trap if it'll activate on a non-stunned enemy instantly.
-//            boolean willStun = false;
-//            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
-////            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
-////            willStun = enemiesInRange.length > 0;
-//            for(int i = enemiesInRange.length; --i >= 0;){
-//                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] >= Constants.NUM_ROUNDS_OF_STUN){
-//                    willStun = true;
-//                    break;
-//                }
-//            }
-//
-//            if(!willStun){
-//                continue;
-//            }
-//
-//            rc.build(TrapType.STUN, potentialBuildLocation);
-//            return;
+            boolean willStun = false;
+            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, TrapType.STUN.enterRadius, robot.oppTeam);
+//            RobotInfo[] enemiesInRange = rc.senseNearbyRobots(potentialBuildLocation, 2, robot.oppTeam);
+//            willStun = enemiesInRange.length > 0;
+            for(int i = enemiesInRange.length; --i >= 0;){
+                if(roundNum - lastStunnedInfo[enemiesInRange[i].location.x][enemiesInRange[i].location.y] >= Constants.NUM_ROUNDS_OF_STUN){
+                    willStun = true;
+                    break;
+                }
+            }
+
+            if(!willStun){
+                continue;
+            }
+
+            rc.build(TrapType.STUN, potentialBuildLocation);
+            return;
         }
     }
 
@@ -581,8 +568,8 @@ public class AttackModule {
 //        if(previouslySafe && !heuristic.getSafe()){
         if(!heuristic.getSafe()){
             Util.addToIndicatorString("UNSAFE");
-
             tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM
+            Util.logBytecode("After placing stun trap");
         }
 
 

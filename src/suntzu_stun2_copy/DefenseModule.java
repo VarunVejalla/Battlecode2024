@@ -306,13 +306,13 @@ public class DefenseModule {
 
 
 
-        if(!initializedPotTrapsArray){
-            updatePotTrapLocs(flagDefaultLoc);
-            initializedPotTrapsArray = true;
-        }
-        updateTrapCountValue();
-        comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
-        placeTrapsAroundFlag();
+//        if(!initializedPotTrapsArray){
+//            updatePotTrapLocs(flagDefaultLoc);
+//            initializedPotTrapsArray = true;
+//        }
+//        updateTrapCountValue();
+//        comms.writeNumTrapsForFlag(defendingFlagIdx, trapCount);
+//        placeTrapsAroundFlag();
     }
 
     public void runMobileDefense() throws GameActionException {
@@ -354,7 +354,7 @@ public class DefenseModule {
         }
     }
 
-//     Strategy methods
+    // Strategy methods
 //    public int getDefensiveTargetPriority(MapLocation defensiveTarget){
 //        // if there is a spotted captured flag, that's a priority of 1.
 //        if(Util.checkIfItemInArray(defensiveTarget, robot.knownCarriedAllyFlags)){
