@@ -297,7 +297,7 @@ public class Robot {
         int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
 
         // Always have at least 3 stationary defenders.
-        if(numStationaryDefenders < MIN_NUM_OF_SD){
+        if(numStationaryDefenders < MIN_NUM_OF_SD && rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
             return Mode.STATIONARY_DEFENSE;
         }
 
@@ -364,7 +364,7 @@ public class Robot {
 
     public void spawn() throws GameActionException {
         // reset mode based on current ratios
-        if(rc.getRoundNum() > Constants.SETUP_ROUNDS){
+        if(rc.getRoundNum() > Constants.SETUP_ROUNDS && mode != Mode.STATIONARY_DEFENSE){
             mode = determineRobotTypeToSpawn();
         }
         if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){

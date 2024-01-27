@@ -6,7 +6,7 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
-    static boolean LOGGING_ALLOWED = true;
+    static boolean LOGGING_ALLOWED = false;
     static boolean SUBMISSION_MODE = true; // TODO: Set this to true when submitting.
 
     public static void resign(){
@@ -114,6 +114,13 @@ public class Util {
 
     public static void printBytecode(String prefix){
         Util.log(prefix + ": " + Clock.getBytecodesLeft());
+    }
+
+
+    public static void logBytecodeUsedForID(String str, int id){
+        if(rc.getID() == id){
+            Util.logBytecodeUsed(str);
+        }
     }
 
     public static int countBotsOfTeam(Team team, RobotInfo[] bots){

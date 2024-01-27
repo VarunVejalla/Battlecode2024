@@ -436,6 +436,7 @@ public class AttackModule {
         return weakestFriendlyLoc;
     }
 
+
     public boolean runHealing() throws GameActionException {
         // note: if we got to this method, it means we didn't attack
         // this method returns true if it heals a bot, and false if it doesn't heal a bot
@@ -460,7 +461,7 @@ public class AttackModule {
         // this tries to place a stun trap in the direction of the enemyCOM
         // compute enemyCOM
         Util.LOGGING_ALLOWED = true;
-        Util.logBytecode("before tryPlacing Stun Trap");
+//        Util.logBytecode("before tryPlacing Stun Trap");
         Util.LOGGING_ALLOWED = false;
 
 
@@ -494,13 +495,13 @@ public class AttackModule {
                 rc.build(TrapType.STUN, potentialBuildLocation);
 
                 Util.LOGGING_ALLOWED = true;
-                Util.logBytecode("after placing trap");
+//                Util.logBytecode("after placing trap");
                 Util.LOGGING_ALLOWED = false;
                 return;
             }
 
             Util.LOGGING_ALLOWED = true;
-            Util.logBytecode("after tryPlacing Stun Trap");
+//            Util.logBytecode("after tryPlacing Stun Trap");
             Util.LOGGING_ALLOWED = false;
 
             // Only place trap if it'll activate on a non-stunned enemy instantly.
@@ -564,11 +565,6 @@ public class AttackModule {
 
     public void runSetup() throws GameActionException {
         // main entry point to this module, which will determine if we're safe or not and will try attacking.
-
-        if(robot.mode == Mode.MOBILE_DEFENSE){
-            tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM
-        }
-
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
 
