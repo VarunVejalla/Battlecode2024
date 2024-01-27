@@ -56,9 +56,11 @@ public class DefenseModule {
                 }
             }
         }
+
     }
 
     public void updatePotTrapLocs(MapLocation trapPacedLoc) throws GameActionException {
+
         MapInfo info;
         for(Direction dir : Navigation.movementDirections){
             MapLocation adjLoc = trapPacedLoc.add(dir);
@@ -94,7 +96,6 @@ public class DefenseModule {
                 trapPQ.insert(heuristic, adjLoc);
                 trapsMap[adjLoc.x][adjLoc.y] = 3;
             }
-
         }
     }
 
@@ -106,7 +107,9 @@ public class DefenseModule {
         int heuristic = trapLoc.distanceSquaredTo(flagDefaultLoc) * 10;
         Direction flagToSpot = flagDefaultLoc.directionTo(trapLoc);
         heuristic += Util.directionDistance(flagToSpot, flagToCenter) * 10;
+
         return heuristic;
+
     }
 
     public void updateBestTrapPlacementTarget(){
@@ -257,7 +260,9 @@ public class DefenseModule {
             defendingFlagIdx = 2;
         }
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
+
         comms.incrementNumDefendersForFlag(defendingFlagIdx);
+
     }
 
     public void runStationaryDefense() throws GameActionException {
@@ -275,36 +280,18 @@ public class DefenseModule {
         Util.assert_wrapper(defendingFlagIdx != -1);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
         Util.addToIndicatorString("FL: " + flagDefaultLoc);
+
+
+//        Util.logBytecodeUsedForID("Before checking shared defensive target", 11659);
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
+//        Util.logBytecodeUsedForID("After checking shared defensive target", 11659);
+
+//        Util.logBytecodeUsedForID("Before updating shared defensive target", 11659);
         targetChanged |= updateSharedDefensiveTarget();
+//        Util.logBytecodeUsedForID("After updating shared defensive target", 11659);
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
-
-
-        if(comms.getHomeFlagTakenStatus(defendingFlagIdx) == false){ // If our home flag is still there, circle that.
-            Util.addToIndicatorString("FL");
-            nav.circle(flagDefaultLoc, 2, 5, 0);
-        }
-        else if(comms.getHomeFlagTakenStatus(0) == false){ // Otherwise check if flag Idx 0 is still there, and circle that.
-            Util.addToIndicatorString("F0");
-            nav.circle(allFlagDefaultLocs[0], 2, 5, 0);
-        }
-        else if(comms.getHomeFlagTakenStatus(1) == false){ // Otherwise check if flag Idx 1 is still there, and circle that.
-            Util.addToIndicatorString("F1");
-            nav.circle(allFlagDefaultLocs[1], 2, 5, 0);
-        }
-        else if(comms.getHomeFlagTakenStatus(2) == false){ // Otherwise check if flag Idx 2 is still there, and circle that.
-            Util.addToIndicatorString("F2");
-            nav.circle(allFlagDefaultLocs[2], 2, 5, 0);
-        }
-        else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
-            Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
-            Util.addToIndicatorString("OF");
-            nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
-        }
-
-
 
         if(!initializedPotTrapsArray){
             updatePotTrapLocs(flagDefaultLoc);
@@ -321,8 +308,16 @@ public class DefenseModule {
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
 
+
+//        Util.logBytecodeUsedForID("Before checking shared defensive target", 11659);
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
+//        Util.logBytecodeUsedForID("After checking shared defensive target", 11659);
+
+
+//        Util.logBytecodeUsedForID("Before checking shared defensive target", 11659);
         targetChanged |= updateSharedDefensiveTarget();
+//        Util.logBytecodeUsedForID("Afer checking shared defensive target", 11659);
+
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
@@ -469,7 +464,14 @@ public class DefenseModule {
         int numMobileDefendersSpawned = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
 
         // if the current number of mobile defenders is > desired number of defenders, switch to offense
-        return numMobileDefendersSpawned > desiredNumMobileDefenders;
+        boolean amSwitching = numMobileDefendersSpawned > desiredNumMobileDefenders;
+
+
+        // decrement number of defenders in your flag
+        if(amSwitching && robot.mode == Mode.MOBILE_DEFENSE){
+            comms.decrementNumDefendersForFlag(defendingFlagIdx);
+        }
+        return amSwitching;
     }
 
 }
