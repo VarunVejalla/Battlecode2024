@@ -174,9 +174,9 @@ public class Robot {
         int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
 
         // Always have at least 3 stationary defenders.
-        if(numStationaryDefenders < MIN_NUM_OF_SD){
-            return Mode.STATIONARY_DEFENSE;
-        }
+//        if(numStationaryDefenders < MIN_NUM_OF_SD){
+//            return Mode.STATIONARY_DEFENSE;
+//        }
 
         double currTrapperFrac = (double) numTrappers / totalNumOfTroops;
         double currStationaryDefenseFrac = (double) numStationaryDefenders / totalNumOfTroops;
@@ -223,6 +223,8 @@ public class Robot {
 
 
     public void spawn() throws GameActionException {
+        // check to see if you're on the flag and the current number of stationary defenders is less than three
+        // if so, override whatever mode was told by determineTypeToSpawn
         if(mode == Mode.STATIONARY_DEFENSE){
             defenseModule.spawnStationary();
         }
@@ -235,6 +237,22 @@ public class Robot {
         else{
             System.out.println("ROBOT IS UNKNOWN MODE: " + mode);
             Util.resign();
+        }
+    }
+
+
+    public void checkToSeeIfIShouldBecomeStationaryDefender() throws GameActionException {
+        MapLocation[] spawnLocCenters = Util.getSpawnLocCenters();
+        int numberOfStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
+        if(rc.getRoundNum() < Constants.SETUP_ROUNDS && numberOfStationaryDefenders < 3){
+            if(Util.checkIfItemInArray(rc.getLocation(), spawnLocCenters)){
+                mode = Mode.STATIONARY_DEFENSE;
+                comms.incrementBotCount(Mode.STATIONARY_DEFENSE);
+                MapLocation[] defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
+                defenseModule.setup();
+                defenseModule.defendingFlagIdx = Util.getItemIndexInArray(rc.getLocation(), defaultHomeFlagLocs);
+
+            }
         }
     }
 
@@ -258,6 +276,11 @@ public class Robot {
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
+
+        if(rc.getRoundNum() > 200){
+            rc.resign();
+        }
+
         indicatorString = "";
         checkIfInitializationNeeded();
 
@@ -271,7 +294,7 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
-        else {
+        if(rc.isSpawned()){
             tryGlobalUpgrade();
 
             myLoc = rc.getLocation();
@@ -303,12 +326,20 @@ public class Robot {
                     comms.writeNewHomeFlagCenter(new MapLocation(avgX, avgY));
                 }
 
+                checkToSeeIfIShouldBecomeStationaryDefender();
+
                 if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                    System.out.println("RUNNING STATIONARY DEFENSE");
+                    System.out.println("DEFENDING FLAG IDX: " + defenseModule.defendingFlagIdx);
+                    System.out.println("my current location: " + rc.getLocation());
+                    System.out.println("location of flag I'm trying to defend: " + comms.getDefaultHomeFlagLoc(defenseModule.defendingFlagIdx));
                     defenseModule.runStationaryDefense();
                 }
+
                 else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runMobileDefense();
                 }
+
                 else if(mode != Mode.STATIONARY_DEFENSE){ // If on offense, keep running the scout code.
                     scout.runScout();
                 }
