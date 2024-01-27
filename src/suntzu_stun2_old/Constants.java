@@ -1,4 +1,4 @@
-package suntzu_stun2;
+package suntzu_stun2_old;
 
 import battlecode.common.GameConstants;
 import battlecode.common.TrapType;

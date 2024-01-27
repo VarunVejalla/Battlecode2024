@@ -1,4 +1,4 @@
-package suntzu_stun2;
+package suntzu_stun2_old;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
