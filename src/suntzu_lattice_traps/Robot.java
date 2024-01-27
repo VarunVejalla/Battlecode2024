@@ -276,11 +276,6 @@ public class Robot {
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
-
-        if(rc.getRoundNum() > 200){
-            rc.resign();
-        }
-
         indicatorString = "";
         checkIfInitializationNeeded();
 
