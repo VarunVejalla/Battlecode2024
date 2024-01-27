@@ -353,6 +353,14 @@ public class Util {
         };
     }
 
+    public static Direction[] nearbyDirections(Direction dir) {
+        return new Direction[]{
+                dir,
+                dir.rotateLeft(),
+                dir.rotateRight(),
+        };
+    }
+
     public static boolean locIsASpawnLoc(MapLocation loc) throws GameActionException{
         // this method checks if the robot is on a spawn location
         for(MapLocation spawnCenter: robot.spawnCenters){

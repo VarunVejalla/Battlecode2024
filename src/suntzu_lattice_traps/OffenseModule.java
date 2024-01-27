@@ -225,6 +225,10 @@ public class OffenseModule {
         Util.logBytecode("Beginning of run movement");
         robot.tryPickingUpOppFlag();
 
+        if(rc.hasFlag() && robot.homeLocWhenCarryingFlag == null){
+            robot.homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(robot.myLoc);
+        }
+
         if (rc.isMovementReady()) {
             Util.logBytecode("Beginning move to target");
             moveToTarget();
