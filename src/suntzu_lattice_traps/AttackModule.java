@@ -545,11 +545,17 @@ public class AttackModule {
         Util.addToIndicatorString("SF:" + heuristic.getSafe());
     }
 
+
+    public boolean haveLotOfCrumbs(){
+        return rc.getCrumbs() >= 1000;
+    }
+
     public void runStrategy() throws GameActionException {
         // main entry point to this module, which will run any attacking strategy (attacking micro).
 
         // keep retreating if we started retreating in the last x rounds
-        if (heuristic.getSafe()) {
+        boolean amSafe = heuristic.getSafe();
+        if (amSafe) {
             // if we've been reatreating in the last x rounds, keep retreating
             if (lastRetreatRound != -1 && (rc.getRoundNum() - lastRetreatRound) < Constants.NUM_ROUNDS_TO_RETREAT_FOR) {
                 moveToSafestSpot();
@@ -565,8 +571,10 @@ public class AttackModule {
         bestAttackVictim = getBestAttackVictim();
         boolean successfullyAttacked = runAttack(); // try Attacking
         runHealing(); // try healing
-        tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM if possible
 
+        if(!amSafe || haveLotOfCrumbs()) {
+            tryPlacingStunTrap(); // tries to place stun trap in direction of enemyCOM if possible
+        }
     }
 
     public double getHeuristicSafetyMultiplier() {

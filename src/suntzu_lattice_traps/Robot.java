@@ -42,7 +42,6 @@ public class Robot {
     Comms comms;
     Navigation nav;
     DamScout scout;
-    FlagMover flagMover;
     boolean potentialFlagMover = true;
     MapLocation myLoc; //current loc of robot
     MapInfo myLocInfo;
@@ -101,7 +100,6 @@ public class Robot {
         this.defenseModule = new DefenseModule(this.rc, this, this.comms, this.nav);
         this.offenseModule = new OffenseModule(this.rc, this, this.comms, this.nav);
         this.scout = new DamScout(rc, this, this.comms, this.nav);
-        this.flagMover = new FlagMover(rc, this, this.comms, this.nav);
 
         // if the round number is less than 50, set all opponent flags in the shared array to null
         // since we don't know anything about them yet
@@ -260,11 +258,6 @@ public class Robot {
 
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
-
-        if(rc.getRoundNum() > 50){
-            rc.resign();
-        }
-
         indicatorString = "";
         checkIfInitializationNeeded();
 
@@ -290,13 +283,13 @@ public class Robot {
                 if(rc.getRoundNum() < 10) {
                     MapLocation[] spawnLocCenters = Util.getSpawnLocCenters();
                     comms.writeDefaultHomeFlagLocs(0, spawnLocCenters[0]);
-                    comms.writeOurFlagNewHomeStatus(0, false);
+                    comms.writeOurFlagNewHomeStatus(0, true);
 
                     comms.writeDefaultHomeFlagLocs(1, spawnLocCenters[1]);
-                    comms.writeOurFlagNewHomeStatus(1, false);
+                    comms.writeOurFlagNewHomeStatus(1, true);
 
                     comms.writeDefaultHomeFlagLocs(2, spawnLocCenters[2]);
-                    comms.writeOurFlagNewHomeStatus(2, false);
+                    comms.writeOurFlagNewHomeStatus(2, true);
 
                     int avgX = 0;
                     int avgY = 0;

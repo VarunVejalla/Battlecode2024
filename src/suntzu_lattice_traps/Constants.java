@@ -228,4 +228,6 @@ public class Constants {
     public static final int FLAG_SNAPBACK_IDX = 3;
     public static final int FLAG_SNAPBACK_SHIFT = 8;
     public static final int FLAG_SNAPBACK_MASK = 0b100000000;
+
+    public static final int NUM_ENEMIES_TO_PLACE_TRAP = 5;
 }
