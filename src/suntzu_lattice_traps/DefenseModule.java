@@ -67,6 +67,9 @@ public class DefenseModule {
             if(!rc.onTheMap(adjLoc)){
                 continue;
             }
+            if(!rc.canSenseLocation(adjLoc)) {
+                continue;
+            }
             if(trapsMap[adjLoc.x][adjLoc.y] == 1 || trapsMap[adjLoc.x][adjLoc.y] == 2){ // A trap has already been placed here by someone.
                 continue;
             }

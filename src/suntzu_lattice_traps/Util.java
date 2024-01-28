@@ -30,6 +30,14 @@ public class Util {
     public static MapLocation getRandomLocation(){
         return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
     }
+    public static MapLocation getRandomLocation(MapLocation center, int sideLength) {
+        int minX = Math.max(center.x-sideLength, 0);
+        int maxX = Math.min(center.x+sideLength, rc.getMapWidth());
+
+        int minY = Math.max(center.y-sideLength, 0);
+        int maxY = Math.min(center.y+sideLength, rc.getMapHeight());
+        return new MapLocation(robot.rng.nextInt(maxX-minX)+minX, robot.rng.nextInt(maxY-minY)+minY);
+    }
 
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
         if(rc.getCrumbs() >= minCrumbsToFill + Constants.FILL_CRUMB_COST && rc.canFill(rc.adjacentLocation(dir))) {

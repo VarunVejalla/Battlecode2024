@@ -319,10 +319,15 @@ public class Robot {
                     homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
                 }
                 attackModule.runSetup();
-                if(attackModule.heuristic.getSafe()){
+                if(attackModule.heuristic.getSafe()) {
+                    MapLocation currentLocation = rc.getLocation();
                     offenseModule.runMovement();
-
-                    tryDroppingFlag();
+                    MapLocation newLocation = rc.getLocation();
+                    Direction moved = currentLocation.directionTo(newLocation);
+                    Direction goalDirection = rc.getLocation().directionTo(homeLocWhenCarryingFlag);
+                    if (moved == goalDirection || moved == goalDirection.rotateLeft() || moved == goalDirection.rotateRight()) {
+                        tryDroppingFlag(moved);
+                    }
                 }
                 else{
                     myLoc = rc.getLocation();
@@ -743,12 +748,11 @@ public class Robot {
         }
     }
 
-    public void tryDroppingFlag() throws GameActionException {
+    public void tryDroppingFlag(Direction goalDirection) throws GameActionException {
         if(homeLocWhenCarryingFlag == null){
             homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
         }
         // TODO: can reduce bytecode (currently it is up to 3 * 100 ish)
-        Direction goalDirection = rc.getLocation().directionTo(homeLocWhenCarryingFlag);
         for(Direction nearbyDir : Util.nearbyDirections(goalDirection)) {
             MapLocation toDropLoc = rc.getLocation().add(nearbyDir);
             if(rc.canDropFlag(toDropLoc) && rc.senseNearbyRobots(toDropLoc, GameConstants.INTERACT_RADIUS_SQUARED, myTeam).length != 0) {
