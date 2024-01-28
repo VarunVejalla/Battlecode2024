@@ -1,4 +1,4 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.*;
 
@@ -20,7 +20,7 @@ class AttackHeuristic {
         this.hasFlag = hasFlag;
     }
 
-    public boolean getSafe(){
+    public boolean getSafe() {
 
         if(enemyDamage == 0){
             return true;
@@ -413,7 +413,7 @@ public class AttackModule {
             }
             else if(stunTrapInfo[x][y] != 0){
                 // If the stun trap went off in the last few rounds, compute enemy stunned locs.
-//                System.out.println("Stun trap went off " + (currRoundNum - stunTrapInfo[x][y]) + " rounds ago at " + info.getMapLocation() + "!");
+                System.out.println("Stun trap went off " + (currRoundNum - stunTrapInfo[x][y]) + " rounds ago at " + info.getMapLocation() + "!");
                 if(currRoundNum - stunTrapInfo[x][y] < Constants.NUM_ROUNDS_OF_STUN){
                     updateEnemyStunnedLocs(x, y, stunTrapInfo[x][y]);
                 }
@@ -430,8 +430,9 @@ public class AttackModule {
             return;
         }
 
-        Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
         // compute the direction to enemyCOM
+        Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
+        int roundNum = rc.getRoundNum();
         for(Direction direction : Util.closeDirections(dirToEnemyCOM)){
             MapLocation potentialBuildLocation = robot.myLoc.add(direction);
             if(!rc.canBuild(TrapType.STUN, potentialBuildLocation)) {
@@ -447,12 +448,13 @@ public class AttackModule {
                 }
                 }
 
+
             if(!adjacentStunTrap && rc.canBuild(TrapType.STUN, potentialBuildLocation)){
                 rc.build(TrapType.STUN, potentialBuildLocation);
 
-//                Util.LOGGING_ALLOWED = true;
-//                Util.logBytecode("after placing trap");
-//                Util.LOGGING_ALLOWED = false;
+                Util.LOGGING_ALLOWED = true;
+                Util.logBytecode("after placing trap");
+                Util.LOGGING_ALLOWED = false;
                 return;
             }
         }

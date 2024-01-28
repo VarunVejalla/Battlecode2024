@@ -1,8 +1,9 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.*;
 
 public class DefenseModule {
+
     RobotController rc;
     Robot robot;
     Comms comms;
@@ -21,8 +22,6 @@ public class DefenseModule {
     int trapCount = 0;
     boolean initializedPotTrapsArray = false;
     MapLocation nearestCornerToFlag = null;
-    int mobileDefendingFlagIdx = -1;
-
 
     public DefenseModule(RobotController rc, Robot robot, Comms comms, Navigation nav) throws GameActionException {
         this.rc = rc;
@@ -289,60 +288,42 @@ public class DefenseModule {
 
 
     public void runMobileDefense() throws GameActionException {
-
-        Util.logBytecodeUsedForID("before runMobileDefense", 69);
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
 
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
-        Util.logBytecodeUsedForID("after checkSharedDefensiveTargetStillValid", 69);
-
         targetChanged |= updateSharedDefensiveTarget();
-        Util.logBytecodeUsedForID("after updateSharedDefensiveTarget", 69);
-
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
         if(sharedDefensiveTarget != null){
             Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
             Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
-            Util.logBytecodeUsedForID("bf1", 69);
-            nav.bugNav.goToBug0(sharedDefensiveTarget, 0);
+            nav.pathBF(sharedDefensiveTarget, 0);
         }
         else if(comms.getHomeFlagTakenStatus(defendingFlagIdx) == false){ // If our home flag is still there, circle that.
             Util.addToIndicatorString("FL");
-            Util.logBytecodeUsedForID("circle1", 69);
-
             nav.circle(flagDefaultLoc, 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(0) == false){ // Otherwise check if flag Idx 0 is still there, and circle that.
             Util.addToIndicatorString("F0");
-            Util.logBytecodeUsedForID("circle2", 69);
-
             nav.circle(allFlagDefaultLocs[0], 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(1) == false){ // Otherwise check if flag Idx 1 is still there, and circle that.
             Util.addToIndicatorString("F1");
-            Util.logBytecodeUsedForID("circle3", 69);
-
             nav.circle(allFlagDefaultLocs[1], 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(2) == false){ // Otherwise check if flag Idx 2 is still there, and circle that.
             Util.addToIndicatorString("F2");
-            Util.logBytecodeUsedForID("circle4", 69);
-
             nav.circle(allFlagDefaultLocs[2], 2, 5, 0);
         }
         else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
             Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
-            Util.logBytecodeUsedForID("circle5", 69);
             nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
         }
-        Util.logBytecodeUsedForID("after runMobileDefense", 69);
-
     }
 
     // Strategy methods
@@ -360,31 +341,15 @@ public class DefenseModule {
 //        return Integer.MAX_VALUE;
 //    }
 
-
-    final int HOME_DANGER_ENTER_THRESHOLD = 3;
-    final int HOME_DANGER_EXIT_THRESHOLD = 1;
-    final int HOME_DANGER_SWITCH_THRESHOLD = 3;
     public boolean checkSharedDefensiveTargetStillValid() throws GameActionException {
         if(sharedDefensiveTarget == null){
             sharedDefensiveTargetPriority = Integer.MAX_VALUE;
-            mobileDefendingFlagIdx = -1;
             return false;
         }
 
         for (MapLocation loc : robot.knownTakenAllyFlags) {
             if (loc != null && loc.distanceSquaredTo(sharedDefensiveTarget) <= 2) {
                 sharedDefensiveTargetPriority = 1;
-                mobileDefendingFlagIdx = -1;
-                return false;
-            }
-        }
-
-        // Check if base is still under attack.
-        if(Util.checkIfItemInArray(sharedDefensiveTarget, allFlagDefaultLocs)){
-            int flagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
-            if(comms.getEnemyCountNearFlagPrevRound(flagIdx) > HOME_DANGER_EXIT_THRESHOLD){
-                sharedDefensiveTargetPriority = 2;
-                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
                 return false;
             }
         }
@@ -393,7 +358,6 @@ public class DefenseModule {
         Util.logArray("KTA: ", robot.knownTakenAllyFlags);
         sharedDefensiveTarget = null;
         sharedDefensiveTargetPriority = Integer.MAX_VALUE;
-        mobileDefendingFlagIdx = -1;
         return true;
     }
 
@@ -410,56 +374,13 @@ public class DefenseModule {
             }
         }
 
-        if(bestPriority >= 2){
-            int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
-            int mostInDangerFlagIdx = Util.maxIndexInArray(enemyCounts);
-            if(enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_ENTER_THRESHOLD){
-                if(mobileDefendingFlagIdx == -1 || enemyCounts[mobileDefendingFlagIdx] - enemyCounts[mostInDangerFlagIdx] >= HOME_DANGER_SWITCH_THRESHOLD){
-                    bestDefensiveTargetLoc = allFlagDefaultLocs[mostInDangerFlagIdx];
-                    bestPriority = 2;
-                }
-            }
-        }
-
         if(bestPriority < sharedDefensiveTargetPriority){
             sharedDefensiveTarget = bestDefensiveTargetLoc;
             sharedDefensiveTargetPriority = bestPriority;
-            if(sharedDefensiveTargetPriority == 2){
-                mobileDefendingFlagIdx = Util.getItemIndexInArray(sharedDefensiveTarget, allFlagDefaultLocs);
-            }
             return true;
         }
         return false;
     }
-
-    public boolean shouldISwitchToOffense() throws GameActionException{
-        // this method enables live switching from mobile defense to offense
-        // if we've successfully neutralized enemy threats
-
-        if(robot.mode != Mode.MOBILE_DEFENSE){
-            return false; // only try to switch modes if you are currently a mobile defender.
-        }
-        // get the desired ratio
-        TroopRatio desiredRatio = comms.getTroopRatio();
-
-        // compute the desired number of mobile defenders (based on the previous round counts of all the troops)
-        int numTrappers = comms.getPreviousRoundBotCount(Mode.TRAPPING);
-        int numStationaryDefenders = comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE);
-        int numMobileDefenders = comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE);
-        int numOffensive = comms.getPreviousRoundBotCount(Mode.OFFENSE);
-        int totalNumTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
-
-        int desiredNumMobileDefenders = (int) (desiredRatio.mobileDefenderFrac * totalNumTroops);
-
-        // check how many mobile defenders we have counted so far in the current round
-        int numMobileDefendersSpawned = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
-
-        // if the current number of mobile defenders is > desired number of defenders, switch to offense
-        return numMobileDefendersSpawned > desiredNumMobileDefenders;
-    }
-
-
-
 
 
 }

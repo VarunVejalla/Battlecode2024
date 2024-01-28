@@ -1,4 +1,4 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
@@ -43,11 +43,13 @@ public strictfp class RobotPlayer {
         int startTurn = rc.getRoundNum();
         Robot robot = new Robot(rc);
 
+//        if(rc.getID() == 12041){
+//            PriorityQueue.test(robot.rng);
+//            rc.resign();
+//        }
+
         if(rc.getRoundNum() != startTurn){
             System.out.println("BYTECODE EXCEEDED " + robot.mode + ", " + rc.getLocation());
-            if(rc.getRoundNum() > 500){
-                rc.resign();
-            }
             Util.resign();
         }
         while (true) {

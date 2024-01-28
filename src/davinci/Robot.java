@@ -12,6 +12,54 @@ enum SymmetryType {
     DIAGONAL_LEFT
 }
 
+
+
+class TroopRatio {
+    int offensiveRatio;
+    double offensiveFrac;
+    int mobileDefenderRatio;
+    double mobileDefenderFrac;
+    int stationaryDefenderRatio;
+    double stationaryDefenderFrac;
+    int trapperRatio;
+    double trapperFrac;
+    int ratioDenom;
+
+
+    public TroopRatio(int offensiveRatio, int mobileDefenderRatio, int stationaryDefenderRatio, int trapperRatio){
+        // container class to hold ratio values
+        this.offensiveRatio = offensiveRatio;
+        this.mobileDefenderRatio = mobileDefenderRatio;
+        this.stationaryDefenderRatio = stationaryDefenderRatio;
+        this.trapperRatio = trapperRatio;
+        this.ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+
+        this.offensiveFrac = (double)offensiveRatio / ratioDenom;
+        this.mobileDefenderFrac = (double)mobileDefenderRatio / ratioDenom;
+        this.stationaryDefenderFrac = (double)stationaryDefenderRatio / ratioDenom;
+        this.trapperFrac = (double)trapperRatio / ratioDenom;
+    }
+
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        TroopRatio other = (TroopRatio) obj;
+
+        return this.offensiveRatio == other.offensiveRatio &&
+                this.mobileDefenderRatio == other.mobileDefenderRatio &&
+                this.stationaryDefenderRatio == other.stationaryDefenderRatio &&
+                this.trapperRatio == other.trapperRatio &&
+                this.ratioDenom == other.ratioDenom;
+    }
+}
+
+
 enum Mode {
     MOBILE_DEFENSE,
     STATIONARY_DEFENSE,
@@ -122,12 +170,16 @@ public class Robot {
             comms.setAllHomeFlags_NotTaken();
         }
 
-        comms.writeRatioVal(Mode.OFFENSE, 13);
-        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
-        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
+//        comms.writeRatioVal(Mode.OFFENSE, 13);
+//        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
+//        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
+
+        comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
 
         mode = determineRobotTypeToSpawn();
-        comms.incrementBotCount(mode);
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+        }
         if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){
             defenseModule.setup();
         }
@@ -148,6 +200,40 @@ public class Robot {
         }
     }
 
+
+
+    public void changeTroopRatioIfNeeded() throws GameActionException{
+        // this method changes ratio of troops given the game progression
+        // look at the number of enemies at the flag under greatest distress
+        // read current ratio
+        // set the ratio according if needs to be changed
+        // TODO: based this off the game progression / how many flags we have / how many flags the opp has took / etc.
+
+        TroopRatio currRatio = comms.getTroopRatio();
+        int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
+        int numEnemiesNearOurFlags = 0;
+        for(int i = 0; i < 3; i++){
+            numEnemiesNearOurFlags += enemyCounts[i];
+        }
+
+        TroopRatio potentialNewRatio;
+        // full send on defense
+        if(numEnemiesNearOurFlags >= Constants.THRESHOLD_TO_CALL_FOR_HELP_ON_DEFENSE){
+            potentialNewRatio = new TroopRatio(0, 13, 0, 0);
+        }
+        // full send on offense
+        else{
+            potentialNewRatio = new TroopRatio(13, 2, 0, 0);
+        }
+
+        if(potentialNewRatio.equals(currRatio)){    // don't do an unnecessary write if you don't need to
+            return;
+        }
+
+        comms.writeTroopRatio(potentialNewRatio);
+    }
+
+
     public void tryGlobalUpgrade() throws GameActionException {
         // TODO: make the upgrades dynamic based on how the game is going?
         // note i'm putting the extra checks on the getRoundNum() to reduce the number of rounds
@@ -166,17 +252,51 @@ public class Robot {
         // this method determines what type a newly spawned robot should assume
         // considering the desiredRatios and currentTroop counts in comms
 
-        // get the counts
-        int numTrappers = comms.getBotCount(Mode.TRAPPING);
-        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
-        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
-        int numOffensive = comms.getBotCount(Mode.OFFENSE);
-        int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
+//        int numTrappers = comms.getBotCount(Mode.TRAPPING);
+//        int numStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
+//        int numMobileDefenders = comms.getBotCount(Mode.MOBILE_DEFENSE);
+//        int numOffensive = comms.getBotCount(Mode.OFFENSE);
 
-        // Always have at least 3 stationary defenders.
-//        if(numStationaryDefenders < MIN_NUM_OF_SD){
-//            return Mode.STATIONARY_DEFENSE;
-//        }
+        int numTrappers, numStationaryDefenders, numMobileDefenders, numOffensive;
+
+
+        // the logic for the conditional statement below is:
+        // in the beginning of the game, we do a mass spawn of troops on each round
+        // when one troop spawns, we want it to have the most up to date information about the current troop counts
+        // (even troops that spawned on that same round)
+        // so we read the current troop counts from the shared array (instead of using the previous round's counts)
+
+        // the variable NUM_ROUNDS_WITH_MASS_SPAWNING is set to 10. It could be prolly be set to 200
+        // but i was thinking there might be a map where you could fight across the dam even before 200 if
+        // the dam is skinny enough???
+        if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            numTrappers = comms.getCurrentBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getCurrentBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getCurrentBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getCurrentBotCount(Mode.OFFENSE);
+        }
+
+
+        // we read from previous rounds counts after round 10 because people will start dying after the setup period
+        // instead of using the current count, we use the previous round's count. This will contain stats of
+        // the bots that were alive in the previous round and is prolly gonna be more accurate that trying to have a
+        // live tracker of the current counts
+        else {
+            // get the counts
+            numTrappers = comms.getPreviousRoundBotCount(Mode.TRAPPING);
+            numStationaryDefenders = comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE);
+            numMobileDefenders = comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE);
+            numOffensive = comms.getPreviousRoundBotCount(Mode.OFFENSE);
+        }
+
+        //        Util.log("------------- begin spawn -----------------");
+//        Util.log("numTrappers: " + numTrappers);
+//        Util.log("numStationaryDefenders: " + numStationaryDefenders);
+//        Util.log("numMobileDefenders: " + numMobileDefenders);
+//        Util.log("numOffensive: " + numOffensive);
+//        Util.log("------------- end spawn ------------------");
+
+        int totalNumOfTroops = numTrappers + numStationaryDefenders + numMobileDefenders + numOffensive;
 
         double currTrapperFrac = (double) numTrappers / totalNumOfTroops;
         double currStationaryDefenseFrac = (double) numStationaryDefenders / totalNumOfTroops;
@@ -184,21 +304,12 @@ public class Robot {
         double currOffenseFrac = (double) numOffensive / totalNumOfTroops;
 
         // get the numbers representing the ratios
-        int trapperRatio = comms.readRatioVal(Mode.TRAPPING);
-        int stationaryDefenderRatio = comms.readRatioVal(Mode.STATIONARY_DEFENSE);
-        int mobileDefenderRatio = comms.readRatioVal(Mode.MOBILE_DEFENSE);
-        int offensiveRatio = comms.readRatioVal(Mode.OFFENSE);
-        int ratioDenom = trapperRatio + stationaryDefenderRatio + mobileDefenderRatio + offensiveRatio;
+        TroopRatio ratio = comms.getTroopRatio();
 
-        double desiredTrapperFrac = (double) trapperRatio / ratioDenom;
-        double desiredStationaryDefenderFrac = (double) stationaryDefenderRatio / ratioDenom;
-        double desiredMobileDefenderFrac = (double) mobileDefenderRatio / ratioDenom;
-        double desiredOffensiveFrac = (double) offensiveRatio / ratioDenom;
-
-        int trapperDiff = (int)Math.ceil((desiredTrapperFrac - currTrapperFrac) * totalNumOfTroops);
-        int stationaryDefenderDiff = (int)Math.ceil((desiredStationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
-        int mobileDefenderDiff = (int)Math.ceil((desiredMobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
-        int offenseDiff = (int)Math.ceil((desiredOffensiveFrac - currOffenseFrac) * totalNumOfTroops);
+        int trapperDiff = (int)Math.ceil((ratio.trapperFrac - currTrapperFrac) * totalNumOfTroops);
+        int stationaryDefenderDiff = (int)Math.ceil((ratio.stationaryDefenderFrac - currStationaryDefenseFrac) * totalNumOfTroops);
+        int mobileDefenderDiff = (int)Math.ceil((ratio.mobileDefenderFrac - currMobileDefendersFrac) * totalNumOfTroops);
+        int offenseDiff = (int)Math.ceil((ratio.offensiveFrac - currOffenseFrac) * totalNumOfTroops);
 
         if(offenseDiff >= trapperDiff && offenseDiff >= stationaryDefenderDiff
                 && offenseDiff >= mobileDefenderDiff){
@@ -225,6 +336,21 @@ public class Robot {
     public void spawn() throws GameActionException {
         // check to see if you're on the flag and the current number of stationary defenders is less than three
         // if so, override whatever mode was told by determineTypeToSpawn
+
+        if(rc.getRoundNum() > Constants.SETUP_ROUNDS){
+            mode = determineRobotTypeToSpawn();
+            if(mode == Mode.STATIONARY_DEFENSE || mode == Mode.MOBILE_DEFENSE){
+                defenseModule.setup();
+            }
+            else if(mode == Mode.OFFENSE){
+                offenseModule.setup();
+            }
+            else{
+                System.out.println("UNKNOWN MODE: " + mode);
+                Util.resign();
+            }
+        }
+
         if(mode == Mode.STATIONARY_DEFENSE){
             defenseModule.spawnStationary();
         }
@@ -243,11 +369,11 @@ public class Robot {
 
     public void checkToSeeIfIShouldBecomeStationaryDefender() throws GameActionException {
         MapLocation[] spawnLocCenters = Util.getSpawnLocCenters();
-        int numberOfStationaryDefenders = comms.getBotCount(Mode.STATIONARY_DEFENSE);
+        int numberOfStationaryDefenders = comms.getCurrentBotCount(Mode.STATIONARY_DEFENSE);
         if(rc.getRoundNum() < Constants.SETUP_ROUNDS && numberOfStationaryDefenders < 3){
             if(Util.checkIfItemInArray(rc.getLocation(), spawnLocCenters)){
                 mode = Mode.STATIONARY_DEFENSE;
-                comms.incrementBotCount(Mode.STATIONARY_DEFENSE);
+                comms.incrementCurrentRoundBotCount(Mode.STATIONARY_DEFENSE);
                 MapLocation[] defaultHomeFlagLocs = comms.getDefaultHomeFlagLocs();
                 defenseModule.setup();
                 defenseModule.defendingFlagIdx = Util.getItemIndexInArray(rc.getLocation(), defaultHomeFlagLocs);
@@ -277,8 +403,8 @@ public class Robot {
     // this is the main run method that is called every turn
     public void run() throws GameActionException {
 
-        if(rc.getRoundNum() > 200){
-            rc.resign();
+        if(rc.getRoundNum() > 220){
+            Util.resign();
         }
 
         indicatorString = "";
@@ -287,9 +413,16 @@ public class Robot {
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
 
-        Util.addToIndicatorString("Mode:" + mode.toShortString());
+//        Util.addToIndicatorString("Mode:" + mode.toShortString());
 
+
+        int idExamining = 13799;
+
+
+//        Util.logBytecodeUsedForID("before readComms",idExamining );
         readComms(); // update opp flags and the shared target loc index
+//        Util.logBytecodeUsedForID("after readComms", idExamining);
+
 
         if (!rc.isSpawned()){
             spawn();
@@ -297,9 +430,21 @@ public class Robot {
         if(rc.isSpawned()){
             tryGlobalUpgrade();
 
+//            Util.logBytecodeUsedForID("before changeTroopRatio", idExamining);
+            changeTroopRatioIfNeeded();
+//            Util.logBytecodeUsedForID("after changeTroopRatio", idExamining);
+
+
             myLoc = rc.getLocation();
+
+//            Util.logBytecodeUsedForID("before scanSurroundings", idExamining);
             scanSurroundings();
+//            Util.logBytecodeUsedForID("after scanSurroundings", idExamining);
+
+//            Util.logBytecodeUsedForID("before updateComms", idExamining);
             updateComms();
+//            Util.logBytecodeUsedForID("after updateComms", idExamining);
+
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
@@ -328,6 +473,8 @@ public class Robot {
 
                 checkToSeeIfIShouldBecomeStationaryDefender();
 
+
+
                 if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
 //                    System.out.println("RUNNING STATIONARY DEFENSE");
 //                    System.out.println("DEFENDING FLAG IDX: " + defenseModule.defendingFlagIdx);
@@ -347,7 +494,6 @@ public class Robot {
 
 
             else if(rc.hasFlag()){
-                attackModule.runSetup();
                 if(attackModule.heuristic.getSafe()){
                     offenseModule.runMovement();
                 }
@@ -365,11 +511,25 @@ public class Robot {
                     comms.writeKnownOppFlagLocFromFlagID(rc.getLocation(), true, idOfFlagImCarrying);
                 }
             }
+
             else{
                 homeLocWhenCarryingFlag = null;
+
+//                Util.logBytecodeUsedForID("before runAttackModule", idExamining);
                 attackModule.runSetup();
                 attackModule.runStrategy();
+//                Util.logBytecodeUsedForID("after runAttackModule", idExamining);
+
+
                 nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+
+                // check to see if you are no longer needed as a mobile defender (live-switching)
+                if(mode == Mode.MOBILE_DEFENSE && defenseModule.shouldISwitchToOffense()){
+                    mode = Mode.OFFENSE;
+                }
+
+
+//                Util.logBytecodeUsedForID("before runMovement", idExamining);
                 if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
                 }
@@ -379,6 +539,8 @@ public class Robot {
                 else if(mode == Mode.MOBILE_DEFENSE){
                     defenseModule.runMobileDefense();
                 }
+
+//                Util.logBytecodeUsedForID("after runMovement", idExamining);
             }
         }
         rc.setIndicatorString(indicatorString);
@@ -390,18 +552,46 @@ public class Robot {
             comms.setOppFlagToCaptured(idOfFlagImCarrying);
         }
 
-//        if(rc.getRoundNum() % 50 == 0){
-//            testLog();
-//        }
+
+        if(rc.isSpawned() && rc.getRoundNum() > Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
+            comms.incrementCurrentRoundBotCount(mode);
+        }
+        if(rc.getRoundNum() % 20 == 0){
+            testLog();
+        }
     }
 
 
     public void testLog() throws GameActionException {
-        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
-        Util.logArray("knownOppFlagIDs: ", knownOppFlagIDs);
-        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
-        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
-        Util.logArray("knownDefaultOppFlagLocations: ", defaultOppFlagLocs);
+
+        if(rc.getID() == 12065){
+            Util.LOGGING_ALLOWED = true;
+            // log the counts of enemy bots at target
+            // log the current bot counts
+        Util.logArray("enemybotcounts: ", comms.getEnemyCountsNearFlagsPrevRound());
+        Util.log("Current bot counts: ");
+        Util.log("TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
+        Util.log("SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
+        Util.log("MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
+        Util.log("OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+        Util.LOGGING_ALLOWED = false;
+        }
+
+//        Util.logArray("approximateOppFlagLocations: ", approximateOppFlagLocations);
+//        Util.logArray("knownOppFlagIDs: ", knownOppFlagIDs);
+//        Util.logArray("knownDroppedOppFlagLocations: ", knownDroppedOppFlags);
+//        Util.logArray("knownCarriedOppFlagLocations: ", knownCarriedOppFlags);
+//        Util.logArray("knownDefaultOppFlagLocations: ", defaultOppFlagLocs);
+
+
+//        Util.LOGGING_ALLOWED = true;
+//        Util.log("Current bot counts: ");
+//        Util.log("TRAPPER: " + comms.getPreviousRoundBotCount(Mode.TRAPPING));
+//        Util.log("SD: " + comms.getPreviousRoundBotCount(Mode.STATIONARY_DEFENSE));
+//        Util.log("MD: " + comms.getPreviousRoundBotCount(Mode.MOBILE_DEFENSE));
+//        Util.log("OF: " + comms.getPreviousRoundBotCount(Mode.OFFENSE));
+//        Util.LOGGING_ALLOWED = false;
+
 //        Util.logArray("knownTakenAllyFlagLocations: ", knownTakenAllyFlags);
 //        Util.logArray("flagBroadcasts: ", rc.senseBroadcastFlagLocations());
 //        if(defaultHomeFlagLocs != null){
@@ -412,10 +602,9 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(0),
 //                        comms.getHomeFlagTakenStatus(1),
 //                        comms.getHomeFlagTakenStatus(2)});
-        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
-        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
-
-        Util.log("--------------------------------");
+//        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
+//        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
+//        Util.log("--------------------------------");
     }
 
 
@@ -711,6 +900,34 @@ public class Robot {
         tryCleaningTakenAllyFlags();
         tryAddingTakenAllyFlags();
         tryUpdatingHomeFlagTakenInfo();
+
+
+
+//        if(rc.getID() == 11798){
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("beginning of enemyCounts");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
+        setEnemyCountsToPrevRoundIfNotAlreadySet();
+//        if(rc.getID() == 11798) {
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("after setEnemyCountsToPrevRoundIfNotAlreadySet");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
+        updateEnemyCountsNearFlag();
+
+//        if(rc.getID() == 11798){
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("end of enemyCounts");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
+
+
+//
+
         offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
@@ -759,6 +976,55 @@ public class Robot {
             return 2;
         }
         return -1;
+    }
+
+
+    public void updateEnemyCountsNearFlag() throws GameActionException {
+        int[] counts = new int[3];
+        for(RobotInfo info : nearbyVisionEnemies){
+            MapLocation infoLoc = info.getLocation();
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[0]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[0] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[1]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[1] += 1;
+            }
+            if(infoLoc.distanceSquaredTo(defaultHomeFlagLocs[2]) <= Constants.DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG){
+                counts[2] += 1;
+            }
+        }
+        if(!comms.getHomeFlagTakenStatus(0) && counts[0] > comms.getEnemyCountNearFlagCurrRound(0)){
+            comms.setEnemyCountNearFlagCurrRound(0, counts[0]);
+        }
+        if(!comms.getHomeFlagTakenStatus(1) && counts[1] > comms.getEnemyCountNearFlagCurrRound(1)){
+            comms.setEnemyCountNearFlagCurrRound(1, counts[1]);
+        }
+        if(!comms.getHomeFlagTakenStatus(2) && counts[2] > comms.getEnemyCountNearFlagCurrRound(2)){
+            comms.setEnemyCountNearFlagCurrRound(2, counts[2]);
+        }
+    }
+
+    public void setEnemyCountsToPrevRoundIfNotAlreadySet() throws GameActionException {
+        int mod = rc.getRoundNum() % 2;
+
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(0)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(0, comms.getEnemyCountNearFlagCurrRound(0));
+            comms.setEnemyCountNearFlagCurrRound(0, 0);
+            comms.setEnemyCountNearFlagLastUpdated(0, mod);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(1)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(1, comms.getEnemyCountNearFlagCurrRound(1));
+            comms.setEnemyCountNearFlagCurrRound(1,  0);
+            comms.setEnemyCountNearFlagLastUpdated(1, mod);
+        }
+        if(mod != comms.getEnemyCountNearFlagLastUpdated(2)){
+            // Update the "prev round" value and discard the curr round value.
+            comms.setEnemyCountNearFlagPrevRound(2, comms.getEnemyCountNearFlagCurrRound(2));
+            comms.setEnemyCountNearFlagCurrRound( 2, 0);
+            comms.setEnemyCountNearFlagLastUpdated(2, mod);
+        }
     }
 
 }

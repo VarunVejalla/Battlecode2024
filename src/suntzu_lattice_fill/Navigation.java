@@ -1,4 +1,4 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.*;
 
@@ -76,11 +76,6 @@ public class Navigation {
 
     public void pathBF(MapLocation target, int minCrumbsForNavigation) throws GameActionException {
         if(!rc.isMovementReady()){
-            return;
-        }
-
-        if(robot.mode == Mode.MOBILE_DEFENSE  || robot.mode == Mode.STATIONARY_DEFENSE && rc.getLocation().distanceSquaredTo(target) <= 36){
-            fuzzyNav.goTo(target, minCrumbsForNavigation);
             return;
         }
 

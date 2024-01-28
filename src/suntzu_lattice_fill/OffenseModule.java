@@ -1,4 +1,4 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -228,8 +228,6 @@ public class OffenseModule {
         if (rc.isMovementReady()) {
             Util.logBytecode("Beginning move to target");
             moveToTarget();
-            Util.logBytecode("end of move to target");
-
         }
     }
 

@@ -1,4 +1,4 @@
-package davinci;
+package suntzu_lattice_fill;
 
 import battlecode.common.*;
 
@@ -31,9 +31,84 @@ public class Util {
         return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
     }
 
+    public static Direction[] latticeFillDirectionsToCheck(Direction dir) {
+        Direction[] dirCheck;
+        switch (dir) {
+            case NORTH:
+                dirCheck = new Direction[]{Direction.NORTHWEST, Direction.NORTHEAST};
+                break;
+            case SOUTH:
+                dirCheck = new Direction[]{Direction.SOUTHEAST, Direction.SOUTHWEST};
+                break;
+            case EAST:
+                dirCheck = new Direction[]{Direction.NORTHEAST, Direction.SOUTHEAST};
+                break;
+            case WEST:
+                dirCheck = new Direction[]{Direction.SOUTHWEST, Direction.NORTHWEST};
+                break;
+            case NORTHWEST:
+                dirCheck = new Direction[]{Direction.WEST, Direction.NORTH};
+                break;
+            case NORTHEAST:
+                dirCheck = new Direction[]{Direction.NORTH, Direction.EAST};
+                break;
+            case SOUTHWEST:
+                dirCheck = new Direction[]{Direction.SOUTH, Direction.WEST};
+                break;
+            case SOUTHEAST:
+                dirCheck = new Direction[]{Direction.EAST, Direction.SOUTH};
+                break;
+            default:
+                dirCheck = null;
+                break;
+        }
+        return dirCheck;
+    }
+
+    public static Direction tryFillingLattice(MapLocation myLoc, Direction fillDir) throws GameActionException {
+        MapLocation frontMapLocation = rc.adjacentLocation(fillDir);
+        Direction[] checkDirs = latticeFillDirectionsToCheck(fillDir);
+        Direction leftDir = checkDirs[0];
+        Direction rightDir = checkDirs[1];
+        MapLocation leftMapLocation = rc.adjacentLocation(leftDir);
+        MapLocation rightMapLocation = rc.adjacentLocation(rightDir);
+
+        if ((frontMapLocation.x + frontMapLocation.y) % 2 == 1) {
+            rc.fill(frontMapLocation);
+        }
+        else if (rc.canFill(leftMapLocation) && 
+            (leftMapLocation.x + leftMapLocation.y) % 2 == 1) {
+            rc.fill(leftMapLocation);
+            fillDir = leftDir;
+        }
+        else if (rc.canFill(rightMapLocation) && 
+            (rightMapLocation.x + rightMapLocation.y) % 2 == 1) {
+            rc.fill(rightMapLocation);
+            fillDir = rightDir;
+        }
+        else if (!rc.sensePassability(leftMapLocation) || !rc.sensePassability(rightMapLocation)) {
+            rc.fill(frontMapLocation);   
+        }        
+        return fillDir;
+    }
+
+
+
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
         if(rc.getCrumbs() >= minCrumbsToFill + Constants.FILL_CRUMB_COST && rc.canFill(rc.adjacentLocation(dir))) {
-            rc.fill(rc.adjacentLocation(dir));
+            
+            boolean safe = true;
+            if (robot.attackModule.heuristic != null && !robot.attackModule.heuristic.getSafe()) {
+                safe = false;
+            }
+
+            if (safe) {
+                dir = tryFillingLattice(rc.getLocation(), dir);
+            }
+            else {
+                rc.fill(rc.adjacentLocation(dir));
+            }
+            
         }
         if(rc.canMove(dir)) {
             rc.move(dir);
@@ -46,7 +121,18 @@ public class Util {
 
     public static boolean tryMove(Direction dir, boolean waterFillingAllowed) throws GameActionException{
         if(waterFillingAllowed && rc.canFill(rc.adjacentLocation(dir))) {
-            rc.fill(rc.adjacentLocation(dir));
+
+            boolean safe = true;
+            if (robot.attackModule.heuristic != null && !robot.attackModule.heuristic.getSafe()) {
+                safe = false;
+            }
+
+            if (safe) {
+                dir = tryFillingLattice(rc.getLocation(), dir);
+            }
+            else {
+                rc.fill(rc.adjacentLocation(dir));
+            }
         }
         if(rc.canMove(dir)) {
             rc.move(dir);
@@ -331,17 +417,6 @@ public class Util {
         }
     }
 
-
-
-    public static void logBytecodeUsedForID(String str, int id) {
-//        if (rc.getRoundNum() % 1 == 0) {
-//                Util.LOGGING_ALLOWED = true;
-//                Util.log(str + ": " + Clock.getBytecodeNum());
-//                Util.LOGGING_ALLOWED = false;
-//
-//        }
-    }
-
     public static void logBytecode(String str){
         Util.log(str + ": " + Clock.getBytecodesLeft());
     }
@@ -399,7 +474,6 @@ public class Util {
         return null;
     }
 
-
     public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
         // TODO: implement this method to take into account attack specializations
         // this method returns the attack damage of the robot given its specialization
@@ -410,18 +484,6 @@ public class Util {
     public static double getAttackCooldown(RobotInfo robotInfo) throws GameActionException{
         // TODO: implement this method to take into account attack specializations
         return 20.0;
-    }
-
-    public static int maxIndexInArray(int[] array){
-        int maxVal = array[0];
-        int maxIdx = 0;
-        for(int i = 1; i < array.length; i++){
-            if(array[i] > maxVal){
-                maxVal = array[i];
-                maxIdx = i;
-            }
-        }
-        return maxIdx;
     }
 
 }
