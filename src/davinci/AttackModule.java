@@ -413,7 +413,7 @@ public class AttackModule {
             }
             else if(stunTrapInfo[x][y] != 0){
                 // If the stun trap went off in the last few rounds, compute enemy stunned locs.
-                System.out.println("Stun trap went off " + (currRoundNum - stunTrapInfo[x][y]) + " rounds ago at " + info.getMapLocation() + "!");
+//                System.out.println("Stun trap went off " + (currRoundNum - stunTrapInfo[x][y]) + " rounds ago at " + info.getMapLocation() + "!");
                 if(currRoundNum - stunTrapInfo[x][y] < Constants.NUM_ROUNDS_OF_STUN){
                     updateEnemyStunnedLocs(x, y, stunTrapInfo[x][y]);
                 }

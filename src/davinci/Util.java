@@ -400,4 +400,16 @@ public class Util {
         return 20.0;
     }
 
+    public static int maxIndexInArray(int[] array){
+        int maxVal = array[0];
+        int maxIdx = 0;
+        for(int i = 1; i < array.length; i++){
+            if(array[i] > maxVal){
+                maxVal = array[i];
+                maxIdx = i;
+            }
+        }
+        return maxIdx;
+    }
+
 }

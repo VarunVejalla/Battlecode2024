@@ -228,6 +228,8 @@ public class OffenseModule {
         if (rc.isMovementReady()) {
             Util.logBytecode("Beginning move to target");
             moveToTarget();
+            Util.logBytecode("end of move to target");
+
         }
     }
 

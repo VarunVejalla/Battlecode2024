@@ -126,25 +126,64 @@ public class Constants {
     public static final int TRAPPER_RATIO_MASK = 61440; // 1111 0000 0000 0000
     public static final int TRAPPER_RATIO_SHIFT = 12;
 
+
+
+
+
     // BOT count-related constants
     // offensive soldier counts
-    public static final int OFFENSIVE_COUNT_INDEX = 12;
-    public static final int OFFENSIVE_COUNT_MASK = 0b111111; // 111111
-    public static final int OFFENSIVE_COUNT_SHIFT = 0;
+    public static final int OFFENSIVE_PREV_COUNT_INDEX = 12;
+    public static final int OFFENSIVE_PREV_COUNT_MASK = 0b111111; // 111111
+    public static final int OFFENSIVE_PREV_COUNT_SHIFT = 0;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
+    public static final int OFFENSIVE_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
 
     // mobile defender counts
-    public static final int MOBILE_DEFENDER_COUNT_INDEX = 12;
-    public static final int MOBILE_DEFENDER_COUNT_MASK = 0b111111000000; // 111111 000000
-    public static final int MOBILE_DEFENDER_COUNT_SHIFT = 6;
+    public static final int MOBILE_DEFENDER_PREV_COUNT_INDEX = 12;
+    public static final int MOBILE_DEFENDER_PREV_COUNT_MASK = 0b111111000000; // 111111 000000
+    public static final int MOBILE_DEFENDER_PREV_COUNT_SHIFT = 6;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 12;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
+    public static final int MOBILE_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
 
     // stationary defender counts
-    public static final int STATIONARY_DEFENDER_COUNT_INDEX = 13;
-    public static final int STATIONARY_DEFENDER_COUNT_MASK = 0b111111;
-    public static final int STATIONARY_DEFENDER_COUNT_SHIFT = 0;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_PREV_COUNT_SHIFT = 0;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_MASK = 0b11000000000000;
+    public static final int STATIONARY_DEFENDER_COUNT_PREV_UPDATED_ROUND_SHIFT = 12;
 
-    public static final int TRAPPER_COUNT_INDEX = 13;
-    public static final int TRAPPER_COUNT_MASK = 0b111111000000;
-    public static final int TRAPPER_COUNT_SHIFT = 6;
+    public static final int TRAPPER_PREV_COUNT_INDEX = 13;
+    public static final int TRAPPER_PREV_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_PREV_COUNT_SHIFT = 6;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_INDEX = 13;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_MASK = 0b1100000000000000;
+    public static final int TRAPPER_COUNT_PREV_UPDATED_ROUND_SHIFT = 14;
+
+    public static final int OFFENSIVE_CURR_COUNT_INDEX = 44;
+    public static final int OFFENSIVE_CURR_COUNT_MASK = 0b111111;
+    public static final int OFFENSIVE_CURR_COUNT_SHIFT = 0;
+
+    public static final int MOBILE_DEFENDER_CURR_COUNT_INDEX = 44;
+    public static final int MOBILE_DEFENDER_CURR_COUNT_MASK = 0b111111000000;
+    public static final int MOBILE_DEFENDER_CURR_COUNT_SHIFT = 6;
+
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_INDEX = 45;
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_MASK = 0b111111;
+    public static final int STATIONARY_DEFENDER_CURR_COUNT_SHIFT = 0;
+
+    public static final int TRAPPER_CURR_COUNT_INDEX = 45;
+    public static final int TRAPPER_CURR_COUNT_MASK = 0b111111000000;
+    public static final int TRAPPER_CURR_COUNT_SHIFT = 6;
+    public static final int NUM_ROUNDS_WITH_MASS_SPAWNING = 10;
+
+
+
+
+
+
 
     //--------------------------------------------------------------------------------------------
     public static final int SHARED_DEFENSIVE_TARGET_IDX = 17;
@@ -230,4 +269,31 @@ public class Constants {
     public static final int FLAG_SNAPBACK_MASK = 0b100000000;
 
     public static final int NUM_ENEMIES_TO_PLACE_TRAP = 5;
+
+    ////////////////////////////
+    public static final int ENEMY_COUNT_NEAR_FLAG_0_IDX = 35;
+    public static final int ENEMY_COUNT_NEAR_FLAG_1_IDX = 36;
+    public static final int ENEMY_COUNT_NEAR_FLAG_2_IDX = 37;
+    public static final int[] ENEMY_COUNT_NEAR_FLAG_INDICES = {ENEMY_COUNT_NEAR_FLAG_0_IDX, ENEMY_COUNT_NEAR_FLAG_1_IDX, ENEMY_COUNT_NEAR_FLAG_2_IDX};
+    public static final int ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_MASK = 0b11111;
+    public static final int ENEMY_COUNT_NEAR_FLAG_PREV_ROUND_SHIFT = 0;
+    public static final int ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_MASK = 0b1111100000;
+    public static final int ENEMY_COUNT_NEAR_FLAG_CURR_ROUND_SHIFT = 5;
+    public static final int ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_MASK = 0b10000000000;
+    public static final int ENEMY_COUNT_NEAR_FLAG_LAST_ROUND_UPDATED_SHIFT = 10;
+
+    // ------------------- Closest Enemy Loc to Ally Flag --------------------
+    public static final int CLOSEST_ENEMY_TO_FLAG_0_IDX = 38;
+    public static final int CLOSEST_ENEMY_TO_FLAG_1_IDX = 39;
+    public static final int CLOSEST_ENEMY_TO_FLAG_2_IDX = 40;
+    public static final int[] CLOSEST_ENEMY_TO_FLAG_INDICES = {CLOSEST_ENEMY_TO_FLAG_0_IDX, CLOSEST_ENEMY_TO_FLAG_1_IDX, CLOSEST_ENEMY_TO_FLAG_2_IDX};
+    public static final int CLOSEST_ENEMY_TO_FLAG_X_MASK = 4032; // 111111000000
+    public static final int CLOSEST_ENEMY_TO_FLAG_X_SHIFT = 6;
+    public static final int CLOSEST_ENEMY_TO_FLAG_Y_MASK = 63; // 00000011111
+    public static final int CLOSEST_ENEMY_TO_FLAG_Y_SHIFT = 0;
+    public static final int DIST_SQUARED_THRESHOLD_TO_CONSIDER_CLOSE_TO_FLAG = 30;
+
+
+
+
 }
