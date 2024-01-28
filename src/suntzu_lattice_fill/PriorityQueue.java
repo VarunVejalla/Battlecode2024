@@ -1,4 +1,4 @@
-package suntzu_water;
+package suntzu_lattice_fill;
 
 import battlecode.common.MapLocation;
 

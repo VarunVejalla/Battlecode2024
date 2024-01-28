@@ -1,4 +1,4 @@
-package suntzu_water;
+package suntzu_lattice_fill;
 
 import battlecode.common.*;
 
@@ -6,7 +6,7 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
-    static boolean LOGGING_ALLOWED = false;
+    static boolean LOGGING_ALLOWED = true;
     static boolean SUBMISSION_MODE = true; // TODO: Set this to true when submitting.
 
     public static void resign(){
@@ -31,7 +31,7 @@ public class Util {
         return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
     }
 
-    public static Direction[] getDirectionsToCheck(Direction dir) {
+    public static Direction[] latticeFillDirectionsToCheck(Direction dir) {
         Direction[] dirCheck;
         switch (dir) {
             case NORTH:
@@ -62,14 +62,12 @@ public class Util {
                 dirCheck = null;
                 break;
         }
-    
         return dirCheck;
     }
 
-
     public static Direction tryFillingLattice(MapLocation myLoc, Direction fillDir) throws GameActionException {
         MapLocation frontMapLocation = rc.adjacentLocation(fillDir);
-        Direction[] checkDirs = getDirectionsToCheck(fillDir);
+        Direction[] checkDirs = latticeFillDirectionsToCheck(fillDir);
         Direction leftDir = checkDirs[0];
         Direction rightDir = checkDirs[1];
         MapLocation leftMapLocation = rc.adjacentLocation(leftDir);
@@ -93,12 +91,24 @@ public class Util {
         }        
         return fillDir;
     }
-    
+
+
 
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
-
         if(rc.getCrumbs() >= minCrumbsToFill + Constants.FILL_CRUMB_COST && rc.canFill(rc.adjacentLocation(dir))) {
-            dir = tryFillingLattice(rc.getLocation(), dir);
+            
+            boolean safe = true;
+            if (robot.attackModule.heuristic != null && !robot.attackModule.heuristic.getSafe()) {
+                safe = false;
+            }
+
+            if (safe) {
+                dir = tryFillingLattice(rc.getLocation(), dir);
+            }
+            else {
+                rc.fill(rc.adjacentLocation(dir));
+            }
+            
         }
         if(rc.canMove(dir)) {
             rc.move(dir);
@@ -111,8 +121,18 @@ public class Util {
 
     public static boolean tryMove(Direction dir, boolean waterFillingAllowed) throws GameActionException{
         if(waterFillingAllowed && rc.canFill(rc.adjacentLocation(dir))) {
-            System.out.println(robot.attackModule.heuristic.getSafe());
-            dir = tryFillingLattice(rc.getLocation(), dir);
+
+            boolean safe = true;
+            if (robot.attackModule.heuristic != null && !robot.attackModule.heuristic.getSafe()) {
+                safe = false;
+            }
+
+            if (safe) {
+                dir = tryFillingLattice(rc.getLocation(), dir);
+            }
+            else {
+                rc.fill(rc.adjacentLocation(dir));
+            }
         }
         if(rc.canMove(dir)) {
             rc.move(dir);
@@ -149,11 +169,11 @@ public class Util {
     }
 
     public static void addToIndicatorString(String str){
-        // robot.indicatorString += str + ";";
+        robot.indicatorString += str + ";";
     }
 
     public static void printBytecode(String prefix){
-        //Util.log(prefix + ": " + Clock.getBytecodesLeft());
+        Util.log(prefix + ": " + Clock.getBytecodesLeft());
     }
 
     public static int countBotsOfTeam(Team team, RobotInfo[] bots){
@@ -398,11 +418,11 @@ public class Util {
     }
 
     public static void logBytecode(String str){
-        //Util.log(str + ": " + Clock.getBytecodesLeft());
+        Util.log(str + ": " + Clock.getBytecodesLeft());
     }
 
     public static void logBytecodeUsed(String str){
-        //Util.log(str + ": " + Clock.getBytecodeNum());
+        Util.log(str + ": " + Clock.getBytecodeNum());
     }
 
 

@@ -1,4 +1,4 @@
-package suntzu_water;
+package suntzu_lattice_fill;
 import battlecode.common.*;
 
 public class BFS20 extends BFS {
