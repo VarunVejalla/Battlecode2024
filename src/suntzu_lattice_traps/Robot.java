@@ -315,6 +315,7 @@ public class Robot {
                 }
             }
             else if(rc.hasFlag()){
+                hasFlagAtBeginningOfTurn = true;
                 if(homeLocWhenCarryingFlag == null){
                     homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
                 }
@@ -347,6 +348,9 @@ public class Robot {
             }
             else{
                 tryPickingUpOppFlag();
+                if(rc.hasFlag()) {
+                    hasFlagAtBeginningOfTurn = true;
+                }
                 if(rc.hasFlag() && homeLocWhenCarryingFlag == null){
                     homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
                 } else if(!rc.hasFlag()){
@@ -757,6 +761,8 @@ public class Robot {
             MapLocation toDropLoc = rc.getLocation().add(nearbyDir);
             if(rc.canDropFlag(toDropLoc) && rc.senseNearbyRobots(toDropLoc, GameConstants.INTERACT_RADIUS_SQUARED, myTeam).length != 0) {
                 rc.dropFlag(toDropLoc);
+                comms.writeKnownOppFlagLocFromFlagID(toDropLoc, false, idOfFlagImCarrying);
+                idOfFlagImCarrying = -1;
             }
         }
     }
