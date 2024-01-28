@@ -376,7 +376,8 @@ public class Robot {
                 }
             }
         }
-        rc.setIndicatorString(indicatorString);
+        
+        // rc.setIndicatorString(indicatorString);
 
         if(rc.getRoundNum() > 200
                 && hasFlagAtBeginningOfTurn

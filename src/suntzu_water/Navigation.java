@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.*;
 
@@ -214,12 +214,12 @@ public class Navigation {
         }
         MapLocation myLoc = robot.myLoc;
         if(Util.minMovesToReach(myLoc, center) > maxDist){
-//            Util.log("Moving closer!");
+//            //Util.log("Moving closer!");
             pathBF(center, minCrumbsForNavigation);
             return true;
         }
         if(Util.minMovesToReach(myLoc, center) < minDist){
-//            Util.log("Moving away!");
+//            //Util.log("Moving away!");
             Direction centerDir = myLoc.directionTo(center);
             if(centerDir == Direction.CENTER){
                 centerDir = robot.centerLoc.directionTo(myLoc);
@@ -231,11 +231,11 @@ public class Navigation {
             return fuzzyNav.goTo(target, minCrumbsForNavigation);
         }
 
-//        Util.log("Tryna circle CCW? " + prevCircleDir);
+//        //Util.log("Tryna circle CCW? " + prevCircleDir);
         if(circle(center, minDist, maxDist, prevCircleDir)){
             return true;
         }
-//        Util.log("Tryna circle CW");
+//        //Util.log("Tryna circle CW");
         if(circle(center, minDist, maxDist, !prevCircleDir)){
             return true;
         }

@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -149,10 +149,10 @@ public class OffenseModule {
     public void tryUpdateSharedOffensiveTarget() throws GameActionException {
         // loop over carried flags
         OffensiveTarget currentTarget = new OffensiveTarget(sharedOffensiveTarget, sharedOffensiveTargetType);
-//        Util.log("Current Target: " + currentTarget.loc + " " + currentTarget.type);
+//        //Util.log("Current Target: " + currentTarget.loc + " " + currentTarget.type);
 
         OffensiveTarget newTarget = tryGettingNewTarget(currentTarget);
-//        Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
+//        //Util.log("New Target: " + newTarget.loc + " " + newTarget.type);
 
         if(newTarget == null || newTarget.equals(currentTarget)){
             return;

@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.*;
 
@@ -320,7 +320,7 @@ public class DefenseModule {
             nav.circle(allFlagDefaultLocs[2], 2, 5, 0);
         }
         else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
-            Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
+            //Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
             nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
         }
@@ -354,7 +354,7 @@ public class DefenseModule {
             }
         }
 
-        Util.log("Resetting shared defensive target to null " + sharedDefensiveTarget.toString());
+        //Util.log("Resetting shared defensive target to null " + sharedDefensiveTarget.toString());
         Util.logArray("KTA: ", robot.knownTakenAllyFlags);
         sharedDefensiveTarget = null;
         sharedDefensiveTargetPriority = Integer.MAX_VALUE;

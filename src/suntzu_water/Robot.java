@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.*;
 
@@ -262,6 +262,8 @@ public class Robot {
     public void run() throws GameActionException {
 
         
+
+        
         indicatorString = "";
         checkIfInitializationNeeded();
 
@@ -354,7 +356,7 @@ public class Robot {
                 }
             }
         }
-        rc.setIndicatorString(indicatorString);
+        // rc.setIndicatorString(indicatorString);
 
         if(rc.getRoundNum() > 200
                 && hasFlagAtBeginningOfTurn
@@ -385,10 +387,10 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(0),
 //                        comms.getHomeFlagTakenStatus(1),
 //                        comms.getHomeFlagTakenStatus(2)});
-        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
-        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
+        //Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
+        //Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
 
-        Util.log("--------------------------------");
+        //Util.log("--------------------------------");
     }
 
 
@@ -465,9 +467,9 @@ public class Robot {
         if (rc.getRoundNum() >= Constants.SETUP_ROUNDS && comms.getApproxOppFlag_LastUpdated() + 100 <= rc.getRoundNum()) {
             approximateOppFlagLocations = rc.senseBroadcastFlagLocations();
             comms.setApproxOppFlags(approximateOppFlagLocations);
-            Util.log("Approximate Flag Broadcast!");
+            //Util.log("Approximate Flag Broadcast!");
             Util.logArray("approximateFlagLocs: ", approximateOppFlagLocations);
-            Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
+            //Util.log("approximateFlagLos.length: " + approximateOppFlagLocations.length);
         }
     }
 
@@ -480,17 +482,17 @@ public class Robot {
                     boolean flagIsStillValid = false;
                     // check to see if we sensed the flag at the location in sensedNearbyFlags
                     // if we did, and it's being carried, it's valid
-//                    Util.log("Checking if " + knownCarriedOppFlags[i] + " still contains flag");
+//                    //Util.log("Checking if " + knownCarriedOppFlags[i] + " still contains flag");
                     for (FlagInfo flagInfo : sensedNearbyFlags) {
                         if (flagInfo.getLocation().equals(knownCarriedOppFlags[i])) {
                             if (flagInfo.isPickedUp() && flagInfo.getTeam() == oppTeam) {
-//                                Util.log("It is! " + flagInfo.getLocation() + ", " + flagInfo.getTeam() + ", " + flagInfo.getID());
+//                                //Util.log("It is! " + flagInfo.getLocation() + ", " + flagInfo.getTeam() + ", " + flagInfo.getID());
                                 flagIsStillValid = true;
                             }
                         }
                     }
                     if (!flagIsStillValid) {
-//                        Util.log("It's not! Removing " + knownCarriedOppFlags[i] + " from comms");
+//                        //Util.log("It's not! Removing " + knownCarriedOppFlags[i] + " from comms");
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
                         comms.removeKnownOppFlagLocFromIdx(i);
@@ -553,7 +555,7 @@ public class Robot {
             if (flagInfo.getTeam() == myTeam) continue;
 
             if(rc.getLocation().equals(flagInfo.getLocation())){
-                Util.log("CARRYING FLAG WITH LOC " + flagInfo.getLocation() + " AND ID " + flagInfo.getID());
+                //Util.log("CARRYING FLAG WITH LOC " + flagInfo.getLocation() + " AND ID " + flagInfo.getID());
                 idOfFlagImCarrying = flagInfo.getID();
             }
 
@@ -608,7 +610,7 @@ public class Robot {
                     if (!flagIsStillValid) {
                         // if we didn't sense the flag at the location in sensedNearbyFlags, it's invalid
                         // remove it from the shared array
-                        Util.log("REMOVING TAKEN ALLY FLAG: " + knownTakenAllyFlags[i]);
+                        //Util.log("REMOVING TAKEN ALLY FLAG: " + knownTakenAllyFlags[i]);
                         comms.removeTakenAllyFlag(knownTakenAllyFlags[i]);
                         knownTakenAllyFlags[i] = null;
                     }
@@ -633,7 +635,7 @@ public class Robot {
                     break;
                 }
             }
-            Util.log("Found new taken ally flag");
+            //Util.log("Found new taken ally flag");
             Util.logArray("KTA is now: ", knownTakenAllyFlags);
         }
     }

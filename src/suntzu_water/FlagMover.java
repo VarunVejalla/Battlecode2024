@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.*;
 
@@ -154,7 +154,7 @@ public class FlagMover {
                 }
                 MapLocation flagLoc = nearbyFlags[i].getLocation();
                 if(!rc.canPickupFlag(flagLoc)){
-                    Util.log("Why tf can i not pick it up");
+                    //Util.log("Why tf can i not pick it up");
                     nav.fuzzyNav.goTo(flagLoc, 0);
                     return true;
                 }

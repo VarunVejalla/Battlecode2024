@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.*;
 
@@ -6,7 +6,7 @@ public class Util {
 
     static RobotController rc;
     static Robot robot;
-    static boolean LOGGING_ALLOWED = true;
+    static boolean LOGGING_ALLOWED = false;
     static boolean SUBMISSION_MODE = true; // TODO: Set this to true when submitting.
 
     public static void resign(){
@@ -67,8 +67,7 @@ public class Util {
     }
 
 
-    // Should return one of three Locations
-    public static Direction tryFilling(MapLocation myLoc, Direction fillDir) throws GameActionException {
+    public static Direction tryFillingLattice(MapLocation myLoc, Direction fillDir) throws GameActionException {
         MapLocation frontMapLocation = rc.adjacentLocation(fillDir);
         Direction[] checkDirs = getDirectionsToCheck(fillDir);
         Direction leftDir = checkDirs[0];
@@ -89,46 +88,18 @@ public class Util {
             rc.fill(rightMapLocation);
             fillDir = rightDir;
         }
-        
+        else if (!rc.sensePassability(leftMapLocation) || !rc.sensePassability(rightMapLocation)) {
+            rc.fill(frontMapLocation);   
+        }        
         return fillDir;
-        
-
-        // MapInfo leftMapInfo = rc.senseMapInfo(leftMapLocation);
-        // MapInfo rightMapInfo = rc.senseMapInfo(rightMapLocation);
-
-        // // Case Fill Dir
-        // // If left of dir and right of dir are water
-        // if (leftMapInfo.isWater() && rightMapInfo.isWater()) {
-        //     rc.fill(leftMapLocation);
-        //     return fillDir;
-        // }
-
-        // // Case fill left of dir
-        // // If right of direction is land and not passable
-        // if (leftMapInfo.isWater() && !rightMapInfo.isPassable()) {
-        //     rc.fill(leftMapLocation);
-        //     return leftDir;
-        // }
-
-        // // Case fill right of dir
-        // // If left of dir is land and not passable
-        // if (rightMapInfo.isWater() && !leftMapInfo.isPassable()) {
-        //     rc.fill(rightMapLocation);
-        //     return leftDir;
-        // }
-
-        // rc.fill(rc.adjacentLocation(fillDir));
-        // return fillDir;
     }
     
 
     public static boolean tryMove(Direction dir, int minCrumbsToFill) throws GameActionException{
 
         if(rc.getCrumbs() >= minCrumbsToFill + Constants.FILL_CRUMB_COST && rc.canFill(rc.adjacentLocation(dir))) {
-            // rc.fill(rc.adjacentLocation(dir));
-            dir = tryFilling(rc.getLocation(), dir);
+            dir = tryFillingLattice(rc.getLocation(), dir);
         }
-
         if(rc.canMove(dir)) {
             rc.move(dir);
             robot.myLoc = rc.getLocation();
@@ -140,8 +111,8 @@ public class Util {
 
     public static boolean tryMove(Direction dir, boolean waterFillingAllowed) throws GameActionException{
         if(waterFillingAllowed && rc.canFill(rc.adjacentLocation(dir))) {
-            // rc.fill(rc.adjacentLocation(dir));
-            dir = tryFilling(rc.getLocation(), dir);
+            System.out.println(robot.attackModule.heuristic.getSafe());
+            dir = tryFillingLattice(rc.getLocation(), dir);
         }
         if(rc.canMove(dir)) {
             rc.move(dir);
@@ -178,11 +149,11 @@ public class Util {
     }
 
     public static void addToIndicatorString(String str){
-        robot.indicatorString += str + ";";
+        // robot.indicatorString += str + ";";
     }
 
     public static void printBytecode(String prefix){
-        Util.log(prefix + ": " + Clock.getBytecodesLeft());
+        //Util.log(prefix + ": " + Clock.getBytecodesLeft());
     }
 
     public static int countBotsOfTeam(Team team, RobotInfo[] bots){
@@ -427,11 +398,11 @@ public class Util {
     }
 
     public static void logBytecode(String str){
-        Util.log(str + ": " + Clock.getBytecodesLeft());
+        //Util.log(str + ": " + Clock.getBytecodesLeft());
     }
 
     public static void logBytecodeUsed(String str){
-        Util.log(str + ": " + Clock.getBytecodeNum());
+        //Util.log(str + ": " + Clock.getBytecodeNum());
     }
 
 

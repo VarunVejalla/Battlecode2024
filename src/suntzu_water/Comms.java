@@ -1,4 +1,4 @@
-package suntzu_lattice_traps_water;
+package suntzu_water;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -244,7 +244,7 @@ public class Comms {
             Util.LOGGING_ALLOWED = true;
             robot.testLog();
             Util.logArray("Comms opp flag array:", getOppFlagIDArray());
-            Util.log("Flag ID:" + flagId);
+            //Util.log("Flag ID:" + flagId);
             System.out.println("Failed while removing flag ID: " + flagId);
             Util.resign();
         }
@@ -282,7 +282,7 @@ public class Comms {
     public void writeTakenAllyFlagLoc(MapLocation newFlagLoc, int idx) throws GameActionException{
         // this method writes the location of a single known opponent flag (specified by idx)
         // this method is used internally to the Comms class
-        Util.log("Writing ally flag loc " + newFlagLoc + " to index " + idx);
+        //Util.log("Writing ally flag loc " + newFlagLoc + " to index " + idx);
         int trueIndex = constants.TAKEN_ALLY_FLAG_INDICES[idx];
         int x;
         int y;
@@ -836,7 +836,7 @@ public class Comms {
     public void setOppFlagToCaptured(int flagID) throws GameActionException {
         // this sets the captured bit corresponding to the opponenet flag that has its ID as flagID to true
         // used by a robot as it walks into the spawnLocation
-        Util.log("Setting flag " + flagID + " to captured");
+        //Util.log("Setting flag " + flagID + " to captured");
         int index = 0;
         while(index < 3){
             int currFlagID = extractVal(
