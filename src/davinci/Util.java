@@ -27,6 +27,15 @@ public class Util {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
+    public static MapLocation getRandomLocation(MapLocation center, int sideLength) {
+        int minX = Math.max(center.x-sideLength, 0);
+        int maxX = Math.min(center.x+sideLength, rc.getMapWidth());
+
+        int minY = Math.max(center.y-sideLength, 0);
+        int maxY = Math.min(center.y+sideLength, rc.getMapHeight());
+        return new MapLocation(robot.rng.nextInt(maxX-minX)+minX, robot.rng.nextInt(maxY-minY)+minY);
+    }
+
     public static MapLocation getRandomLocation(){
         return new MapLocation(robot.rng.nextInt(rc.getMapWidth()), robot.rng.nextInt(rc.getMapHeight()));
     }
@@ -422,6 +431,14 @@ public class Util {
             }
         }
         return maxIdx;
+    }
+
+    public static Direction[] nearbyDirections(Direction dir) {
+        return new Direction[]{
+                dir,
+                dir.rotateLeft(),
+                dir.rotateRight(),
+        };
     }
 
 }

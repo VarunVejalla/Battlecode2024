@@ -427,7 +427,7 @@ public class Robot {
         if (!rc.isSpawned()){
             spawn();
         }
-        if(rc.isSpawned()){
+        if(rc.isSpawned()) {
             tryGlobalUpgrade();
 
 //            Util.logBytecodeUsedForID("before changeTroopRatio", idExamining);
@@ -448,7 +448,7 @@ public class Robot {
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
-                if(rc.getRoundNum() < 10) {
+                if (rc.getRoundNum() < 10) {
                     MapLocation[] spawnLocCenters = Util.getSpawnLocCenters();
                     comms.writeDefaultHomeFlagLocs(0, spawnLocCenters[0]);
                     comms.writeOurFlagNewHomeStatus(0, true);
@@ -462,7 +462,7 @@ public class Robot {
                     int avgX = 0;
                     int avgY = 0;
 
-                    for(MapLocation loc : spawnLocCenters) {
+                    for (MapLocation loc : spawnLocCenters) {
                         avgX += loc.x;
                         avgY += loc.y;
                     }
@@ -474,73 +474,64 @@ public class Robot {
                 checkToSeeIfIShouldBecomeStationaryDefender();
 
 
-
-                if(mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                if (mode == Mode.STATIONARY_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
 //                    System.out.println("RUNNING STATIONARY DEFENSE");
 //                    System.out.println("DEFENDING FLAG IDX: " + defenseModule.defendingFlagIdx);
 //                    System.out.println("my current location: " + rc.getLocation());
 //                    System.out.println("location of flag I'm trying to defend: " + comms.getDefaultHomeFlagLoc(defenseModule.defendingFlagIdx));
                     defenseModule.runStationaryDefense();
-                }
-
-                else if(mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
+                } else if (mode == Mode.MOBILE_DEFENSE && comms.getOurFlagNewHomeStatus(defenseModule.defendingFlagIdx)) {
                     defenseModule.runMobileDefense();
-                }
-
-                else if(mode != Mode.STATIONARY_DEFENSE){ // If on offense, keep running the scout code.
+                } else if (mode != Mode.STATIONARY_DEFENSE) { // If on offense, keep running the scout code.
                     scout.runScout();
                 }
-            }
-
-
-            else if(rc.hasFlag()){
-                if(attackModule.heuristic.getSafe()){
-                    offenseModule.runMovement();
+            } else {
+                if (!rc.hasFlag()) {
+                    tryPickingUpOppFlag();
                 }
-                else{
-                    myLoc = rc.getLocation();
-
-                    // update shared array
-                    attackModule.runUnsafeStrategy();
-                    comms.removeKnownOppFlagLocFromId(idOfFlagImCarrying);
-
-                    if(offenseModule.sharedOffensiveTarget.equals(myLoc)){
-                        offenseModule.sharedOffensiveTarget = rc.getLocation();
-                        comms.writeSharedOffensiveTarget(offenseModule.sharedOffensiveTarget);
+                if (rc.hasFlag() && homeLocWhenCarryingFlag == null) {
+                    homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
+                }
+                if (rc.hasFlag()) {
+                    if (homeLocWhenCarryingFlag == null) {
+                        homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
                     }
-                    comms.writeKnownOppFlagLocFromFlagID(rc.getLocation(), true, idOfFlagImCarrying);
+                    attackModule.runSetup();
+                    if (attackModule.heuristic.getSafe()) {
+                        MapLocation currentLocation = rc.getLocation();
+                        offenseModule.runMovement();
+                        MapLocation newLocation = rc.getLocation();
+                        Direction moved = currentLocation.directionTo(newLocation);
+                        Direction goalDirection = rc.getLocation().directionTo(homeLocWhenCarryingFlag);
+                        if (moved == goalDirection || moved == goalDirection.rotateLeft() || moved == goalDirection.rotateRight()) {
+                            tryDroppingFlag(moved);
+                        }
+                    } else {
+                        myLoc = rc.getLocation();
+
+                        // update shared array
+                        attackModule.runUnsafeStrategy();
+                        comms.removeKnownOppFlagLocFromId(idOfFlagImCarrying);
+
+                        if (offenseModule.sharedOffensiveTarget.equals(myLoc)) {
+                            offenseModule.sharedOffensiveTarget = rc.getLocation();
+                            comms.writeSharedOffensiveTarget(offenseModule.sharedOffensiveTarget);
+                        }
+                        comms.writeKnownOppFlagLocFromFlagID(rc.getLocation(), true, idOfFlagImCarrying);
+                    }
+                } else {
+                    homeLocWhenCarryingFlag = null;
+                    attackModule.runSetup();
+                    attackModule.runStrategy();
+                    nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+                    if (nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE) {
+                        offenseModule.runMovement();
+                    } else if (mode == Mode.STATIONARY_DEFENSE) {
+                        defenseModule.runStationaryDefense();
+                    } else if (mode == Mode.MOBILE_DEFENSE) {
+                        defenseModule.runMobileDefense();
+                    }
                 }
-            }
-
-            else{
-                homeLocWhenCarryingFlag = null;
-
-//                Util.logBytecodeUsedForID("before runAttackModule", idExamining);
-                attackModule.runSetup();
-                attackModule.runStrategy();
-//                Util.logBytecodeUsedForID("after runAttackModule", idExamining);
-
-
-                nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
-
-                // check to see if you are no longer needed as a mobile defender (live-switching)
-                if(mode == Mode.MOBILE_DEFENSE && defenseModule.shouldISwitchToOffense()){
-                    mode = Mode.OFFENSE;
-                }
-
-
-//                Util.logBytecodeUsedForID("before runMovement", idExamining);
-                if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
-                    offenseModule.runMovement();
-                }
-                else if(mode == Mode.STATIONARY_DEFENSE){
-                    defenseModule.runStationaryDefense();
-                }
-                else if(mode == Mode.MOBILE_DEFENSE){
-                    defenseModule.runMobileDefense();
-                }
-
-//                Util.logBytecodeUsedForID("after runMovement", idExamining);
             }
         }
         rc.setIndicatorString(indicatorString);
@@ -931,23 +922,6 @@ public class Robot {
         offenseModule.tryUpdateSharedOffensiveTarget();
     }
 
-    public void tryPickingUpOppFlag() throws GameActionException {
-        // this method tries to pick up an opponent flag
-        // if it can, it picks it up
-        // if it can't, it does nothing
-        // loop over all the opponent flags and check to see, if they are not null, can you pick them up
-        for (FlagInfo flagInfo : sensedNearbyFlags) {
-            if (flagInfo.getTeam() == myTeam) continue;
-            MapLocation oppFlagLoc = flagInfo.getLocation();
-
-            if (oppFlagLoc != null && rc.canPickupFlag(oppFlagLoc)) {
-                rc.pickupFlag(oppFlagLoc);
-                comms.writeKnownOppFlagLocFromFlagID(oppFlagLoc, true, flagInfo.getID());
-                idOfFlagImCarrying = flagInfo.getID();
-            }
-        }
-    }
-
     public void scanSurroundings() throws GameActionException {
         // this method scans the surroundings of the bot and updates comms if needed
         sensedNearbyFlags = rc.senseNearbyFlags(GameConstants.VISION_RADIUS_SQUARED);
@@ -1024,6 +998,66 @@ public class Robot {
             comms.setEnemyCountNearFlagPrevRound(2, comms.getEnemyCountNearFlagCurrRound(2));
             comms.setEnemyCountNearFlagCurrRound( 2, 0);
             comms.setEnemyCountNearFlagLastUpdated(2, mod);
+        }
+    }
+    public void tryPickingUpOppFlag() throws GameActionException {
+        // this method tries to pick up an opponent flag
+        // if it can, it picks it up
+        // if it can't, it does nothing
+        // loop over all the opponent flags and check to see, if they are not null, can you pick them up
+        for (FlagInfo flagInfo : sensedNearbyFlags) {
+            if (flagInfo.getTeam() == myTeam) continue;
+            MapLocation oppFlagLoc = flagInfo.getLocation();
+            if(oppFlagLoc == null) {
+                continue;
+            }
+
+
+            if (rc.canPickupFlag(oppFlagLoc)) {
+                MapLocation nearestHomeSpawnLoc = Util.getNearestHomeSpawnLoc(oppFlagLoc);
+                boolean toPickUp = true;
+                Direction dirToHome = oppFlagLoc.directionTo(nearestHomeSpawnLoc);
+                // TODO: can improve the bytecode - only have to look at the ones that you know satisfy
+                //  compLocation.distanceSquaredTo(nearestHomeSpawnLoc) < rc.getLocation().distanceSquaredTo(nearestHomeSpawnLoc)
+                if(nearbyFriendlies.length != 0) {
+
+                    for (Direction dir : Util.closeDirections(dirToHome)) {
+                        MapLocation compLocation = oppFlagLoc.add(dir);
+                        if(rc.canSenseLocation(compLocation) && compLocation.distanceSquaredTo(nearestHomeSpawnLoc) < rc.getLocation().distanceSquaredTo(nearestHomeSpawnLoc)) {
+                            RobotInfo otherRobot = rc.senseRobotAtLocation(compLocation);
+                            if (otherRobot != null && otherRobot.team == myTeam && !otherRobot.hasFlag) {
+                                toPickUp = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (toPickUp && oppFlagLoc.distanceSquaredTo(nearestHomeSpawnLoc) < rc.getLocation().distanceSquaredTo(nearestHomeSpawnLoc)) {
+                        RobotInfo otherRobot = rc.senseRobotAtLocation(oppFlagLoc);
+                        if (otherRobot != null && otherRobot.team == myTeam && !otherRobot.hasFlag) {
+                            toPickUp = false;
+                        }
+                    }
+                }
+
+                if(toPickUp) {
+                    rc.pickupFlag(oppFlagLoc);
+                    comms.writeKnownOppFlagLocFromFlagID(oppFlagLoc, true, flagInfo.getID());
+                    idOfFlagImCarrying = flagInfo.getID();
+                }
+            }
+        }
+    }
+
+    public void tryDroppingFlag(Direction goalDirection) throws GameActionException {
+        if(homeLocWhenCarryingFlag == null){
+            homeLocWhenCarryingFlag = Util.getNearestHomeSpawnLoc(rc.getLocation());
+        }
+        // TODO: can reduce bytecode (currently it is up to 3 * 100 ish)
+        for(Direction nearbyDir : Util.nearbyDirections(goalDirection)) {
+            MapLocation toDropLoc = rc.getLocation().add(nearbyDir);
+            if(rc.canDropFlag(toDropLoc) && rc.senseNearbyRobots(toDropLoc, GameConstants.INTERACT_RADIUS_SQUARED, myTeam).length != 0) {
+                rc.dropFlag(toDropLoc);
+            }
         }
     }
 

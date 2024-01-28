@@ -198,13 +198,13 @@ public class OffenseModule {
                 explorationTarget = null;
             }
             if(explorationTarget == null){
-                explorationTarget = Util.getRandomLocation();
+                explorationTarget = Util.getRandomLocation(rc.getLocation(), 8);
             }
             nav.pathBF(explorationTarget, 100);
             Util.addToIndicatorString("EXP" + explorationTarget);
         } else {
             if(sharedOffensiveTargetType == OffensiveTargetType.CARRIED){
-                nav.circle(sharedOffensiveTarget, 3, 8, 0);
+                nav.circle(sharedOffensiveTarget, 2, 8, 0);
                 Util.addToIndicatorString("CRC: " + sharedOffensiveTarget);
             }
             else{
