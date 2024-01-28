@@ -331,6 +331,17 @@ public class Util {
         }
     }
 
+
+
+    public static void logBytecodeUsedForID(String str, int id) {
+//        if (rc.getRoundNum() % 1 == 0) {
+//                Util.LOGGING_ALLOWED = true;
+//                Util.log(str + ": " + Clock.getBytecodeNum());
+//                Util.LOGGING_ALLOWED = false;
+//
+//        }
+    }
+
     public static void logBytecode(String str){
         Util.log(str + ": " + Clock.getBytecodesLeft());
     }
@@ -387,6 +398,7 @@ public class Util {
         }
         return null;
     }
+
 
     public static double getAttackDamage(RobotInfo robotInfo) throws GameActionException{
         // TODO: implement this method to take into account attack specializations

@@ -39,6 +39,24 @@ class TroopRatio {
         this.stationaryDefenderFrac = (double)stationaryDefenderRatio / ratioDenom;
         this.trapperFrac = (double)trapperRatio / ratioDenom;
     }
+
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        TroopRatio other = (TroopRatio) obj;
+
+        return this.offensiveRatio == other.offensiveRatio &&
+                this.mobileDefenderRatio == other.mobileDefenderRatio &&
+                this.stationaryDefenderRatio == other.stationaryDefenderRatio &&
+                this.trapperRatio == other.trapperRatio &&
+                this.ratioDenom == other.ratioDenom;
+    }
 }
 
 
@@ -156,7 +174,7 @@ public class Robot {
 //        comms.writeRatioVal(Mode.MOBILE_DEFENSE, 2);
 //        comms.writeRatioVal(Mode.STATIONARY_DEFENSE, 0);
 
-        comms.writeTroopRatio(new TroopRatio(0, 13, 0, 0));
+        comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
 
         mode = determineRobotTypeToSpawn();
         if(rc.getRoundNum() < Constants.NUM_ROUNDS_WITH_MASS_SPAWNING){
@@ -191,12 +209,28 @@ public class Robot {
         // set the ratio according if needs to be changed
         // TODO: based this off the game progression / how many flags we have / how many flags the opp has took / etc.
 
-        if(rc.getRoundNum() < 600){
+        TroopRatio currRatio = comms.getTroopRatio();
+        int[] enemyCounts = comms.getEnemyCountsNearFlagsPrevRound();
+        int numEnemiesNearOurFlags = 0;
+        for(int i = 0; i < 3; i++){
+            numEnemiesNearOurFlags += enemyCounts[i];
+        }
+
+        TroopRatio potentialNewRatio;
+        // full send on defense
+        if(numEnemiesNearOurFlags >= Constants.THRESHOLD_TO_CALL_FOR_HELP_ON_DEFENSE){
+            potentialNewRatio = new TroopRatio(0, 13, 0, 0);
+        }
+        // full send on offense
+        else{
+            potentialNewRatio = new TroopRatio(13, 2, 0, 0);
+        }
+
+        if(potentialNewRatio.equals(currRatio)){    // don't do an unnecessary write if you don't need to
             return;
         }
-        else{
-            comms.writeTroopRatio(new TroopRatio(13, 2, 0, 0));
-        }
+
+        comms.writeTroopRatio(potentialNewRatio);
     }
 
 
@@ -379,21 +413,38 @@ public class Robot {
         idOfFlagImCarrying = -1;
         boolean hasFlagAtBeginningOfTurn = rc.hasFlag();
 
-        Util.addToIndicatorString("Mode:" + mode.toShortString());
+//        Util.addToIndicatorString("Mode:" + mode.toShortString());
 
+
+        int idExamining = 13799;
+
+
+//        Util.logBytecodeUsedForID("before readComms",idExamining );
         readComms(); // update opp flags and the shared target loc index
+//        Util.logBytecodeUsedForID("after readComms", idExamining);
+
 
         if (!rc.isSpawned()){
             spawn();
         }
         if(rc.isSpawned()){
             tryGlobalUpgrade();
+
+//            Util.logBytecodeUsedForID("before changeTroopRatio", idExamining);
             changeTroopRatioIfNeeded();
+//            Util.logBytecodeUsedForID("after changeTroopRatio", idExamining);
 
 
             myLoc = rc.getLocation();
+
+//            Util.logBytecodeUsedForID("before scanSurroundings", idExamining);
             scanSurroundings();
+//            Util.logBytecodeUsedForID("after scanSurroundings", idExamining);
+
+//            Util.logBytecodeUsedForID("before updateComms", idExamining);
             updateComms();
+//            Util.logBytecodeUsedForID("after updateComms", idExamining);
+
 
             if (rc.getRoundNum() <= Constants.SETUP_ROUNDS) {
                 // Scout the dam.
@@ -443,7 +494,6 @@ public class Robot {
 
 
             else if(rc.hasFlag()){
-                attackModule.runSetup();
                 if(attackModule.heuristic.getSafe()){
                     offenseModule.runMovement();
                 }
@@ -461,12 +511,17 @@ public class Robot {
                     comms.writeKnownOppFlagLocFromFlagID(rc.getLocation(), true, idOfFlagImCarrying);
                 }
             }
+
             else{
                 homeLocWhenCarryingFlag = null;
+
+//                Util.logBytecodeUsedForID("before runAttackModule", idExamining);
                 attackModule.runSetup();
                 attackModule.runStrategy();
-                nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
+//                Util.logBytecodeUsedForID("after runAttackModule", idExamining);
 
+
+                nearbyVisionEnemies = rc.senseNearbyRobots(GameConstants.VISION_RADIUS_SQUARED, oppTeam);
 
                 // check to see if you are no longer needed as a mobile defender (live-switching)
                 if(mode == Mode.MOBILE_DEFENSE && defenseModule.shouldISwitchToOffense()){
@@ -474,6 +529,7 @@ public class Robot {
                 }
 
 
+//                Util.logBytecodeUsedForID("before runMovement", idExamining);
                 if(nearbyVisionEnemies.length == 0 && mode == Mode.OFFENSE){
                     offenseModule.runMovement();
                 }
@@ -483,6 +539,8 @@ public class Robot {
                 else if(mode == Mode.MOBILE_DEFENSE){
                     defenseModule.runMobileDefense();
                 }
+
+//                Util.logBytecodeUsedForID("after runMovement", idExamining);
             }
         }
         rc.setIndicatorString(indicatorString);
@@ -544,10 +602,9 @@ public class Robot {
 //                        comms.getHomeFlagTakenStatus(0),
 //                        comms.getHomeFlagTakenStatus(1),
 //                        comms.getHomeFlagTakenStatus(2)});
-        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
-        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
-
-        Util.log("--------------------------------");
+//        Util.log("Shared offensive target: " + offenseModule.sharedOffensiveTarget);
+//        Util.log("Shared offensive target type: " + offenseModule.sharedOffensiveTargetType);
+//        Util.log("--------------------------------");
     }
 
 
@@ -846,27 +903,27 @@ public class Robot {
 
 
 
-        if(rc.getID() == 11798){
-            Util.LOGGING_ALLOWED = true;
-            Util.logBytecodeUsed("beginning of enemyCounts");
-            Util.LOGGING_ALLOWED = false;
-
-        }
+//        if(rc.getID() == 11798){
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("beginning of enemyCounts");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
         setEnemyCountsToPrevRoundIfNotAlreadySet();
-        if(rc.getID() == 11798) {
-            Util.LOGGING_ALLOWED = true;
-            Util.logBytecodeUsed("after setEnemyCountsToPrevRoundIfNotAlreadySet");
-            Util.LOGGING_ALLOWED = false;
-
-        }
+//        if(rc.getID() == 11798) {
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("after setEnemyCountsToPrevRoundIfNotAlreadySet");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
         updateEnemyCountsNearFlag();
 
-        if(rc.getID() == 11798){
-            Util.LOGGING_ALLOWED = true;
-            Util.logBytecodeUsed("end of enemyCounts");
-            Util.LOGGING_ALLOWED = false;
-
-        }
+//        if(rc.getID() == 11798){
+//            Util.LOGGING_ALLOWED = true;
+//            Util.logBytecodeUsed("end of enemyCounts");
+//            Util.LOGGING_ALLOWED = false;
+//
+//        }
 
 
 //

@@ -79,6 +79,11 @@ public class Navigation {
             return;
         }
 
+        if(robot.mode == Mode.MOBILE_DEFENSE  || robot.mode == Mode.STATIONARY_DEFENSE && rc.getLocation().distanceSquaredTo(target) <= 36){
+            fuzzyNav.goTo(target, minCrumbsForNavigation);
+            return;
+        }
+
         waterFillingAllowed = rc.getCrumbs() >= minCrumbsForNavigation;
 
         if(!target.equals(bugNav.prevTarget)){

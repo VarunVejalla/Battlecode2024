@@ -430,9 +430,8 @@ public class AttackModule {
             return;
         }
 
-        // compute the direction to enemyCOM
         Direction dirToEnemyCOM = robot.myLoc.directionTo(enemyCOM);
-        int roundNum = rc.getRoundNum();
+        // compute the direction to enemyCOM
         for(Direction direction : Util.closeDirections(dirToEnemyCOM)){
             MapLocation potentialBuildLocation = robot.myLoc.add(direction);
             if(!rc.canBuild(TrapType.STUN, potentialBuildLocation)) {
@@ -448,13 +447,12 @@ public class AttackModule {
                 }
                 }
 
-
             if(!adjacentStunTrap && rc.canBuild(TrapType.STUN, potentialBuildLocation)){
                 rc.build(TrapType.STUN, potentialBuildLocation);
 
-                Util.LOGGING_ALLOWED = true;
-                Util.logBytecode("after placing trap");
-                Util.LOGGING_ALLOWED = false;
+//                Util.LOGGING_ALLOWED = true;
+//                Util.logBytecode("after placing trap");
+//                Util.LOGGING_ALLOWED = false;
                 return;
             }
         }

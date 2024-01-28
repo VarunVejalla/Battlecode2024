@@ -289,42 +289,60 @@ public class DefenseModule {
 
 
     public void runMobileDefense() throws GameActionException {
+
+        Util.logBytecodeUsedForID("before runMobileDefense", 69);
         allFlagDefaultLocs[0] = comms.getDefaultHomeFlagLoc(0);
         allFlagDefaultLocs[1] = comms.getDefaultHomeFlagLoc(1);
         allFlagDefaultLocs[2] = comms.getDefaultHomeFlagLoc(2);
         flagDefaultLoc = comms.getDefaultHomeFlagLoc(defendingFlagIdx);
 
         boolean targetChanged = checkSharedDefensiveTargetStillValid();
+        Util.logBytecodeUsedForID("after checkSharedDefensiveTargetStillValid", 69);
+
         targetChanged |= updateSharedDefensiveTarget();
+        Util.logBytecodeUsedForID("after updateSharedDefensiveTarget", 69);
+
         if(targetChanged){
             comms.writeSharedDefensiveTarget(sharedDefensiveTarget);
         }
         if(sharedDefensiveTarget != null){
             Util.addToIndicatorString("SDT:" + sharedDefensiveTarget);
             Util.addToIndicatorString("SDTP: " + sharedDefensiveTargetPriority);
-            nav.pathBF(sharedDefensiveTarget, 0);
+            Util.logBytecodeUsedForID("bf1", 69);
+            nav.bugNav.goToBug0(sharedDefensiveTarget, 0);
         }
         else if(comms.getHomeFlagTakenStatus(defendingFlagIdx) == false){ // If our home flag is still there, circle that.
             Util.addToIndicatorString("FL");
+            Util.logBytecodeUsedForID("circle1", 69);
+
             nav.circle(flagDefaultLoc, 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(0) == false){ // Otherwise check if flag Idx 0 is still there, and circle that.
             Util.addToIndicatorString("F0");
+            Util.logBytecodeUsedForID("circle2", 69);
+
             nav.circle(allFlagDefaultLocs[0], 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(1) == false){ // Otherwise check if flag Idx 1 is still there, and circle that.
             Util.addToIndicatorString("F1");
+            Util.logBytecodeUsedForID("circle3", 69);
+
             nav.circle(allFlagDefaultLocs[1], 2, 5, 0);
         }
         else if(comms.getHomeFlagTakenStatus(2) == false){ // Otherwise check if flag Idx 2 is still there, and circle that.
             Util.addToIndicatorString("F2");
+            Util.logBytecodeUsedForID("circle4", 69);
+
             nav.circle(allFlagDefaultLocs[2], 2, 5, 0);
         }
         else if(robot.offenseModule.sharedOffensiveTarget != null){ // Otherwise default to offense? Idk wtf to do here T_T.
             Util.log("RUNNING OFFENSE AS A DEFENDER CUZ ALL FLAGS ARE TAKEN T_T");
             Util.addToIndicatorString("OF");
+            Util.logBytecodeUsedForID("circle5", 69);
             nav.pathBF(robot.offenseModule.sharedOffensiveTarget, 100);
         }
+        Util.logBytecodeUsedForID("after runMobileDefense", 69);
+
     }
 
     // Strategy methods
